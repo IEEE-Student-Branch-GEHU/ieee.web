@@ -1,34 +1,17 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Linkedin, Mail, Twitter } from 'lucide-react';
 
-const team = [
-    {
-        name: "Dr. Anamika Sharma",
-        role: "Faculty Counselor",
-        image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-        bio: "Guiding the next generation of tech leaders with 15+ years of experience in AI research."
-    },
-    {
-        name: "Rohan Mehta",
-        role: "Chairperson",
-        image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-        bio: "Passionate about building communities and bridging the gap between academia and industry."
-    },
-    {
-        name: "Priya Singh",
-        role: "Vice-Chair",
-        image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-        bio: "Leading technical initiatives and ensuring impactful events for all members."
-    },
-    {
-        name: "Amit Verma",
-        role: "Secretary",
-        image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-        bio: "Organizing seamless operations and documenting our journey towards excellence."
-    }
-];
-
 const ExecTeam = () => {
+    const [teamData, setTeamData] = React.useState([]);
+
+    React.useEffect(() => {
+        fetch('/api/team')
+            .then(res => res.json())
+            .then(data => setTeamData(data))
+            .catch(err => console.error('Failed to fetch team data:', err));
+    }, []);
+
     return (
         <section id="team" className="py-24 bg-light relative">
             <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
@@ -60,7 +43,7 @@ const ExecTeam = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {team.map((member, index) => (
+                    {teamData.map((member, index) => (
                         <motion.div
                             key={member.name}
                             initial={{ opacity: 0, y: 30 }}

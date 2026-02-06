@@ -1,48 +1,16 @@
-import { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 
-const events = [
-    {
-        id: 1,
-        title: "AI & Future Tech Summit",
-        date: "March 15, 2026",
-        location: "Main Auditorium, GEHU",
-        category: "Seminar",
-        image: "https://images.unsplash.com/photo-1544531586-fde5298cdd40?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-        description: "Explore the cutting-edge developments in Artificial Intelligence with industry experts."
-    },
-    {
-        id: 2,
-        title: "Robotics Workshop",
-        date: "April 02, 2026",
-        location: "Robotics Lab",
-        category: "Workshop",
-        image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-        description: "Hands-on session on building autonomous line-following robots."
-    },
-    {
-        id: 3,
-        title: "Hackathon 2026",
-        date: "May 20-21, 2026",
-        location: "Innovation Hub",
-        category: "Competition",
-        image: "https://images.unsplash.com/photo-1504384308090-c54be3855463?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-        description: "24-hour coding marathon to solve real-world problems. Great prizes to be won!"
-    },
-    {
-        id: 4,
-        title: "Cybersecurity Awareness",
-        date: "June 10, 2026",
-        location: "Virtual (Teams)",
-        category: "Webinar",
-        image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-        description: "Learn how to protect yourself and your organization from digital threats."
-    },
-];
-
 const Events = () => {
     const scrollRef = useRef(null);
+
+    React.useEffect(() => {
+        fetch('/api/events')
+            .then(res => res.json())
+            .then(data => setEventsData(data))
+            .catch(err => console.error('Failed to fetch events:', err));
+    }, []);
 
     return (
         <section id="events" className="py-24 bg-white overflow-hidden">
@@ -66,7 +34,7 @@ const Events = () => {
                     ref={scrollRef}
                     className="flex gap-8 overflow-x-auto pb-12 snap-x snap-mandatory hide-scrollbar -mx-6 px-6 md:mx-0 md:px-0"
                 >
-                    {events.map((event, index) => (
+                    {eventsData.map((event, index) => (
                         <motion.div
                             key={event.id}
                             className="min-w-[300px] md:min-w-[400px] snap-center bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 group cursor-pointer"
