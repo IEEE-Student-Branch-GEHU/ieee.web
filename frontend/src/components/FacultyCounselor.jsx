@@ -6,12 +6,7 @@ import { BsLinkedin } from "react-icons/bs";
 import PlaceholderImage from "../assets/placeholder.png";
 
 const counselorData = [
-    {
-        name: "Prof. (Dr.) H.N. Nagaraja",
-        imageUrl: PlaceholderImage,
-        title: "Vice Chancellor GEHU",
-        position: "Patron",
-    },
+
     {
         name: "Dr. Chandradeep Bhatt",
         imageUrl: PlaceholderImage,
