@@ -4,6 +4,7 @@ import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 
 const Events = () => {
     const scrollRef = useRef(null);
+    const [eventsData, setEventsData] = useState([]);
 
     React.useEffect(() => {
         fetch('/api/events')

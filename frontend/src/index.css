@@ -7,11 +7,25 @@
     --color-secondary: #00B5E2;
     --color-dark: #0F172A;
     --color-light: #F8FAFC;
+
+    /* Reference Design Colors */
+    --color-primaryLight: #00629b;
+    --color-primaryDark: #00273e;
+    --color-wieLight: #702f8a;
+    --color-wieDark: #7e22ce;
+    --color-csLight: #ffa300;
+    --color-csDark: #f97316;
+    --color-sightLight: #ba0c2f;
+    --color-sightDark: #a50b2aff;
+    --color-grey: #333333;
+    --color-blue: #00629B;
+
     --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
     --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
+    /* Legacy/Fallback variables */
     --color-primary: #00629B;
     --color-secondary: #00B5E2;
     --color-dark: #0F172A;
