@@ -8,8 +8,8 @@ export const ROUTES = {
 
     // Internal
     HOME: { label: "Home", url: "/" },
-    EXCOM: { label: "ExCom", url: "/team" },
-    ABOUT_US: { label: "About Us", url: "/about" },
-    CONTACT_US: { label: "Contact Us", url: "/contact" },
-    JOIN_US: { label: "Join Us", url: "/join" },
+    EXCOM: { label: "ExCom", url: "/#team" },
+    ABOUT_US: { label: "About Us", url: "/#about" },
+    CONTACT_US: { label: "Contact Us", url: "/#contact" },
+    JOIN_US: { label: "Join Us", url: "/#contact" },
 };

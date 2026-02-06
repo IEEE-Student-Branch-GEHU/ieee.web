@@ -1,66 +1,65 @@
-import { motion } from 'framer-motion';
-import { Quote } from 'lucide-react';
+import React from "react";
+import { Card, CardDescription, CardTitle } from "./ui/card";
+import { BsLinkedin } from "react-icons/bs";
+
+// Assets
+import PlaceholderImage from "../assets/placeholder.png";
+
+const counselorData = [
+    {
+        name: "Prof. (Dr.) H.N. Nagaraja",
+        imageUrl: PlaceholderImage,
+        title: "Vice Chancellor GEHU",
+        position: "Patron",
+    },
+    {
+        name: "Dr. Chandradeep Bhatt",
+        imageUrl: PlaceholderImage,
+        title: "Student Branch Counselor",
+        position: "Branch Counselor",
+        linkedin: "https://www.linkedin.com/in/dr-chandradeep-bhatt-8b64a2b0/",
+    },
+    // Add more as needed
+];
 
 const FacultyCounselor = () => {
     return (
-        <section className="py-24 bg-white relative overflow-hidden">
-            {/* Background decor */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <section className="py-20 bg-gray-50">
+            <div className="container mx-auto max-w-[1170px] space-y-5 px-5 xl:px-0">
+                <h3 className="text-3xl font-bold text-center uppercase mb-12 text-dark">
+                    Student Branch Counselors
+                </h3>
 
-            <div className="container mx-auto px-6">
-                <div className="flex flex-col md:flex-row items-center gap-16">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-center">
+                    {counselorData.map((counsellor, index) => (
+                        <Card
+                            key={index}
+                            className="flex flex-col items-center overflow-hidden border-none shadow-md hover:shadow-lg transition-all"
+                        >
+                            <div className="aspect-square w-full relative">
+                                <img
+                                    src={counsellor.imageUrl}
+                                    alt={counsellor.name}
+                                    className="object-cover w-full h-full absolute inset-0"
+                                />
+                            </div>
+                            <div className="text-center my-6 space-y-1 p-4 flex-grow">
+                                <CardTitle className="text-xl font-semibold text-dark">
+                                    {counsellor.name}
+                                </CardTitle>
+                                <CardDescription className="font-medium text-gray-600">{counsellor.title}</CardDescription>
+                                <p className="text-sm text-primary">{counsellor.position}</p>
+                            </div>
 
-                    {/* Image Side */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                        className="md:w-1/3 relative"
-                    >
-                        <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
-                            <img
-                                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                                alt="Faculty Counselor"
-                                className="w-full h-auto object-cover"
-                            />
-                        </div>
-                        {/* Decor elements */}
-                        <div className="absolute -bottom-6 -right-6 w-full h-full border-2 border-primary/20 rounded-2xl z-0"></div>
-                        <div className="absolute -top-6 -left-6 w-24 h-24 bg-dots-pattern opacity-20"></div>
-                    </motion.div>
-
-                    {/* Content Side */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        className="md:w-2/3"
-                    >
-                        <span className="text-secondary font-bold tracking-wider uppercase text-sm mb-2 block">Faculty Counselor</span>
-                        <h2 className="text-4xl font-bold text-dark mb-6">Message from the Desk</h2>
-
-                        <div className="relative">
-                            <Quote className="absolute -top-6 -left-4 text-primary/10 w-20 h-20 rotate-180" />
-                            <blockquote className="relative z-10 text-xl md:text-2xl text-gray-600 leading-relaxed italic mb-8">
-                                "Our mission at the IEEE Student Branch is to empower students with the technical skills and professional network they need to succeed in the rapidly evolving world of technology. We believe in learning by doing, and our events are designed to be hands-on, collaborative, and impactful."
-                            </blockquote>
-                        </div>
-
-                        <div>
-                            <h3 className="text-2xl font-bold text-dark">Dr. Anamika Sharma</h3>
-                            <p className="text-primary font-medium">Faculty Counselor, IEEE SB GEHU</p>
-                            <p className="text-gray-500 text-sm mt-1">Associate Professor, Dept. of Computer Science</p>
-                        </div>
-
-                        <div className="mt-8">
-                            <button className="px-6 py-3 border border-gray-300 rounded-full text-dark hover:border-primary hover:text-primary transition-colors font-medium">
-                                View Branch History
-                            </button>
-                        </div>
-                    </motion.div>
-
+                            {counsellor.linkedin && (
+                                <div className="pb-6">
+                                    <a href={counsellor.linkedin} target="_blank" rel="noopener noreferrer">
+                                        <BsLinkedin className="text-xl text-primary hover:text-secondary transition-colors" />
+                                    </a>
+                                </div>
+                            )}
+                        </Card>
+                    ))}
                 </div>
             </div>
         </section>

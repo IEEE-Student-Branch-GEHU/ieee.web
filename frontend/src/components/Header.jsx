@@ -84,9 +84,9 @@ export function LocalNav() {
         >
             <nav className="flex flex-row gap-8 uppercase font-semibold justify-center items-center py-4 text-white max-w-[1170px] grow">
                 {navItems.map((item) => (
-                    item.url.startsWith('http') ?
-                        <a key={item.url} href={item.url} className="hover:opacity-80 transition-opacity">{item.label}</a> :
-                        <LocalNavItem key={item.url} to={item.url}>
+                    item.url.startsWith('http') || item.url.includes('#') ?
+                        <a key={item.label} href={item.url} className="hover:opacity-80 transition-opacity">{item.label}</a> :
+                        <LocalNavItem key={item.label} to={item.url}>
                             {item.label}
                         </LocalNavItem>
                 ))}
@@ -192,7 +192,7 @@ function Header() {
                         ROUTES.JOIN_US,
                     ].map((item) => (
                         <Link
-                            key={item.url}
+                            key={item.label}
                             to={item.url}
                             className="text-white text-lg font-medium hover:text-gray-200 border-b border-white/10 pb-2"
                             onClick={closeMenu}
