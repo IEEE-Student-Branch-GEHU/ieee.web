@@ -34,7 +34,7 @@ const Events = () => {
                     ref={scrollRef}
                     className="flex gap-8 overflow-x-auto pb-12 snap-x snap-mandatory hide-scrollbar -mx-6 px-6 md:mx-0 md:px-0"
                 >
-                    {eventsData.map((event, index) => (
+                    {Array.isArray(eventsData) && eventsData.map((event, index) => (
                         <motion.div
                             key={event.id}
                             className="min-w-[300px] md:min-w-[400px] snap-center bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 group cursor-pointer"
