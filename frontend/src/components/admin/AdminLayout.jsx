@@ -1,5 +1,5 @@
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Calendar, Users, LogOut, Home } from 'lucide-react';
+import { LayoutDashboard, Calendar, Users, LogOut, Home, GraduationCap } from 'lucide-react';
 
 const AdminLayout = ({ children }) => {
     const navigate = useNavigate();
@@ -8,6 +8,7 @@ const AdminLayout = ({ children }) => {
     const menuItems = [
         { name: 'Dashboard', path: '/admin', icon: <LayoutDashboard size={20} /> },
         { name: 'Events', path: '/admin/events', icon: <Calendar size={20} /> },
+        { name: 'Faculty Coordinators', path: '/admin/faculty', icon: <GraduationCap size={20} /> },
         { name: 'Team members', path: '/admin/team', icon: <Users size={20} /> },
     ];
 
@@ -33,8 +34,8 @@ const AdminLayout = ({ children }) => {
                                 key={item.name}
                                 to={item.path}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
-                                        ? 'bg-primary text-white shadow-lg'
-                                        : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                                    ? 'bg-primary text-white shadow-lg'
+                                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                                     }`}
                             >
                                 {item.icon}

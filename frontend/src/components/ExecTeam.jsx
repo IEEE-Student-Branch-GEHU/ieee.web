@@ -22,7 +22,8 @@ const ExecTeam = () => {
             .then(data => {
                 if (Array.isArray(data) && data.length > 0) {
                     const filtered = data.filter(m =>
-                        !m.role.toLowerCase().includes('counselor')
+                        !m.role.toLowerCase().includes('counselor') &&
+                        m.category !== 'faculty'
                     );
                     setTeamData(filtered);
                 } else {

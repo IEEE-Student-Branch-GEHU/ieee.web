@@ -5,6 +5,7 @@ import VisionMission from './components/VisionMission';
 import Events from './components/Events';
 import ExecTeam from './components/ExecTeam';
 import FacultyCounselor from './components/FacultyCounselor';
+import FacultyCoordinators from './components/FacultyCoordinators';
 import ShapeFuture from './components/ShapeFuture';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
@@ -15,6 +16,7 @@ import AdminDashboard from './pages/admin/Dashboard';
 import AdminLayout from './components/admin/AdminLayout';
 import EventsManage from './pages/admin/EventsManage';
 import TeamManage from './pages/admin/TeamManage';
+import FacultyManage from './pages/admin/FacultyManage';
 
 const LandingPage = () => (
   <div className="bg-mesh min-h-screen">
@@ -22,6 +24,7 @@ const LandingPage = () => (
     <Hero />
     <VisionMission />
     <FacultyCounselor />
+    <FacultyCoordinators />
     <ExecTeam />
     <Events />
     <ShapeFuture />
@@ -51,6 +54,7 @@ function App() {
                 <Routes>
                   <Route index element={<AdminDashboard />} />
                   <Route path="events" element={<EventsManage />} />
+                  <Route path="faculty" element={<FacultyManage />} />
                   <Route path="team" element={<TeamManage />} />
                 </Routes>
               </AdminLayout>
