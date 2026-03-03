@@ -131,17 +131,10 @@ function Header() {
                 </div>
 
                 <div className="md:flex hidden flex-row items-center w-full px-8 lg:px-12 grow justify-between">
-                    <div className="flex items-center gap-4">
-                        <img
-                            src={IeeeSbWhiteImage}
-                            alt="IEEE SB Logo"
-                            className="h-16 object-contain"
-                        />
-                        <div className="flex flex-col border-l border-white/30 pl-4 justify-center">
-                            <span className="font-bold text-xl tracking-wide uppercase leading-tight text-white">IEEE Student Branch</span>
-                            <span className="font-light text-sm tracking-wider leading-tight text-white">Graphic Era Hill University</span>
-                            <span className="text-[10px] text-white/70 uppercase tracking-widest mt-1">Dehradun Campus</span>
-                        </div>
+                    <div className="flex flex-col justify-center">
+                        <span className="font-bold text-xl tracking-wide uppercase leading-tight text-white">IEEE Student Branch</span>
+                        <span className="font-light text-sm tracking-wider leading-tight text-white">Graphic Era Hill University</span>
+                        <span className="text-[10px] text-white/70 uppercase tracking-widest mt-1">Dehradun Campus</span>
                     </div>
 
                     <img
