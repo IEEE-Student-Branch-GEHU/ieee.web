@@ -6,8 +6,13 @@ const path = require('path');
 // Helper to read data
 const readData = (filename) => {
     const filePath = path.join(__dirname, '..', 'data', filename);
-    const rawData = fs.readFileSync(filePath);
-    return JSON.parse(rawData);
+    if (!fs.existsSync(filePath)) return [];
+    try {
+        const rawData = fs.readFileSync(filePath);
+        return JSON.parse(rawData);
+    } catch (e) {
+        return [];
+    }
 };
 
 // GET /api/events
@@ -32,16 +37,39 @@ router.get('/team', (req, res) => {
 
 // POST /api/contact
 router.post('/contact', (req, res) => {
-    const { firstName, lastName, email, message } = req.body;
+    try {
+        const { firstName, lastName, email, message } = req.body;
+        const MESSAGES_FILE = path.join(__dirname, '..', 'data', 'messages.json');
 
-    // Mock Email Sending logic
-    console.log('--- New Contact Form Submission ---');
-    console.log(`Name: ${firstName} ${lastName}`);
-    console.log(`Email: ${email}`);
-    console.log(`Message: ${message}`);
-    console.log('-----------------------------------');
+        // Ensure data dir exists
+        const dataDir = path.join(__dirname, '..', 'data');
+        if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
 
-    res.json({ success: true, message: 'Message received successfully!' });
+        let messages = [];
+        if (fs.existsSync(MESSAGES_FILE)) {
+            messages = JSON.parse(fs.readFileSync(MESSAGES_FILE, 'utf8') || '[]');
+        }
+
+        const newMessage = {
+            id: Date.now(),
+            firstName,
+            lastName,
+            email,
+            message,
+            timestamp: new Date().toISOString()
+        };
+
+        messages.push(newMessage);
+        fs.writeFileSync(MESSAGES_FILE, JSON.stringify(messages, null, 2));
+
+        console.log('--- New Contact Form Submission Logged ---');
+        console.log(`Name: ${firstName} ${lastName}`);
+        console.log(`Email: ${email}`);
+        res.json({ success: true, message: 'Message received and logged successfully!' });
+    } catch (error) {
+        console.error('Contact error:', error);
+        res.status(500).json({ success: false, message: 'Failed to process message' });
+    }
 });
 
 module.exports = router;

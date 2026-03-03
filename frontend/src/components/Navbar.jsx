@@ -1,109 +1,194 @@
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Instagram, Linkedin, Github, ArrowUpRight } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
+
+// Assets
+import ieeeLogo from '../assets/logo.png';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const { scrollYProgress } = useScroll();
+    const scaleX = useSpring(scrollYProgress, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001
+    });
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
+            setScrolled(window.scrollY > 50);
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const navLinks = [
-        { name: 'Home', href: '#' },
-        { name: 'Events', href: '#events' },
-        { name: 'Team', href: '#team' },
-        { name: 'About', href: '#about' },
-        { name: 'Contact', href: '#contact' },
+        { name: 'Home', href: '#', id: '01' },
+        { name: 'Events', href: '#events', id: '02' },
+        { name: 'Team', href: '#team', id: '03' },
+        { name: 'About', href: '#about', id: '04' },
+        { name: 'Contact', href: '#contact', id: '05' },
+    ];
+
+    const socialLinks = [
+        { icon: <Instagram size={18} />, href: 'https://www.instagram.com/ieee_gehu' },
+        { icon: <Linkedin size={18} />, href: 'https://www.linkedin.com/company/ieeesb-gehu' },
+        { icon: <Github size={18} />, href: '#' },
     ];
 
     return (
-        <nav
-            className={`fixed w-full z-50 transition-all duration-300 ${scrolled
-                    ? 'bg-white/90 backdrop-blur-md shadow-lg py-3'
-                    : 'bg-transparent py-5'
-                }`}
-        >
-            <div className="container mx-auto px-6 flex justify-between items-center">
-                {/* Logo */}
-                <div className="flex items-center gap-2 z-50">
-                    <span className={`text-2xl font-bold font-sans tracking-tighter ${scrolled ? 'text-primary' : 'text-primary'}`}>
-                        IEEE
-                    </span>
-                    <div className="h-6 w-[1px] bg-gray-400 hidden md:block"></div>
-                    <span className="text-sm font-medium text-gray-600 hidden md:block">
-                        GEHU Dehradun
-                    </span>
-                </div>
+        <>
+            {/* Scroll Progress Bar */}
+            <motion.div
+                className="fixed top-0 left-0 right-0 h-1 bg-primary z-[60] origin-left"
+                style={{ scaleX }}
+            />
 
-                {/* Desktop Menu */}
-                <div className="hidden md:flex items-center gap-8">
-                    {navLinks.map((link) => (
-                        <a
-                            key={link.name}
-                            href={link.href}
-                            className="text-gray-700 hover:text-primary font-medium transition-colors relative group"
-                        >
-                            {link.name}
-                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-secondary transition-all group-hover:w-full"></span>
-                        </a>
-                    ))}
-                    <a
-                        href="https://www.ieee.org/membership/join"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-6 py-2.5 bg-primary text-white rounded-full font-medium hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all"
+            <nav
+                className={`fixed w-full z-50 transition-all duration-700 ${scrolled
+                    ? 'glass-dark py-4'
+                    : 'bg-transparent py-8'
+                    }`}
+            >
+                {/* Backlight Glow when scrolled */}
+                {scrolled && (
+                    <div className="absolute inset-0 bg-primary/5 blur-3xl rounded-full -z-10" />
+                )}
+
+                <div className="container mx-auto px-6 flex justify-between items-center">
+                    {/* Premium Branding Badge */}
+                    <motion.a
+                        href="#"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="flex items-center gap-6 group"
                     >
-                        Join IEEE
-                    </a>
+                        <div className="relative">
+                            <img
+                                src={ieeeLogo}
+                                alt="IEEE Logo"
+                                className="h-14 md:h-24 w-auto group-hover:scale-105 transition-transform duration-500 py-1"
+                            />
+                            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-secondary rounded-full border-2 border-primaryDark" />
+                        </div>
+                    </motion.a>
+
+
+                    {/* Scientific Desktop Menu */}
+                    <div className="hidden md:flex items-center gap-12">
+                        <div className="flex items-center gap-10">
+                            {navLinks.map((link, i) => (
+                                <motion.a
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.1 }}
+                                    key={link.name}
+                                    href={link.href}
+                                    className="group relative flex items-center gap-2"
+                                >
+                                    <span className="text-[10px] font-black text-primary/60 group-hover:text-secondary transition-colors duration-300">
+                                        {link.id}
+                                    </span>
+                                    <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all ${scrolled ? 'text-gray-300 group-hover:text-white' : 'text-primaryDark/80 group-hover:text-primary'}`}>
+                                        {link.name}
+                                    </span>
+                                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-secondary rounded-full group-hover:w-full transition-all duration-500" />
+                                </motion.a>
+                            ))}
+                        </div>
+
+                        <motion.a
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            href="#contact"
+                            className="relative group px-8 py-3.5 bg-primary text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-primary/20 overflow-hidden"
+                        >
+                            <span className="relative z-10 flex items-center gap-2">
+                                Join Now <ArrowUpRight size={14} />
+                            </span>
+                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                        </motion.a>
+                    </div>
+
+                    {/* Mobile Toggle */}
+                    <motion.button
+                        whileTap={{ scale: 0.9 }}
+                        className="md:hidden z-50 w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white"
+                        onClick={() => setIsOpen(!isOpen)}
+                    >
+                        {isOpen ? <X size={20} /> : <Menu size={20} />}
+                    </motion.button>
                 </div>
 
-                {/* Mobile Menu Button */}
-                <button
-                    className="md:hidden z-50 text-gray-800"
-                    onClick={() => setIsOpen(!isOpen)}
-                >
-                    {isOpen ? <X size={28} /> : <Menu size={28} />}
-                </button>
-
-                {/* Mobile Menu Overlay */}
+                {/* Full Screen Mobile Overlay */}
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
-                            initial={{ opacity: 0, y: -20 }}
+                            initial={{ opacity: 0, y: '-100%' }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            className="absolute top-0 left-0 w-full h-screen bg-white flex flex-col items-center justify-center gap-8 md:hidden"
+                            exit={{ opacity: 0, y: '-100%' }}
+                            transition={{ type: 'spring', damping: 30, stiffness: 200 }}
+                            className="fixed inset-0 w-full h-screen bg-primaryDark/95 backdrop-blur-3xl flex flex-col pt-32 px-10 md:hidden z-40"
                         >
-                            {navLinks.map((link) => (
-                                <a
-                                    key={link.name}
-                                    href={link.href}
-                                    className="text-2xl font-bold text-gray-800 hover:text-primary"
-                                    onClick={() => setIsOpen(false)}
-                                >
-                                    {link.name}
-                                </a>
-                            ))}
-                            <a
-                                href="https://www.ieee.org/membership/join"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-8 py-3 bg-primary text-white rounded-full text-xl font-medium"
-                            >
-                                Join IEEE
-                            </a>
+                            <div className="space-y-8">
+                                {navLinks.map((link, i) => (
+                                    <motion.a
+                                        initial={{ opacity: 0, x: -30 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: i * 0.1 + 0.3 }}
+                                        key={link.name}
+                                        href={link.href}
+                                        onClick={() => setIsOpen(false)}
+                                        className="flex items-center gap-6 group"
+                                    >
+                                        <span className="text-sm font-black text-secondary">{link.id}</span>
+                                        <span className="text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors">
+                                            {link.name}
+                                        </span>
+                                    </motion.a>
+                                ))}
+                            </div>
+
+                            <div className="mt-auto pb-12 space-y-10">
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.8 }}
+                                    className="h-px bg-white/10 w-full"
+                                />
+                                <div className="flex justify-between items-end">
+                                    <div className="space-y-4">
+                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Social Networks</h4>
+                                        <div className="flex gap-6">
+                                            {socialLinks.map((social, i) => (
+                                                <motion.a
+                                                    key={i}
+                                                    href={social.href}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    whileHover={{ y: -3 }}
+                                                    className="text-white/60 hover:text-secondary transition-colors"
+                                                >
+                                                    {social.icon}
+                                                </motion.a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <a href="mailto:ieee@gehu.ac.in" className="text-[10px] font-black text-white uppercase tracking-widest bg-white/5 px-4 py-2 rounded-lg border border-white/10">
+                                        Get in touch
+                                    </a>
+                                </div>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
-            </div>
-        </nav>
+            </nav>
+        </>
     );
 };
 
 export default Navbar;
+

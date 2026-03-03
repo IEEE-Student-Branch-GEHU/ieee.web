@@ -1,4 +1,5 @@
-import Header from './components/Header';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import VisionMission from './components/VisionMission';
 import Events from './components/Events';
@@ -8,18 +9,55 @@ import ShapeFuture from './components/ShapeFuture';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
+// Admin Components
+import AdminLogin from './pages/admin/Login';
+import AdminDashboard from './pages/admin/Dashboard';
+import AdminLayout from './components/admin/AdminLayout';
+import EventsManage from './pages/admin/EventsManage';
+import TeamManage from './pages/admin/TeamManage';
+
+const LandingPage = () => (
+  <div className="bg-mesh min-h-screen">
+    <Navbar />
+    <Hero />
+    <VisionMission />
+    <FacultyCounselor />
+    <ExecTeam />
+    <Events />
+    <ShapeFuture />
+    <Contact />
+    <Footer />
+  </div>
+);
+
+
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('adminToken');
+  if (!token) return <Navigate to="/admin/login" />;
+  return children;
+};
+
 function App() {
   return (
     <div className="bg-light text-dark font-body min-h-screen">
-      <Header />
-      <Hero />
-      <VisionMission />
-      <FacultyCounselor />
-      <ExecTeam />
-      <Events />
-      <ShapeFuture />
-      <Contact />
-      <Footer />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <Routes>
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="events" element={<EventsManage />} />
+                  <Route path="team" element={<TeamManage />} />
+                </Routes>
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </div>
   )
 }

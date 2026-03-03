@@ -12,12 +12,13 @@ import { Button } from "./ui/button";
 // Assets (Using placeholders for now)
 // import allExcom from "../assets/hero-images/full-excom.jpg"; // Removed as it does not exist
 
+import { motion, AnimatePresence } from "framer-motion";
+
 const Hero = () => {
     const plugin = useRef(
-        Autoplay({ delay: 5000, stopOnInteraction: false })
+        Autoplay({ delay: 6000, stopOnInteraction: false })
     );
 
-    // Fallback data if images are missing
     const cimages = [
         {
             image: "https://images.unsplash.com/photo-1517245386807-bb43f82cd33d?q=80&w=1920&auto=format&fit=crop",
@@ -38,45 +39,86 @@ const Hero = () => {
 
     const tagline = "A community of innovators, researchers, and leaders at GEHU Dehradun.";
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.15,
+                delayChildren: 0.3,
+            },
+        },
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { type: "spring", stiffness: 100, damping: 12 },
+        },
+    };
+
     return (
         <Carousel plugins={[plugin.current]} className="w-full">
             <CarouselContent className="h-full">
                 {cimages.map((item, index) => (
                     <CarouselItem
                         key={index}
-                        className="relative h-[60vh] md:h-screen w-full"
+                        className="relative h-[65vh] md:h-screen w-full overflow-hidden"
                     >
                         <div className="w-full h-full relative">
-                            <img
+                            <motion.img
+                                initial={{ scale: 1.1 }}
+                                animate={{ scale: 1 }}
+                                transition={{ duration: 10, ease: "linear" }}
                                 src={item.image}
                                 alt={`carousel image ${index + 1}`}
                                 className="w-full h-full object-cover"
                             />
-                            {/* Gradient Overlay */}
-                            <div
-                                className={`absolute bottom-0 w-full h-1/2 bg-gradient-to-t from-primaryDark/90 to-transparent flex flex-col justify-end pb-12 transition-all duration-300`}
-                            >
-                                <div className="container mx-auto px-6 text-center">
-                                    <h1 className="font-bold text-white text-3xl md:text-5xl lg:text-6xl mb-2 drop-shadow-lg font-sans">
-                                        {item.subheading}
-                                    </h1>
-                                    <p className="text-white/90 text-sm md:text-lg max-w-3xl mx-auto font-medium tracking-wide mb-8">
-                                        {tagline}
-                                    </p>
 
-                                    <div className="flex flex-col sm:flex-row justify-center gap-4 mt-6 pointer-events-auto">
+                            <div className="absolute inset-0 bg-black/40 z-10" />
+
+                            <div
+                                className={`absolute inset-0 flex flex-col justify-center items-center z-20`}
+                            >
+                                <motion.div
+                                    variants={containerVariants}
+                                    initial="hidden"
+                                    whileInView="visible"
+                                    viewport={{ once: false }}
+                                    className="container mx-auto px-6 text-center"
+                                >
+                                    <motion.h1
+                                        variants={itemVariants}
+                                        className="font-bold text-white text-4xl md:text-6xl lg:text-7xl mb-4 drop-shadow-2xl font-sans tracking-tight"
+                                    >
+                                        {item.subheading}
+                                    </motion.h1>
+
+                                    <motion.p
+                                        variants={itemVariants}
+                                        className="text-white/90 text-sm md:text-xl max-w-2xl mx-auto font-medium tracking-wide mb-10 leading-relaxed italic"
+                                    >
+                                        {tagline}
+                                    </motion.p>
+
+                                    <motion.div
+                                        variants={itemVariants}
+                                        className="flex flex-col sm:flex-row justify-center gap-6 mt-6 pointer-events-auto"
+                                    >
                                         <a href="#contact">
-                                            <Button size="lg" className="bg-primary hover:bg-primaryDark text-white font-bold px-8 shadow-lg w-full sm:w-auto">
+                                            <Button size="lg" className="bg-primary hover:bg-primaryDark text-white font-bold px-10 py-7 rounded-full shadow-2xl w-full sm:w-auto transition-transform hover:scale-105 active:scale-95">
                                                 Become a Member
                                             </Button>
                                         </a>
                                         <a href="#events">
-                                            <Button size="lg" variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white/20 hover:text-white font-bold px-8 shadow-lg w-full sm:w-auto">
+                                            <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-md border-2 border-white/50 text-white hover:bg-white hover:text-primary font-bold px-10 py-7 rounded-full shadow-2xl w-full sm:w-auto transition-all hover:scale-105 active:scale-95">
                                                 Upcoming Events
                                             </Button>
                                         </a>
-                                    </div>
-                                </div>
+                                    </motion.div>
+                                </motion.div>
                             </div>
                         </div>
                     </CarouselItem>

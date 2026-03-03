@@ -1,12 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {
-    BsFacebook,
+    BsGithub,
     BsInstagram,
     BsLinkedin,
-    BsTiktok,
-    BsWhatsapp,
-    BsYoutube,
 } from "react-icons/bs";
 import { MdEmail, MdOutlineLocationOn } from "react-icons/md";
 
@@ -18,11 +15,15 @@ function Footer() {
     const footerLinks = [
         {
             icon: <BsLinkedin />,
-            link: "https://www.linkedin.com/company/ieee-student-branch-gehu/", // Update with actual URL when standardizing
+            link: "https://www.linkedin.com/company/ieeesb-gehu/",
         },
         {
             icon: <BsInstagram />,
-            link: "https://www.instagram.com/", // Update with actual URL
+            link: "https://www.instagram.com/ieee_gehu?igsh=MW1teDJyOGRtNHh5eQ==",
+        },
+        {
+            icon: <BsGithub />,
+            link: "https://github.com/YZO-BIT/IEEE-website",
         },
     ];
 
@@ -48,7 +49,7 @@ function Footer() {
                                     href={link.link}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-9 h-9 flex items-center justify-center rounded-full bg-opacity-0 hover:bg-opacity-10 bg-white duration-500 text-white"
+                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 text-white shadow-sm"
                                 >
                                     {link.icon}
                                 </a>

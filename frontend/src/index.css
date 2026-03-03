@@ -10,15 +10,8 @@
 
     /* Reference Design Colors */
     --color-primaryLight: #00629b;
-    --color-primaryDark: #00273e;
-    --color-wieLight: #702f8a;
-    --color-wieDark: #7e22ce;
-    --color-csLight: #ffa300;
-    --color-csDark: #f97316;
-    --color-sightLight: #ba0c2f;
-    --color-sightDark: #a50b2aff;
-    --color-grey: #333333;
-    --color-blue: #00629B;
+    --color-primaryDark: #0A1128;
+    --color-accent: #00B5E2;
 
     --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
     --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -28,21 +21,110 @@
     /* Legacy/Fallback variables */
     --color-primary: #00629B;
     --color-secondary: #00B5E2;
-    --color-dark: #0F172A;
+    --color-dark: #0A1128;
     --color-light: #F8FAFC;
 }
 
-body {
-    background-color: var(--color-light);
-    color: var(--color-dark);
-    font-family: var(--font-body);
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: var(--color-light);
+        color: var(--color-dark);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        position: relative;
+    }
+
+    /* Grain Overlay */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+        opacity: 0.05;
+        pointer-events: none;
+        z-index: 9999;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: var(--font-sans);
+        letter-spacing: -0.04em;
+        font-weight: 700;
+    }
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: var(--font-sans);
+@layer utilities {
+    .bg-mesh {
+        background-color: #f8fafc;
+        background-image:
+            radial-gradient(at 0% 0%, rgba(0, 98, 155, 0.1) 0px, transparent 50%),
+            radial-gradient(at 50% 0%, rgba(0, 181, 226, 0.05) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, rgba(112, 47, 138, 0.05) 0px, transparent 50%);
+    }
+
+    .bg-mesh-dark {
+        background-color: #0A1128;
+        background-image:
+            radial-gradient(at 0% 0%, rgba(0, 98, 155, 0.2) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(112, 47, 138, 0.1) 0px, transparent 50%);
+    }
+
+    .glass {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .glass-dark {
+        background: rgba(10, 17, 40, 0.7);
+        backdrop-filter: blur(25px) saturate(200%);
+        -webkit-backdrop-filter: blur(25px) saturate(200%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--color-light);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+        border: 3px solid var(--color-light);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+}
+
+/* Base headings with fluid typography logic (simplified via Tailwind clamp if desired, but manual here for precision) */
+h1 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+h2 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+h3 {
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
 }
