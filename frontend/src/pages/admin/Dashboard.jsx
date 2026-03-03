@@ -5,9 +5,11 @@ import { motion } from 'framer-motion';
 const Dashboard = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [errorMsg, setErrorMsg] = useState(null);
 
     const fetchStats = async () => {
         setLoading(true);
+        setErrorMsg(null);
         try {
             const token = localStorage.getItem('adminToken');
             const response = await fetch('/api/admin/stats', {
@@ -15,7 +17,12 @@ const Dashboard = () => {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
+                let errorData;
+                try {
+                    errorData = await response.json();
+                } catch (e) {
+                    throw new Error(`Server returned ${response.status} ${response.statusText}`);
+                }
                 throw new Error(errorData.message || 'Failed to fetch metrics');
             }
 
@@ -23,7 +30,7 @@ const Dashboard = () => {
             setStats(data);
         } catch (err) {
             console.error('Failed to fetch stats:', err);
-            // Optionally set error state or show toast
+            setErrorMsg(err.message);
         } finally {
             setLoading(false);
         }
@@ -52,6 +59,16 @@ const Dashboard = () => {
         return (
             <div className="flex items-center justify-center h-64">
                 <RefreshCw className="animate-spin text-primary" size={32} />
+            </div>
+        );
+    }
+
+    if (errorMsg) {
+        return (
+            <div className="p-8 bg-red-50 text-red-600 rounded-2xl border border-red-100">
+                <h3 className="font-bold text-lg mb-2">Error Loading Dashboard</h3>
+                <p>{errorMsg}</p>
+                <button onClick={fetchStats} className="mt-4 px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-700">Try Again</button>
             </div>
         );
     }
