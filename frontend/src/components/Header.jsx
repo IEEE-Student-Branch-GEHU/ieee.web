@@ -130,25 +130,24 @@ function Header() {
                     </span>
                 </div>
 
-                <div className="md:flex hidden flex-row gap-6 items-center mx-auto text-white max-w-[1170px] grow justify-between">
+                <div className="md:flex hidden flex-row items-center w-full px-8 lg:px-12 grow justify-between">
                     <div className="flex items-center gap-4">
                         <img
-                            src={IeeeLogoWhite}
-                            alt="IEEE Logo"
+                            src={IeeeSbWhiteImage}
+                            alt="IEEE SB Logo"
                             className="h-16 object-contain"
                         />
                         <div className="flex flex-col border-l border-white/30 pl-4 justify-center">
-                            <span className="font-bold text-xl tracking-wide uppercase leading-tight">IEEE Student Branch</span>
-                            <span className="font-light text-sm tracking-wider leading-tight">Graphic Era Hill University</span>
+                            <span className="font-bold text-xl tracking-wide uppercase leading-tight text-white">IEEE Student Branch</span>
+                            <span className="font-light text-sm tracking-wider leading-tight text-white">Graphic Era Hill University</span>
                             <span className="text-[10px] text-white/70 uppercase tracking-widest mt-1">Dehradun Campus</span>
                         </div>
                     </div>
 
-                    {/* Secondary Logo (kept subtle) */}
                     <img
                         src={IeeeLogoWhite}
                         alt="IEEE Logo"
-                        className="h-12 object-contain opacity-80"
+                        className="h-14 object-contain"
                     />
                 </div>
             </div>
