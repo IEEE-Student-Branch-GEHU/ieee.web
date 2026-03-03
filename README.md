@@ -1,50 +1,56 @@
-# 🌐 IEEE Student Branch - Graphic Era Hill University
+# 🌐 IEEE Student Branch - Graphic Era Hill University (Dehradun)
 
-![Project Status](https://img.shields.io/badge/status-active-success.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+<p align="center">
+  <img src="frontend/src/assets/logo.png" alt="IEEE GEHU Logo" width="180">
+</p>
 
-**"Advancing Technology for Humanity"**
+<p align="center">
+  <strong>"Advancing Technology for Humanity"</strong>
+</p>
 
-Welcome to the official repository used by the **IEEE Student Branch at Graphic Era Hill University (GEHU), Dehradun Campus**. Digital platform designed to showcase our events, team, and vision, bridging the gap between academia and industry.
+<p align="center">
+  <a href="https://img.shields.io/badge/status-active-success.svg"><img src="https://img.shields.io/badge/status-active-success.svg" alt="Project Status"></a>
+  <a href="https://github.com/YZO-BIT/IEEE-website/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="https://react.dev/"><img src="https://img.shields.io/badge/react-19-blue.svg?logo=react" alt="React"></a>
+  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/tailwind-v4-38B2AC.svg?logo=tailwind-css" alt="Tailwind"></a>
+</p>
 
 ---
 
-## 🚀 Live Demo
+## 🚀 Overview
 
-**[View Deployment](https://YZO-BIT.github.io/IEEE-website/)**
-*(Note: As GitHub Pages hosts static sites, backend-dependent features like live Event data may be mock-only on this deployment.)*
+Welcome to the official repository of the **IEEE Student Branch at Graphic Era Hill University (GEHU), Dehradun**. This premium platform is built to showcase our technical excellence, leadership, and vibrant student community.
+
+It features a high-performance **React** frontend combined with a robust **Node.js** administration backend, enabling seamless management of branch activities.
 
 ---
 
 ## ✨ Key Features
 
--   **🎨 Modern UI/UX**: Built with React and Framer Motion for a sleek, animated, and responsive experience.
--   **📅 Event Management**: Dynamic carousel showcasing upcoming web, technical, and social events.
--   **👥 Team & Faculty**: interactive cards highlighting our Executive Committee and Branch Counselors.
--   **📱 Fully Responsive**: Optimized for Mobile, Tablet, and Desktop using Tailwind CSS v4.
--   **🔌 API Integration**: Backend services for fetching real-time data on events and team members.
--   **📬 Contact System**: Integrated form for inquiries and student outreach.
+### 🏛️ Landing Page (Public)
+- **🎨 Premium UI/UX**: Crafted with Framer Motion for smooth, staggering reveal animations.
+- **👨‍🏫 Faculty Leadership**: Dedicated sections for the Student Branch Counselor and Faculty Coordinators.
+- **👥 Student Executive Committee**: Dynamic cards showcasing the student leadership team.
+- **📅 Events Hub**: Interactive carousel for past and upcoming branch events.
+- **📬 Fluid Communication**: Integrated contact system with form validation.
+
+### 🛡️ Management Portal (Admin)
+- **🔐 Secure Access**: JWT-protected administrative dashboard.
+- **🛠️ Team Management**: Dedicated interfaces for managing Student Team and Faculty Coordinators independently.
+- **📊 Activity Tracking**: Statistics overview for events and team growth.
+- **📁 Integrated Uploads**: Direct image upload system for member profiles and event posters.
 
 ---
 
 ## 🛠️ Technology Stack
 
-### Frontend
--   **Core**: React 19, Vite
--   **Styling**: Tailwind CSS v4, clsx, tailwind-merge
--   **Animation**: Framer Motion
--   **Routing**: React Router DOM v7
--   **Components**: Radix UI Primitives, Lucide Icons, React Icons
-
-### Backend (API)
--   **Runtime**: Node.js (v18+)
--   **Framework**: Express.js
--   **Data**: JSON-based storage (Migration to MongoDB planned)
--   **Security**: CORS enabled, Environment variable support
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend** | React 19, Vite, Tailwind CSS v4, Framer Motion |
+| **Backend** | Node.js, Express.js |
+| **State/Routing** | React Router 7, React Hooks |
+| **Icons & UI** | Lucide React, React Icons, Radix UI |
+| **Deployment** | GitHub Pages (Frontend), Vercel/Render (Backend Ready) |
 
 ---
 
@@ -52,80 +58,63 @@ Welcome to the official repository used by the **IEEE Student Branch at Graphic 
 
 ```bash
 IEEE-website/
-├── 📂 frontend/           # Client-side Application
-│   ├── src/components/    # Reusable UI (Hero, Header, Footer)
-│   ├── src/assets/        # Static images and icons
-│   ├── vite.config.js     # Proxy & Build configuration
-│   └── index.css          # Global Tailwind directives
+├── 📂 frontend/           # React Application
+│   ├── 📂 src/
+│   │   ├── 📂 components/ # Reusable UI components
+│   │   ├── 📂 pages/      # Landing and Admin pages
+│   │   └── 📂 assets/     # Branding and media
+│   └── vite.config.js     # Dev server & Proxy config
 │
-├── 📂 backend/            # Server-side Application
-│   ├── data/              # Data source for Events/Team
-│   ├── routes/            # API Route definitions
-│   └── server.js          # Express server entry point
+├── 📂 backend/            # Express Server
+│   ├── 📂 routes/         # API endpoints (Admin & Public)
+│   ├── 📂 data/           # JSON Persistence (Events, Team)
+│   └── server.js          # Entry point
 │
-└── 📂 .github/            # CI/CD Workflows
+└── 📂 .github/            # GitHub Actions (CI/CD)
 ```
 
 ---
 
-## 🚀 Getting Started Locally
+## 🚀 Getting Started
 
-Follow these instructions to set up the project on your local machine.
-
-### Prerequisites
--   **Node.js**: v18 or higher ([Download](https://nodejs.org/))
--   **Git**: ([Download](https://git-scm.com/))
-
-### 1. Clone the Repository
+### 1. Clone & Install
 ```bash
 git clone https://github.com/YZO-BIT/IEEE-website.git
 cd IEEE-website
 ```
 
-### 2. Setup Backend System
-The backend serves the API data on port `5000`.
-
+### 2. Launch Backend (Port 5000)
 ```bash
 cd backend
 npm install
 node server.js
 ```
-> **Output**: `Server running on port 5000`
 
-### 3. Setup Frontend Application
-Open a **new terminal window** to run the React app.
-
+### 3. Launch Frontend (Port 5173)
 ```bash
+# In accurate terminal
 cd frontend
 npm install
 npm run dev
 ```
-> **Output**: `Local: http://localhost:5173`
 
-### 4. Application Access
-Open your browser and navigate to: [http://localhost:5173](http://localhost:5173)
+Visit: **[http://127.0.0.1:5173/IEEE-website/](http://127.0.0.1:5173/IEEE-website/)**
 
 ---
 
-## 🤝 Contribution Guidelines
+## 🤝 Contributing
 
-We welcome innovations! To contribute:
+We value technological innovation. Feel free to fork, hack, and submit PRs!
 
-1.  **Fork** the project.
-2.  Create your **Feature Branch** (`git checkout -b feature/AmazingFeature`).
-3.  **Commit** your changes (`git commit -m 'Add some AmazingFeature'`).
-4.  **Push** to the branch (`git push origin feature/AmazingFeature`).
-5.  Open a **Pull Request**.
-
----
-
-## 📞 Contact & Support
-
-**IEEE Student Branch — GEHU**
--   📍 **Location**: Graphic Era Hill University, Dehradun, UK, India
--   📧 **Email**: ieee@gehu.ac.in
--   🔗 **Socials**: [LinkedIn](#) | [Instagram](#)
+1. Fork the repo.
+2. Create your feature branch (`git checkout -b feature/NewTech`).
+3. Commit changes (`git commit -m 'Add NewTech'`).
+4. Push to the branch (`git push origin feature/NewTech`).
+5. Open a Pull Request.
 
 ---
 
-<p align="center">Made with ❤️ by the IEEE Student Branch GEHU Web Team</p>
+<p align="center">
+  Generated with ⚡ by the <strong>IEEE Student Branch GEHU Team</strong><br>
+  <em>Advancing Technology for Humanity</em>
+</p>
