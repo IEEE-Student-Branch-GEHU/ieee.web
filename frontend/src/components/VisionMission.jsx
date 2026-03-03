@@ -26,11 +26,10 @@ const VisionMission = () => {
                                 </div>
                             </CardTitle>
 
-                            <CardDescription className="text-sm text-gray-600 leading-relaxed mt-4">
-                                The IEEE Student Branch of Graphic Era Hill University advises the community on ethics
-                                policy and concerns as well as fostering awareness on ethical
-                                issues and promoting ethical behaviour amongst individuals and
-                                organisations working within the IEEE fields of interest.
+                            <CardDescription className="text-sm text-gray-600 leading-relaxed mt-4 space-y-2">
+                                <p>To advise the community on ethics policy and concerns.</p>
+                                <p>To foster awareness on ethical issues within the technology sector.</p>
+                                <p>To promote ethical behavior amongst individuals and organizations in IEEE fields of interest.</p>
                             </CardDescription>
                         </CardHeader>
                     </Card>
@@ -45,10 +44,10 @@ const VisionMission = () => {
                                 </div>
                             </CardTitle>
 
-                            <CardDescription className="text-sm text-gray-600 leading-relaxed mt-4">
-                                A world in which engineers and scientists are respected for their
-                                exemplary ethical behaviour and the IEEE and its Ethics & Member
-                                Conduct Committee are recognized as a major drive in this regard.
+                            <CardDescription className="text-sm text-gray-600 leading-relaxed mt-4 space-y-2">
+                                <p>A world where engineers and scientists are respected for exemplary ethical behavior.</p>
+                                <p>A future driven by the IEEE and its Ethics & Member Conduct Committee.</p>
+                                <p>A standard of innovation rooted in integrity and responsibility.</p>
                             </CardDescription>
                         </CardHeader>
                     </Card>

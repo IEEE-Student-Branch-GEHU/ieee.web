@@ -62,13 +62,13 @@ const Events = () => {
                                             </div>
                                         </div>
 
-                                        <div className="px-5 pb-5 mt-auto">
+                                        <a href="#about" className="block w-full">
                                             <Button
                                                 className="font-bold w-full bg-primary text-white rounded hover:bg-primaryDark transition-colors"
                                             >
-                                                Read More
+                                                View Details
                                             </Button>
-                                        </div>
+                                        </a>
                                     </CardContent>
                                 </Card>
                             </CarouselItem>

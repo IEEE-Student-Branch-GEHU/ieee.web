@@ -11,7 +11,7 @@ const counselorData = [
         name: "Dr. Chandradeep Bhatt",
         imageUrl: PlaceholderImage,
         title: "Student Branch Counselor",
-        position: "Branch Counselor",
+        bio: "Mentoring the next generation of engineers with a focus on core technologies and ethical leadership.",
         linkedin: "https://www.linkedin.com/in/dr-chandradeep-bhatt-8b64a2b0/",
     },
     // Add more as needed
@@ -22,7 +22,7 @@ const FacultyCounselor = () => {
         <section className="py-20 bg-gray-50">
             <div className="container mx-auto max-w-[1170px] space-y-5 px-5 xl:px-0">
                 <h3 className="text-3xl font-bold text-center uppercase mb-12 text-dark">
-                    Student Branch Counselors
+                    Student Branch Counselor
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-center">
@@ -42,8 +42,7 @@ const FacultyCounselor = () => {
                                 <CardTitle className="text-xl font-semibold text-dark">
                                     {counsellor.name}
                                 </CardTitle>
-                                <CardDescription className="font-medium text-gray-600">{counsellor.title}</CardDescription>
-                                <p className="text-sm text-primary">{counsellor.position}</p>
+                                <p className="text-sm text-gray-500 mt-2 line-clamp-2">{counsellor.bio}</p>
                             </div>
 
                             {counsellor.linkedin && (

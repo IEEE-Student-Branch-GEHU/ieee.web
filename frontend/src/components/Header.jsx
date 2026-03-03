@@ -59,14 +59,11 @@ export function GlobalNav() {
 
 export function LocalNav() {
     const navItems = [
-        ROUTES.HOME,
-        // ROUTES.EVENTS, 
-        // ROUTES.BLOG,
-        { label: "Events", url: "/#events" }, // Keep existing anchor links for now
-        ROUTES.EXCOM,
-        ROUTES.ABOUT_US,
-        ROUTES.CONTACT_US,
-        ROUTES.JOIN_US,
+        { label: "Home", url: "/" },
+        { label: "Events", url: "/#events" },
+        { label: "ExCom", url: "/#team" },
+        { label: "About Us", url: "/#about" },
+        { label: "Join Us", url: "/#contact" },
     ];
 
     const { pathname } = useLocation();
@@ -119,10 +116,8 @@ function Header() {
     };
 
     return (
-        <header className="font-sans">
-            <GlobalNav />
-
-            <div className={`flex justify-between items-center w-full p-4 md:p-0 ${bgColor}`}>
+        <header className="font-sans sticky top-0 z-50 shadow-md">
+            <div className={`flex justify-between items-center w-full p-4 ${bgColor}`}>
                 <div className="md:hidden flex items-center">
                     <button
                         className="text-white text-3xl md:hidden mr-3"
@@ -135,7 +130,7 @@ function Header() {
                     </span>
                 </div>
 
-                <div className="md:flex hidden flex-row gap-6 items-center mx-auto text-white max-w-[1170px] grow py-6 justify-between">
+                <div className="md:flex hidden flex-row gap-6 items-center mx-auto text-white max-w-[1170px] grow justify-between">
                     <div className="flex items-center gap-4">
                         <img
                             src={IeeeLogoWhite}
@@ -158,14 +153,24 @@ function Header() {
                 </div>
             </div>
 
-            {/* Main Local Nav usually goes BELOW the logo section in the ref site, but let's stick to their structure. 
-          In their code `Header` component includes `GlobalNav` then `LogoSection` then... wait.
-          Ah, they seem to have `LocalNav` separate in `layout` or `page`? 
-          Let's look at their `header.tsx` again. usage of `LocalNav` is exported but not used in `Header` component directly? 
-          Ah, `Header` default export ONLY includes `GlobalNav` and `LogoSection`. 
-          User likely places `LocalNav` under it. I will bundle them for simplicity or check their layout.
-      */}
-            <LocalNav />
+            {/* Desktop Navigation embedded closely to header for cleaner look, or replacing the old LocalNav wrapper */}
+            <div className={`hidden md:flex justify-center w-full ${bgColor} border-t border-white/10`}>
+                <nav className="flex flex-row gap-8 uppercase font-semibold justify-center items-center py-3 text-white max-w-[1170px] grow text-sm tracking-wide">
+                    {[
+                        { label: "Home", url: "/" },
+                        { label: "Events", url: "/#events" },
+                        { label: "ExCom", url: "/#team" },
+                        { label: "About Us", url: "/#about" },
+                        { label: "Join Us", url: "/#contact" }
+                    ].map((item) => (
+                        item.url.startsWith('http') || item.url.includes('#') ?
+                            <a key={item.label} href={item.url} className="hover:text-gray-300 transition-colors">{item.label}</a> :
+                            <LocalNavItem key={item.label} to={item.url}>
+                                {item.label}
+                            </LocalNavItem>
+                    ))}
+                </nav>
+            </div>
 
             {/* Mobile Menu Sidebar */}
             <div
@@ -185,20 +190,30 @@ function Header() {
                         className="h-12 object-contain mx-auto mb-4"
                     />
                     {[
-                        ROUTES.HOME,
-                        ROUTES.EXCOM,
-                        ROUTES.ABOUT_US,
-                        ROUTES.CONTACT_US,
-                        ROUTES.JOIN_US,
+                        { label: "Home", url: "/" },
+                        { label: "Events", url: "/#events" },
+                        { label: "ExCom", url: "/#team" },
+                        { label: "About Us", url: "/#about" },
+                        { label: "Join Us", url: "/#contact" }
                     ].map((item) => (
-                        <Link
-                            key={item.label}
-                            to={item.url}
-                            className="text-white text-lg font-medium hover:text-gray-200 border-b border-white/10 pb-2"
-                            onClick={closeMenu}
-                        >
-                            {item.label}
-                        </Link>
+                        item.url.startsWith('http') || item.url.includes('#') ?
+                            <a
+                                key={item.label}
+                                href={item.url}
+                                className="text-white text-lg font-medium hover:text-gray-200 border-b border-white/10 pb-2"
+                                onClick={closeMenu}
+                            >
+                                {item.label}
+                            </a>
+                            :
+                            <Link
+                                key={item.label}
+                                to={item.url}
+                                className="text-white text-lg font-medium hover:text-gray-200 border-b border-white/10 pb-2"
+                                onClick={closeMenu}
+                            >
+                                {item.label}
+                            </Link>
                     ))}
                 </div>
             </div>

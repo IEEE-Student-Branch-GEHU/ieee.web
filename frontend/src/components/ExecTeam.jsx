@@ -6,19 +6,27 @@ import { Button } from "./ui/button";
 const ExecTeam = () => {
     const [teamData, setTeamData] = useState([]);
 
-    // Fallback data in case API fails or is empty, to match the "Chairperson" filtering logic
-    // The reference code filters for "chairperson". We should see what our data looks like. 
-    // If not fetching, we might want to show all for now?
-    // Let's assume we show all fetched members for now, or maybe specific roles if we had them.
-    // The reference design shows a grid.
+    const fallbackTeam = [
+        { name: "Placeholder Name", role: "Chairperson" },
+        { name: "Placeholder Name", role: "Vice-Chair" },
+        { name: "Placeholder Name", role: "Secretary" },
+        { name: "Placeholder Name", role: "Webmaster" },
+    ];
 
     useEffect(() => {
         fetch('/api/team')
             .then(res => res.json())
             .then(data => {
-                if (Array.isArray(data)) setTeamData(data);
+                if (Array.isArray(data) && data.length > 0) {
+                    setTeamData(data);
+                } else {
+                    setTeamData(fallbackTeam);
+                }
             })
-            .catch(err => console.error('Failed to fetch team data:', err));
+            .catch(err => {
+                console.error('Failed to fetch team data:', err);
+                setTeamData(fallbackTeam);
+            });
     }, []);
 
     return (

@@ -17,28 +17,12 @@ import IeeeLogoWhite from "../assets/ieee-logo-white.png";
 function Footer() {
     const footerLinks = [
         {
-            icon: <BsFacebook />,
-            link: "https://www.facebook.com/",
-        },
-        {
             icon: <BsLinkedin />,
-            link: "https://www.linkedin.com/",
-        },
-        {
-            icon: <BsTiktok />,
-            link: "https://www.tiktok.com/",
+            link: "https://www.linkedin.com/company/ieee-student-branch-gehu/", // Update with actual URL when standardizing
         },
         {
             icon: <BsInstagram />,
-            link: "https://www.instagram.com/",
-        },
-        {
-            icon: <BsWhatsapp />,
-            link: "https://whatsapp.com/",
-        },
-        {
-            icon: <BsYoutube />,
-            link: "https://youtube.com/",
+            link: "https://www.instagram.com/", // Update with actual URL
         },
     ];
 
@@ -73,55 +57,46 @@ function Footer() {
                     </div>
                 </div>
 
-                <div className="w-full lg:w-1/6 p-6 lg:text-left">
+                {/* Column 2: Quick Links */}
+                <div className="w-full lg:w-3/12 p-6 lg:text-left">
                     <div className="flex flex-col gap-4">
-                        <h3 className="font-bold text-xl mb-2">Get Started</h3>
-                        <div className="flex flex-col gap-2 text-sm font-light">
-                            <Link to="/" className="hover:text-gray-300">HOME</Link>
-                            <Link to="/#team" className="hover:text-gray-300">EXECUTIVE COMMITTEE</Link>
-                            <Link to="/#contact" className="hover:text-gray-300">MEMBERSHIP</Link>
+                        <h3 className="font-bold text-lg mb-2 uppercase tracking-wide">Quick Links</h3>
+                        <div className="flex flex-col gap-3 text-sm font-light">
+                            <Link to="/" className="hover:text-gray-300 transition-colors">Home</Link>
+                            <a href="#events" className="hover:text-gray-300 transition-colors">Events</a>
+                            <a href="#team" className="hover:text-gray-300 transition-colors">Executive Committee</a>
+                            <a href="#contact" className="hover:text-gray-300 transition-colors">Join Us</a>
                         </div>
                     </div>
                 </div>
 
-                <div className="w-full lg:w-1/4 p-6 lg:border-l lg:border-r lg:border-white/20 lg:text-left">
-                    {/* Empty placeholder to keep spacing or remove entirely. 
-                        Let's remove the column but keep the grid structure or adjust widths.
-                        Actually, removing it entirely is better. 
-                        We should probably adjust the widths of other columns if we remove this one.
-                        The original has: 1/4 (logo), 1/6 (links), 1/4 (chapters), 1/3 (contact).
-                        1/4 + 1/6 + 1/4 + 1/3 = 0.25 + 0.16 + 0.25 + 0.33 = ~1.0
-                        If we remove 1/4, we have 0.75 left.
-                        Let's make Contact wider or Links wider.
-                        Let's change: 
-                        Logo: 1/4 -> 3/12
-                        Links: 1/6 -> 2/12 -> maybe 3/12
-                        Contact: 1/3 -> 4/12 -> maybe 6/12
-                    */}
+                {/* Column 3: IEEE Links */}
+                <div className="w-full lg:w-3/12 p-6 lg:text-left">
                     <div className="flex flex-col gap-4">
-                        <h3 className="font-bold text-xl mb-2">Links</h3>
-                        <div className="flex flex-col gap-2 text-sm font-light">
-                            <a href="https://www.ieee.org/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300">IEEE.org</a>
-                            <a href="https://ieeexplore.ieee.org/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300">IEEE Xplore</a>
-                            <a href="https://spectrum.ieee.org/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300">IEEE Spectrum</a>
+                        <h3 className="font-bold text-lg mb-2 uppercase tracking-wide">IEEE Portals</h3>
+                        <div className="flex flex-col gap-3 text-sm font-light">
+                            <a href="https://www.ieee.org/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors">IEEE.org</a>
+                            <a href="https://ieeexplore.ieee.org/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors">IEEE Xplore</a>
+                            <a href="https://spectrum.ieee.org/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors">IEEE Spectrum</a>
                         </div>
                     </div>
                 </div>
 
-                <div className="w-full lg:w-1/3 p-6 lg:text-left">
+                {/* Column 4: Contact Information */}
+                <div className="w-full lg:w-3/12 p-6 lg:text-left">
                     <div className="flex flex-col gap-4">
-                        <h3 className="font-bold text-xl mb-2">Contact Us</h3>
+                        <h3 className="font-bold text-lg mb-2 uppercase tracking-wide">Contact Us</h3>
                         <div className="flex flex-col gap-4 text-sm font-light">
                             <a
                                 href="mailto:ieee@gehu.ac.in"
-                                className="flex gap-4 items-center hover:text-gray-300"
+                                className="flex gap-4 items-center hover:text-gray-300 transition-colors"
                             >
                                 <MdEmail className="text-2xl" />
                                 <span>ieee@gehu.ac.in</span>
                             </a>
-                            <div className="flex gap-4 items-start">
+                            <div className="flex gap-4 items-start text-left">
                                 <MdOutlineLocationOn className="text-3xl shrink-0" />
-                                <address className="not-italic">
+                                <address className="not-italic leading-relaxed">
                                     Graphic Era Hill University<br />
                                     Clement Town, Dehradun<br />
                                     Uttarakhand, India

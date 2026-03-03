@@ -90,8 +90,7 @@ const Contact = () => {
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-dark text-sm uppercase tracking-wide mb-1">Call Us</h4>
-                                        <p className="text-gray-600 text-sm">+91 123 456 7890</p>
-                                        <p className="text-gray-600 text-sm">Mon - Fri, 9am - 5pm</p>
+                                        <p className="text-gray-600 text-sm">Please reach via Email for inquiries.</p>
                                     </div>
                                 </div>
                             </div>
@@ -112,9 +111,10 @@ const Contact = () => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">First Name</label>
+                                    <label htmlFor="firstName" className="block text-sm font-bold text-gray-700 mb-2">First Name</label>
                                     <input
                                         type="text"
+                                        id="firstName"
                                         name="firstName"
                                         value={formData.firstName}
                                         onChange={handleChange}
@@ -124,9 +124,10 @@ const Contact = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">Last Name</label>
+                                    <label htmlFor="lastName" className="block text-sm font-bold text-gray-700 mb-2">Last Name</label>
                                     <input
                                         type="text"
+                                        id="lastName"
                                         name="lastName"
                                         value={formData.lastName}
                                         onChange={handleChange}
@@ -138,9 +139,10 @@ const Contact = () => {
                             </div>
 
                             <div className="mb-6">
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
+                                <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
                                 <input
                                     type="email"
+                                    id="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
@@ -151,8 +153,9 @@ const Contact = () => {
                             </div>
 
                             <div className="mb-6">
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Message</label>
+                                <label htmlFor="message" className="block text-sm font-bold text-gray-700 mb-2">Message</label>
                                 <textarea
+                                    id="message"
                                     rows={4}
                                     name="message"
                                     value={formData.message}
