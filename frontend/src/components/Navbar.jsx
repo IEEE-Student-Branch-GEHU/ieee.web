@@ -70,7 +70,6 @@ const Navbar = () => {
                                 alt="IEEE Logo"
                                 className="h-14 md:h-24 w-auto group-hover:scale-105 transition-transform duration-500 py-1"
                             />
-                            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-secondary rounded-full border-2 border-primaryDark" />
                         </div>
                     </motion.a>
 
