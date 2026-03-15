@@ -1,3 +1,5 @@
+require('dotenv').config();
+const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -6,6 +8,22 @@ const adminRoutes = require('./routes/admin');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Database Connection
+mongoose.connect(process.env.MONGODB_URI)
+  .then(async () => {
+    console.log('Connected to MongoDB Atlas');
+    // Auto-initialize Admin if empty
+    const Admin = require('./models/Admin');
+    const AdminCount = await Admin.countDocuments();
+    if (AdminCount === 0) {
+      const bcrypt = require('bcryptjs');
+      const hashedPassword = bcrypt.hashSync('admin123', 10);
+      await Admin.create({ username: 'admin', password: hashedPassword });
+      console.log('Default admin user initialized (admin/admin123)');
+    }
+  })
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware
 app.use(cors());
