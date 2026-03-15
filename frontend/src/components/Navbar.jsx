@@ -34,7 +34,7 @@ const Navbar = () => {
     const socialLinks = [
         { icon: <Instagram size={18} />, href: 'https://www.instagram.com/ieee_gehu' },
         { icon: <Linkedin size={18} />, href: 'https://www.linkedin.com/company/ieeesb-gehu' },
-        { icon: <Github size={18} />, href: '#' },
+        { icon: <Github size={18} />, href: 'https://github.com/IEEE-Student-Branch-GEHU/ieee.web' },
     ];
 
     return (

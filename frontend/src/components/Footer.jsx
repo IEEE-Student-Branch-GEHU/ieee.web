@@ -7,8 +7,7 @@ import {
 } from "react-icons/bs";
 import { MdEmail, MdOutlineLocationOn } from "react-icons/md";
 
-// Assets
-// import ieeeFooterLogo from "../assets/ieee-footer-logo.png";
+// MD Icons
 import IeeeLogoWhite from "../assets/ieee-logo-white.png";
 
 function Footer() {
@@ -23,7 +22,7 @@ function Footer() {
         },
         {
             icon: <BsGithub />,
-            link: "https://github.com/YZO-BIT/IEEE-website",
+            link: "https://github.com/IEEE-Student-Branch-GEHU/ieee.web",
         },
     ];
 

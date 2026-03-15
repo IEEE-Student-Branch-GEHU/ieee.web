@@ -49,9 +49,13 @@ router.post('/login', (req, res) => {
     const admins = getData(ADMIN_FILE);
     const admin = admins.find(a => a.username === username);
 
-    if (admin && bcrypt.compareSync(password, admin.password)) {
-        const token = jwt.sign({ username }, process.env.JWT_SECRET || 'ieee_secret_key', { expiresIn: '1h' });
-        res.json({ token });
+    if (admin) {
+        if (bcrypt.compareSync(password, admin.password)) {
+            const token = jwt.sign({ username }, process.env.JWT_SECRET || 'ieee_secret_key', { expiresIn: '1h' });
+            res.json({ token });
+        } else {
+            res.status(401).json({ message: 'Invalid credentials' });
+        }
     } else {
         res.status(401).json({ message: 'Invalid credentials' });
     }
