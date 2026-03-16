@@ -1,0 +1,10 @@
+# Labels Configuration
+"frontend":
+- "frontend/**/*"
+"backend":
+- "backend/**/*"
+"docs":
+- "*.md"
+- "docs/**/*"
+"ci":
+- ".github/workflows/**/*"
