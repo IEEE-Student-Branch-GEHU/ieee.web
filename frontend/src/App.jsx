@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+// Verification Comment: Ensuring CI/CD pipeline triggers correctly on PR
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import VisionMission from './components/VisionMission';
