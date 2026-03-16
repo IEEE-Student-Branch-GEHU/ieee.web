@@ -1,6 +1,17 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
-import Reveal from '../components/animations/Reveal';
+import { describe, it, expect, vi } from 'vitest';
+import { Reveal } from '../components/animations/Reveal';
+
+// Mock framer-motion
+vi.mock('framer-motion', () => ({
+  motion: {
+    div: ({ children, ...props }) => <div {...props}>{children}</div>,
+  },
+  useInView: () => true,
+  useAnimation: () => ({
+    start: vi.fn(),
+  }),
+}));
 
 describe('Reveal Component', () => {
   it('renders children correctly', () => {
