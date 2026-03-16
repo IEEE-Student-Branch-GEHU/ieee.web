@@ -4,11 +4,25 @@ updates:
     directory: "/frontend"
     schedule:
       interval: "weekly"
+    groups:
+      dependencies:
+        patterns:
+          - "*" # Group all frontend updates into one PR
+
   - package-ecosystem: "npm"
     directory: "/backend"
     schedule:
       interval: "weekly"
+    groups:
+      dependencies:
+        patterns:
+          - "*" # Group all backend updates into one PR
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      actions:
+        patterns:
+          - "*" # Group all action updates into one PR
