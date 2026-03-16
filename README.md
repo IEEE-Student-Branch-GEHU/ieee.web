@@ -1,4 +1,5 @@
 # 🌐 IEEE Student Branch - Graphic Era Hill University (Dehradun)
+<!-- Verification: CI/CD Pipeline & Branch Protection -->
 
 <p align="center">
   <img src="frontend/src/assets/logo.png" alt="IEEE GEHU Logo" width="180">
