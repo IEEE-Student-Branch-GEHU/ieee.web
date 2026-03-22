@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const mongoSanitize = require('express-mongo-sanitize');
 const apiRoutes = require('./routes/api');
 const adminRoutes = require('./routes/admin');
 
@@ -28,6 +29,9 @@ mongoose.connect(process.env.MONGODB_URI)
 // Middleware
 app.use(cors());
 app.use(express.json());
+// Security: Strip keys with $ or . from req.body, req.query, req.params
+// to prevent NoSQL injection attacks (Issue #25)
+app.use(mongoSanitize());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // API Routes
