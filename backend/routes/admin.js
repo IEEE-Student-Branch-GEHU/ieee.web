@@ -17,7 +17,7 @@ const upload = multer({ storage });
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-        const admin = await Admin.findOne({ username });
+        const admin = await Admin.findOne({ username: String(username) }); // Issue #25: type-cast to prevent injection
 
         if (admin && bcrypt.compareSync(password, admin.password)) {
             const token = jwt.sign({ username }, process.env.JWT_SECRET || 'ieee_secret_key', { expiresIn: '1h' });
@@ -75,7 +75,7 @@ router.post('/events', auth, async (req, res) => {
 
 router.put('/events/:id', auth, async (req, res) => {
     try {
-        const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedEvent = await Event.findByIdAndUpdate(String(req.params.id), req.body, { new: true }); // Issue #25
         if (!updatedEvent) return res.status(404).json({ message: 'Event not found' });
         res.json(updatedEvent);
     } catch (error) {
@@ -106,7 +106,7 @@ router.post('/team', auth, async (req, res) => {
 
 router.put('/team/:id', auth, async (req, res) => {
     try {
-        const updatedMember = await Team.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedMember = await Team.findByIdAndUpdate(String(req.params.id), req.body, { new: true }); // Issue #25
         if (!updatedMember) return res.status(404).json({ message: 'Member not found' });
         res.json(updatedMember);
     } catch (error) {
