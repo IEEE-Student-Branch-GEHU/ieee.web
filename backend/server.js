@@ -11,20 +11,24 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Database Connection
-mongoose.connect(process.env.MONGODB_URI)
-  .then(async () => {
-    console.log('Connected to MongoDB Atlas');
-    // Auto-initialize Admin if empty
-    const Admin = require('./models/Admin');
-    const AdminCount = await Admin.countDocuments();
-    if (AdminCount === 0) {
-      const bcrypt = require('bcryptjs');
-      const hashedPassword = bcrypt.hashSync('admin123', 10);
-      await Admin.create({ username: 'admin', password: hashedPassword });
-      console.log('Default admin user initialized (admin/admin123)');
-    }
-  })
-  .catch(err => console.error('MongoDB connection error:', err));
+if (process.env.MONGODB_URI && process.env.MONGODB_URI !== 'pending') {
+  mongoose.connect(process.env.MONGODB_URI)
+    .then(async () => {
+      console.log('Connected to MongoDB Atlas');
+      // Auto-initialize Admin if empty
+      const Admin = require('./models/Admin');
+      const AdminCount = await Admin.countDocuments();
+      if (AdminCount === 0) {
+        const bcrypt = require('bcryptjs');
+        const hashedPassword = bcrypt.hashSync('admin123', 10);
+        await Admin.create({ username: 'admin', password: hashedPassword });
+        console.log('Default admin user initialized (admin/admin123)');
+      }
+    })
+    .catch(err => console.error('MongoDB connection error:', err));
+} else {
+  console.log('⚠️ No MONGODB_URI provided. Running in mock/disconnected mode.');
+}
 
 // Middleware
 app.use(cors());
