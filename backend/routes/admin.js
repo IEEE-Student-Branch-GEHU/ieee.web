@@ -20,7 +20,7 @@ const upload = multer({ storage });
 const loginLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 5, // Limit each IP to 5 login attempts per hour
-  message: JSON.stringify({ message: 'Too many login attempts from this IP, please try again after an hour' }),
+  message: { message: 'Too many login attempts from this IP, please try again after an hour' },
   standardHeaders: true,
   legacyHeaders: false,
 });
