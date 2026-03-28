@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
+const rateLimit = require('express-rate-limit');
 const auth = require('../middleware/auth');
 const { storage } = require('../config/cloudinary');
 
@@ -13,8 +14,19 @@ const Team = require('../models/Team');
 
 const upload = multer({ storage });
 
+// Strict Rate Limiter for Admin Login
+// Purpose: Prevent brute force password guessing attacks
+// Critical security measure for authentication endpoints
+const loginLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // Limit each IP to 5 login attempts per hour
+  message: JSON.stringify({ message: 'Too many login attempts from this IP, please try again after an hour' }),
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Admin Login
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
     try {
         const { username, password } = req.body;
         const admin = await Admin.findOne({ username });
