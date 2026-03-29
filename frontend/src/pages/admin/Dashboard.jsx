@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Users, MessageSquare, ArrowUpRight, Clock, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
+import API_BASE_URL from '../../config';
 
 const Dashboard = () => {
     const [stats, setStats] = useState(null);
@@ -12,7 +13,7 @@ const Dashboard = () => {
         setErrorMsg(null);
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch('/api/admin/stats', {
+            const response = await fetch(`${API_BASE_URL}/admin/stats`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
