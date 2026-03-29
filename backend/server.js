@@ -10,16 +10,18 @@ const adminRoutes = require('./routes/admin');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust proxy for Render/Vercel (reverse proxies)
+app.set('trust proxy', 1);
+
 // Global Rate Limiter: Apply to all /api routes
 // Purpose: Prevent abuse by limiting requests per IP address
 // Protects against brute force attacks and DoS
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
-  message: JSON.stringify({ message: 'Too many requests from this IP, please try again after 15 minutes' }),
+  message: { message: 'Too many requests from this IP, please try again after 15 minutes' },
   standardHeaders: true, // Return rate limit info in RateLimit-* headers
   legacyHeaders: false, // Disable X-RateLimit-* headers
-  skip: (req) => req.path === '/', // Don't rate limit health check
 });
 
 // Database Connection
