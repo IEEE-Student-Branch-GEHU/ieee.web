@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, Instagram, Linkedin, Github, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 // Assets
 import ieeeLogo from '../assets/logo.png';
@@ -24,11 +25,11 @@ const Navbar = () => {
     }, []);
 
     const navLinks = [
-        { name: 'Home', href: '#', id: '01' },
-        { name: 'Events', href: '#events', id: '02' },
-        { name: 'Team', href: '#team', id: '03' },
-        { name: 'About', href: '#about', id: '04' },
-        { name: 'Contact', href: '#contact', id: '05' },
+        { name: 'Home', href: '/', id: '01', isRoute: true },
+        { name: 'Events', href: '/events', id: '02', isRoute: true },
+        { name: 'Team', href: '#team', id: '03', isRoute: false },
+        { name: 'About', href: '#about', id: '04', isRoute: false },
+        { name: 'Contact', href: '#contact', id: '05', isRoute: false },
     ];
 
     const socialLinks = [
@@ -58,42 +59,58 @@ const Navbar = () => {
 
                 <div className="container mx-auto px-6 flex justify-between items-center">
                     {/* Premium Branding Badge */}
-                    <motion.a
-                        href="#"
+                    <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         className="flex items-center gap-6 group"
                     >
-                        <div className="relative">
+                        <Link to="/" className="relative">
                             <img
                                 src={ieeeLogo}
                                 alt="IEEE Logo"
                                 className="h-14 md:h-24 w-auto group-hover:scale-105 transition-transform duration-500 py-1"
                             />
-                        </div>
-                    </motion.a>
-
+                        </Link>
+                    </motion.div>
 
                     {/* Scientific Desktop Menu */}
                     <div className="hidden md:flex items-center gap-12">
                         <div className="flex items-center gap-10">
                             {navLinks.map((link, i) => (
-                                <motion.a
+                                <motion.div
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: i * 0.1 }}
                                     key={link.name}
-                                    href={link.href}
-                                    className="group relative flex items-center gap-2"
                                 >
-                                    <span className="text-[10px] font-black text-primary/60 group-hover:text-secondary transition-colors duration-300">
-                                        {link.id}
-                                    </span>
-                                    <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all ${scrolled ? 'text-gray-300 group-hover:text-white' : 'text-primaryDark/80 group-hover:text-primary'}`}>
-                                        {link.name}
-                                    </span>
-                                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-secondary rounded-full group-hover:w-full transition-all duration-500" />
-                                </motion.a>
+                                    {link.isRoute ? (
+                                        <Link
+                                            to={link.href}
+                                            className="group relative flex items-center gap-2"
+                                        >
+                                            <span className="text-[10px] font-black text-primary/60 group-hover:text-secondary transition-colors duration-300">
+                                                {link.id}
+                                            </span>
+                                            <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all ${scrolled ? 'text-gray-300 group-hover:text-white' : 'text-primaryDark/80 group-hover:text-primary'}`}>
+                                                {link.name}
+                                            </span>
+                                            <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-secondary rounded-full group-hover:w-full transition-all duration-500" />
+                                        </Link>
+                                    ) : (
+                                        <a
+                                            href={link.href}
+                                            className="group relative flex items-center gap-2"
+                                        >
+                                            <span className="text-[10px] font-black text-primary/60 group-hover:text-secondary transition-colors duration-300">
+                                                {link.id}
+                                            </span>
+                                            <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all ${scrolled ? 'text-gray-300 group-hover:text-white' : 'text-primaryDark/80 group-hover:text-primary'}`}>
+                                                {link.name}
+                                            </span>
+                                            <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-secondary rounded-full group-hover:w-full transition-all duration-500" />
+                                        </a>
+                                    )}
+                                </motion.div>
                             ))}
                         </div>
 
@@ -134,20 +151,36 @@ const Navbar = () => {
                         >
                             <div className="space-y-8">
                                 {navLinks.map((link, i) => (
-                                    <motion.a
+                                    <motion.div
                                         initial={{ opacity: 0, x: -30 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: i * 0.1 + 0.3 }}
                                         key={link.name}
-                                        href={link.href}
-                                        onClick={() => setIsOpen(false)}
-                                        className="flex items-center gap-6 group"
                                     >
-                                        <span className="text-sm font-black text-secondary">{link.id}</span>
-                                        <span className="text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors">
-                                            {link.name}
-                                        </span>
-                                    </motion.a>
+                                        {link.isRoute ? (
+                                            <Link
+                                                to={link.href}
+                                                onClick={() => setIsOpen(false)}
+                                                className="flex items-center gap-6 group"
+                                            >
+                                                <span className="text-sm font-black text-secondary">{link.id}</span>
+                                                <span className="text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors">
+                                                    {link.name}
+                                                </span>
+                                            </Link>
+                                        ) : (
+                                            <a
+                                                href={link.href}
+                                                onClick={() => setIsOpen(false)}
+                                                className="flex items-center gap-6 group"
+                                            >
+                                                <span className="text-sm font-black text-secondary">{link.id}</span>
+                                                <span className="text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors">
+                                                    {link.name}
+                                                </span>
+                                            </a>
+                                        )}
+                                    </motion.div>
                                 ))}
                             </div>
 

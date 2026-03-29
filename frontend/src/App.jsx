@@ -11,6 +11,9 @@ import ShapeFuture from './components/ShapeFuture';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
+// Page Components
+import EventsArchive from './pages/EventsArchive';
+
 // Admin Components
 import AdminLogin from './pages/admin/Login';
 import AdminDashboard from './pages/admin/Dashboard';
@@ -46,6 +49,7 @@ function App() {
     <div className="bg-light text-dark font-body min-h-screen">
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/events" element={<EventsArchive />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
           path="/admin/*"
