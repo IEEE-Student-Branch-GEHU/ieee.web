@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
-import { Calendar, MapPin, Search } from 'lucide-react';
+import { Calendar, Search } from 'lucide-react';
 import { motion } from "framer-motion";
 import { Reveal } from "../components/animations/Reveal";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import API_BASE_URL from '../config';
 
 const EventsArchive = () => {
     const [events, setEvents] = useState([]);
@@ -16,42 +17,40 @@ const EventsArchive = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
-    const categories = ['All', 'Workshops', 'Seminars', 'Competitions', 'Webinar', 'Conference'];
-    const itemsPerPage = 12;
+    const categories = ['All', 'Technical', 'Non-Technical', 'Workshop', 'Social'];
+    const itemsPerPage = 6; // Reduced for better testing and visibility
 
     useEffect(() => {
-        fetchEvents(currentPage);
-    }, [currentPage]);
+        fetchEvents(currentPage, searchTerm, selectedCategory);
+    }, [currentPage, searchTerm, selectedCategory]);
 
-    const fetchEvents = async (page) => {
+    const fetchEvents = async (page, search = '', category = 'All') => {
         try {
             setLoading(true);
-            const response = await fetch(`/api/events?page=${page}&limit=${itemsPerPage}`);
+            const response = await fetch(`${API_BASE_URL}/events?page=${page}&limit=${itemsPerPage}&search=${search}&category=${category}`);
+            
+            if (!response.ok) throw new Error('Failed to fetch data');
+            
             const data = await response.json();
             
-            if (Array.isArray(data)) {
-                setEvents(data);
-            } else if (data.events) {
+            if (data.events) {
                 setEvents(data.events);
                 if (data.totalPages) setTotalPages(data.totalPages);
+            } else if (Array.isArray(data)) {
+                setEvents(data);
             }
             setError(null);
         } catch (err) {
             console.error('Failed to fetch events:', err);
-            setError('Failed to load events. Please try again later.');
+            setError('Failed to load events. Please check your connection.');
             setEvents([]);
         } finally {
             setLoading(false);
         }
     };
 
-    // Client-side filtering
-    const filteredEvents = events.filter(event => {
-        const matchesSearch = event.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            event.description?.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = selectedCategory === 'All' || event.category === selectedCategory;
-        return matchesSearch && matchesCategory;
-    });
+    // Events are now pre-filtered from the server
+    const filteredEvents = events;
 
     const containerVariants = {
         hidden: { opacity: 0 },

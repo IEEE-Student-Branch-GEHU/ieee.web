@@ -27,9 +27,9 @@ const Navbar = () => {
     const navLinks = [
         { name: 'Home', href: '/', id: '01', isRoute: true },
         { name: 'Events', href: '/events', id: '02', isRoute: true },
-        { name: 'Team', href: '#team', id: '03', isRoute: false },
-        { name: 'About', href: '#about', id: '04', isRoute: false },
-        { name: 'Contact', href: '#contact', id: '05', isRoute: false },
+        { name: 'Team', href: '/#team', id: '03', isRoute: false },
+        { name: 'About', href: '/#about', id: '04', isRoute: false },
+        { name: 'Contact', href: '/#contact', id: '05', isRoute: false },
     ];
 
     const socialLinks = [
