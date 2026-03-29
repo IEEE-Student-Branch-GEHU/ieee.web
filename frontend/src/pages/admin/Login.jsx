@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, Lock, User, ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import ieeeLogo from '../../assets/logo.png';
+import API_BASE_URL from '../../config';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -18,7 +19,7 @@ const Login = () => {
         setError('');
 
         try {
-            const response = await fetch('/api/admin/login', {
+            const response = await fetch(`${API_BASE_URL}/admin/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),

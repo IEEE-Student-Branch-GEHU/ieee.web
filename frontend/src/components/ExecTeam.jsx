@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { motion } from "framer-motion";
 import { Reveal } from "./animations/Reveal";
 import { BsInstagram, BsLinkedin } from "react-icons/bs";
-
+import API_BASE_URL from '../config';
 
 const ExecTeam = () => {
     const [teamData, setTeamData] = useState([]);
@@ -17,7 +17,7 @@ const ExecTeam = () => {
     ];
 
     useEffect(() => {
-        fetch('/api/team')
+        fetch(`${API_BASE_URL}/team`)
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data) && data.length > 0) {

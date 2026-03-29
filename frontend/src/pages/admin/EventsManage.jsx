@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash2, X, Upload } from 'lucide-react';
 import { Button } from '../../components/ui/button';
+import API_BASE_URL from '../../config';
 
 const EventsManage = () => {
     const [events, setEvents] = useState([]);
@@ -14,7 +15,7 @@ const EventsManage = () => {
     }, []);
 
     const fetchEvents = async () => {
-        const res = await fetch('/api/events');
+        const res = await fetch(`${API_BASE_URL}/events`);
         const data = await res.json();
         setEvents(Array.isArray(data) ? data : []);
     };
@@ -28,7 +29,7 @@ const EventsManage = () => {
         form.append('image', file);
 
         try {
-            const res = await fetch('/api/admin/upload', {
+            const res = await fetch(`${API_BASE_URL}/admin/upload`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` },
                 body: form
@@ -44,7 +45,7 @@ const EventsManage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const url = editingEvent ? `/api/admin/events/${editingEvent.id}` : '/api/admin/events';
+        const url = editingEvent ? `${API_BASE_URL}/admin/events/${editingEvent._id || editingEvent.id}` : `${API_BASE_URL}/admin/events`;
         const method = editingEvent ? 'PUT' : 'POST';
 
         try {
@@ -74,7 +75,7 @@ const EventsManage = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Are you sure you want to delete this event?')) return;
         try {
-            const res = await fetch(`/api/admin/events/${id}`, {
+            const res = await fetch(`${API_BASE_URL}/admin/events/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
             });

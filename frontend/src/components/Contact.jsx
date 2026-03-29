@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Send, Phone, MapPin, Mail, Loader2, CheckCircle } from 'lucide-react';
 
 import { Reveal } from './animations/Reveal';
+import API_BASE_URL from '../config';
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ const Contact = () => {
         e.preventDefault();
         setStatus('submitting');
         try {
-            const response = await fetch('/api/contact', {
+            const response = await fetch(`${API_BASE_URL}/contact`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash2, X, Upload } from 'lucide-react';
 import { Button } from '../../components/ui/button';
+import API_BASE_URL from '../../config';
 
 const TeamManage = () => {
     const [team, setTeam] = useState([]);
@@ -14,7 +15,7 @@ const TeamManage = () => {
     }, []);
 
     const fetchTeam = async () => {
-        const res = await fetch('/api/team');
+        const res = await fetch(`${API_BASE_URL}/team`);
         const data = await res.json();
         if (Array.isArray(data)) {
             // Exclude Faculty members from the general Team members list
@@ -33,7 +34,7 @@ const TeamManage = () => {
         form.append('image', file);
 
         try {
-            const res = await fetch('/api/admin/upload', {
+            const res = await fetch(`${API_BASE_URL}/admin/upload`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` },
                 body: form
@@ -49,7 +50,7 @@ const TeamManage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const url = editingMember ? `/api/admin/team/${editingMember.id}` : '/api/admin/team';
+        const url = editingMember ? `${API_BASE_URL}/admin/team/${editingMember._id || editingMember.id}` : `${API_BASE_URL}/admin/team`;
         const method = editingMember ? 'PUT' : 'POST';
 
         try {
@@ -79,7 +80,7 @@ const TeamManage = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Are you sure you want to delete this member?')) return;
         try {
-            const res = await fetch(`/api/admin/team/${id}`, {
+            const res = await fetch(`${API_BASE_URL}/admin/team/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
             });

@@ -12,12 +12,13 @@ import { Calendar, MapPin } from 'lucide-react';
 
 import { motion } from "framer-motion";
 import { Reveal } from "./animations/Reveal";
+import API_BASE_URL from '../config';
 
 const Events = () => {
     const [eventsData, setEventsData] = useState([]);
 
     useEffect(() => {
-        fetch('/api/events')
+        fetch(`${API_BASE_URL}/events`)
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) setEventsData(data);

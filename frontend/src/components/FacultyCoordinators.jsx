@@ -3,6 +3,7 @@ import { Card } from "./ui/card";
 import { BsLinkedin } from "react-icons/bs";
 import { motion } from "framer-motion";
 import { Reveal } from "./animations/Reveal";
+import API_BASE_URL from "../config";
 
 const FacultyCoordinators = () => {
     const [coordinators, setCoordinators] = useState([]);
@@ -13,7 +14,7 @@ const FacultyCoordinators = () => {
     ];
 
     useEffect(() => {
-        fetch('/api/team')
+        fetch(`${API_BASE_URL}/team`)
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data) && data.length > 0) {
