@@ -67,7 +67,7 @@ const EventsArchive = () => {
         <div className="bg-mesh-dark min-h-screen text-white selection:bg-primary/30">
             <ArchiveNavbar />
             
-            <main className="relative pt-32 pb-24 px-6 overflow-hidden">
+            <main className="relative pt-48 pb-24 px-6 overflow-hidden">
                 {/* Background Decoration */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
 
