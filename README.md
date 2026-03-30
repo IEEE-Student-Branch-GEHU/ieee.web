@@ -13,10 +13,11 @@
   </p>
 
   <p>
-    <a href="https://ieee-gehu.vercel.app"><strong>Live Site</strong></a> ·
-    <a href="SETUP.md"><strong>Setup Guide</strong></a> ·
-    <a href="#api-reference"><strong>API Reference</strong></a> ·
-    <a href="https://github.com/IEEE-Student-Branch-GEHU/ieee.web/issues"><strong>Issues</strong></a>
+    <a href="https://ieee-gehu.vercel.app"><strong>🌐 Live Site</strong></a> ·
+    <a href="SETUP.md"><strong>📦 Setup Guide</strong></a> ·
+    <a href="#api-reference"><strong>📡 API Docs</strong></a> ·
+    <a href="https://github.com/IEEE-Student-Branch-GEHU/ieee.web/blob/main/CONTRIBUTING.md"><strong>🤝 Contributing</strong></a> ·
+    <a href="https://github.com/IEEE-Student-Branch-GEHU/ieee.web/issues"><strong>🐛 Issues</strong></a>
   </p>
 </div>
 
