@@ -107,7 +107,19 @@ const Navbar = () => {
                                 </motion.div>
                             ))}
                         </div>
-
+                        <motion.a
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            href="#contact"
+                            className="relative group px-8 py-3.5 bg-primary text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-primary/20 overflow-hidden"
+                        >
+                            <span className="relative z-10 flex items-center gap-2">
+                                Join Now <ArrowUpRight size={14} />
+                            </span>
+                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                        </motion.a>
                     </div>
 
                     {/* Mobile Toggle */}
