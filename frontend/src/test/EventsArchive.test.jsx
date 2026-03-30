@@ -22,8 +22,8 @@ vi.mock('../components/animations/Reveal', () => ({
   Reveal: ({ children }) => <div>{children}</div>,
 }));
 
-// Mock Navbar and Footer
-vi.mock('../components/Navbar', () => ({
+// Mock ArchiveNavbar and Footer
+vi.mock('../components/ArchiveNavbar', () => ({
   default: () => <div data-testid="navbar">Navbar</div>,
 }));
 
