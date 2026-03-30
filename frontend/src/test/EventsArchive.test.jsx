@@ -85,7 +85,9 @@ describe('EventsArchive Component', () => {
   it('renders the page with header and layout', async () => {
     global.fetch = vi.fn(() => mockSuccessResponse(mockEvents));
     await renderComponent();
-    expect(screen.getByText('EVENTS ARCHIVE')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    expect(screen.getByTestId('navbar')).toBeInTheDocument();
+    expect(screen.getByTestId('footer')).toBeInTheDocument();
   });
 
   it('fetches and displays events on mount', async () => {
@@ -106,7 +108,7 @@ describe('EventsArchive Component', () => {
     await renderComponent();
 
     await waitFor(() => {
-      expect(screen.getByText(/Failed to load events/i)).toBeInTheDocument();
+      expect(screen.getByText(/System connection failure/i)).toBeInTheDocument();
     });
   });
 
@@ -117,7 +119,7 @@ describe('EventsArchive Component', () => {
 
     await renderComponent();
 
-    const searchInput = screen.getByPlaceholderText(/Search events by title/i);
+    const searchInput = screen.getByPlaceholderText(/Search events by title\.\.\./i);
     
     await act(async () => {
       fireEvent.change(searchInput, { target: { value: 'React' } });
@@ -173,5 +175,13 @@ describe('EventsArchive Component', () => {
     expect(screen.getByRole('button', { name: /^All$/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /^Workshop$/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /^Technical$/i })).toBeInTheDocument();
+  });
+
+  it('displays button label correctly in overhauled UI', async () => {
+    global.fetch = vi.fn(() => mockSuccessResponse(mockEvents));
+    await renderComponent();
+    await waitFor(() => {
+      expect(screen.getAllByRole('button', { name: /View Highlights/i })[0]).toBeInTheDocument();
+    });
   });
 });
