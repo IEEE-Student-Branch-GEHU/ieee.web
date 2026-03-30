@@ -88,9 +88,6 @@ const Navbar = () => {
                                             to={link.href}
                                             className="group relative flex items-center gap-2"
                                         >
-                                            <span className="text-[10px] font-black text-primary/60 group-hover:text-secondary transition-colors duration-300">
-                                                {link.id}
-                                            </span>
                                             <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all ${scrolled ? 'text-gray-300 group-hover:text-white' : 'text-primaryDark/80 group-hover:text-primary'}`}>
                                                 {link.name}
                                             </span>
@@ -101,9 +98,6 @@ const Navbar = () => {
                                             href={link.href}
                                             className="group relative flex items-center gap-2"
                                         >
-                                            <span className="text-[10px] font-black text-primary/60 group-hover:text-secondary transition-colors duration-300">
-                                                {link.id}
-                                            </span>
                                             <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all ${scrolled ? 'text-gray-300 group-hover:text-white' : 'text-primaryDark/80 group-hover:text-primary'}`}>
                                                 {link.name}
                                             </span>
@@ -163,7 +157,6 @@ const Navbar = () => {
                                                 onClick={() => setIsOpen(false)}
                                                 className="flex items-center gap-6 group"
                                             >
-                                                <span className="text-sm font-black text-secondary">{link.id}</span>
                                                 <span className="text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors">
                                                     {link.name}
                                                 </span>
@@ -174,7 +167,6 @@ const Navbar = () => {
                                                 onClick={() => setIsOpen(false)}
                                                 className="flex items-center gap-6 group"
                                             >
-                                                <span className="text-sm font-black text-secondary">{link.id}</span>
                                                 <span className="text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors">
                                                     {link.name}
                                                 </span>
