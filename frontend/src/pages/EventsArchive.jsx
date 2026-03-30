@@ -4,7 +4,7 @@ import { Button } from "../components/ui/button";
 import { Calendar, Search, SlidersHorizontal, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 import { Reveal } from "../components/animations/Reveal";
-import Navbar from '../components/Navbar';
+import ArchiveNavbar from '../components/ArchiveNavbar';
 import Footer from '../components/Footer';
 import API_BASE_URL from '../config';
 import emptyIllustration from '../assets/empty_events.png';
@@ -65,7 +65,7 @@ const EventsArchive = () => {
 
     return (
         <div className="bg-mesh-dark min-h-screen text-white selection:bg-primary/30">
-            <Navbar />
+            <ArchiveNavbar />
             
             <main className="relative pt-32 pb-24 px-6 overflow-hidden">
                 {/* Background Decoration */}
@@ -74,13 +74,6 @@ const EventsArchive = () => {
                 <div className="container mx-auto max-w-7xl relative z-10">
                     {/* Hero Section */}
                     <header className="flex flex-col items-center text-center space-y-6 mb-20">
-                        <motion.div
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-primary text-xs font-bold tracking-[0.2em] uppercase"
-                        >
-                            IEEE GEHU Community
-                        </motion.div>
                         
                         <Reveal>
                             <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
