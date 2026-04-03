@@ -1,10 +1,22 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 
 // Models
 const Event = require('../models/Event');
 const Team = require('../models/Team');
 const mongoose = require('mongoose');
+
+// Contact Form Rate Limiter (Issue #23)
+// Purpose: Prevent spam abuse of the public contact endpoint
+// Stricter than the global limiter (5 vs 100 requests per window)
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15-minute window
+  max: 5,                     // 5 contact submissions per IP per window
+  message: { message: 'Too many contact requests from this IP, please try again later.' },
+  standardHeaders: true,      // Return RateLimit-* headers (RFC 6585)
+  legacyHeaders: false,       // Disable X-RateLimit-* headers
+});
 
 // Get all events (with pagination and filters)
 router.get('/events', async (req, res) => {
@@ -56,8 +68,8 @@ router.get('/team', async (req, res) => {
   }
 });
 
-// Mock Contact Form
-router.post('/contact', (req, res) => {
+// Contact Form (Rate Limited — Issue #23)
+router.post('/contact', contactLimiter, (req, res) => {
   console.log('Contact form received:', req.body);
   res.json({ message: 'Thank you for your message. We will get back to you soon!' });
 });
