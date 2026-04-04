@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardTitle, CardDescription } from "./ui/card";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
@@ -17,15 +18,11 @@ const ExecTeam = () => {
     ];
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}/team`)
+        fetch(`${API_BASE_URL}/team?onLandingPage=true`)
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data) && data.length > 0) {
-                    const filtered = data.filter(m =>
-                        !m.role.toLowerCase().includes('counselor') &&
-                        m.category !== 'faculty'
-                    );
-                    setTeamData(filtered);
+                    setTeamData(data);
                 } else {
                     setTeamData(fallbackTeam);
                 }
@@ -119,11 +116,13 @@ const ExecTeam = () => {
                 </motion.div>
 
                 <div className="flex justify-center mt-16">
-                    <Button
-                        className="px-10 py-7 bg-primaryDark/5 text-primaryDark border-2 border-primaryDark/10 rounded-2xl hover:bg-primaryDark hover:text-white hover:border-primaryDark transition-all duration-300 font-bold tracking-widest text-sm shadow-sm"
-                    >
-                        VIEW FULL TEAM
-                    </Button>
+                    <Link to="/leadership">
+                        <Button
+                            className="px-10 py-7 bg-primaryDark/5 text-primaryDark border-2 border-primaryDark/10 rounded-2xl hover:bg-primaryDark hover:text-white hover:border-primaryDark transition-all duration-300 font-bold tracking-widest text-sm shadow-sm"
+                        >
+                            VIEW FULL TEAM
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </section>

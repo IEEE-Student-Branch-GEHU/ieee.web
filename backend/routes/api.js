@@ -26,10 +26,13 @@ router.get('/events', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 12;
     const skip = (page - 1) * limit;
-    const search = req.query.search || '';
+    const onLandingPage = req.query.onLandingPage === 'true';
     const category = req.query.category || 'All';
 
     let query = {};
+    if (onLandingPage) {
+      query.onLandingPage = true;
+    }
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: 'i' } },
@@ -57,12 +60,34 @@ router.get('/events', async (req, res) => {
   }
 });
 
-// Get all team members
+// Get all team members (with filtering and sorting — Issue #41)
 router.get('/team', async (req, res) => {
   try {
     if (mongoose.connection.readyState !== 1) return res.json([]);
-    const team = await Team.find().sort({ order: 1 });
+    
+    const { year, category, onLandingPage } = req.query;
+    let query = {};
+    
+    if (year) query.year = year;
+    if (category && category !== 'All') query.category = category;
+    if (onLandingPage === 'true') query.onLandingPage = true;
+
+    // Sorting: rank (0 is highest) then createdAt
+    const team = await Team.find(query).sort({ rank: 1, name: 1 });
     res.json(team);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get all unique session years (Issue #41)
+router.get('/team/years', async (req, res) => {
+  try {
+    if (mongoose.connection.readyState !== 1) return res.json([]);
+    const years = await Team.distinct('year');
+    // Sort years descending (latest first)
+    const sortedYears = years.sort((a, b) => b.localeCompare(a));
+    res.json(sortedYears);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

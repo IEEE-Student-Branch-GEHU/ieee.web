@@ -7,7 +7,11 @@ const EventsManage = () => {
     const [events, setEvents] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingEvent, setEditingEvent] = useState(null);
-    const [formData, setFormData] = useState({ title: '', date: '', description: '', image: '', category: 'Technical' });
+    const [formData, setFormData] = useState({ 
+        title: '', date: '', time: '', location: '', 
+        description: '', image: '', category: 'Technical',
+        registrationLink: '', onLandingPage: false 
+    });
     const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
@@ -61,7 +65,11 @@ const EventsManage = () => {
             if (res.ok) {
                 setIsModalOpen(false);
                 setEditingEvent(null);
-                setFormData({ title: '', date: '', description: '', image: '', category: 'Technical' });
+                setFormData({ 
+                    title: '', date: '', time: '', location: '', 
+                    description: '', image: '', category: 'Technical',
+                    registrationLink: '', onLandingPage: false 
+                });
                 fetchEvents();
             } else {
                 const errorData = await res.json();
@@ -111,6 +119,7 @@ const EventsManage = () => {
                             <th className="px-6 py-4 font-semibold">Event</th>
                             <th className="px-6 py-4 font-semibold">Date</th>
                             <th className="px-6 py-4 font-semibold">Category</th>
+                            <th className="px-6 py-4 font-semibold text-center">Featured</th>
                             <th className="px-6 py-4 font-semibold text-right">Actions</th>
                         </tr>
                     </thead>
@@ -130,6 +139,13 @@ const EventsManage = () => {
                                     <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-[10px] font-bold uppercase">
                                         {event.category}
                                     </span>
+                                </td>
+                                <td className="px-6 py-4 text-center">
+                                    {event.onLandingPage && (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                                            Home
+                                        </span>
+                                    )}
                                 </td>
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex justify-end gap-2">
@@ -185,8 +201,53 @@ const EventsManage = () => {
                                         <option>Technical</option>
                                         <option>Non-Technical</option>
                                         <option>Workshop</option>
+                                        <option>Social</option>
                                         <option>Networking</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Time</label>
+                                    <input
+                                        placeholder="e.g. 10:00 AM"
+                                        value={formData.time}
+                                        onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                                        className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Location</label>
+                                    <input
+                                        placeholder="e.g. Auditorium"
+                                        value={formData.location}
+                                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                        className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Reg. Link</label>
+                                    <input
+                                        type="url"
+                                        placeholder="Google Form link"
+                                        value={formData.registrationLink}
+                                        onChange={(e) => setFormData({ ...formData, registrationLink: e.target.value })}
+                                        className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
+                                    />
+                                </div>
+                                <div className="flex items-center gap-3 bg-blue-50/50 p-3 rounded-xl border border-blue-100 mt-5">
+                                    <input
+                                        id="onLandingPage"
+                                        type="checkbox"
+                                        checked={formData.onLandingPage}
+                                        onChange={(e) => setFormData({ ...formData, onLandingPage: e.target.checked })}
+                                        className="w-4 h-4 text-primary rounded border-gray-300 outline-none"
+                                    />
+                                    <label htmlFor="onLandingPage" className="text-sm font-bold text-blue-700 cursor-pointer">
+                                        Add to Landing Page
+                                    </label>
                                 </div>
                             </div>
                             <div>

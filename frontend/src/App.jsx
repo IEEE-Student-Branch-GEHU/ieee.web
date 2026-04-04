@@ -13,6 +13,7 @@ import Footer from './components/Footer';
 
 // Page Components
 import EventsArchive from './pages/EventsArchive';
+import LeadershipArchive from './pages/archive/LeadershipArchive';
 
 // Admin Components
 import AdminLogin from './pages/admin/Login';
@@ -50,6 +51,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/events" element={<EventsArchive />} />
+        <Route path="/leadership" element={<LeadershipArchive />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
           path="/admin/*"
