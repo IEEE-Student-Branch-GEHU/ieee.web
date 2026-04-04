@@ -47,7 +47,7 @@ const MemberCard = ({ member, index = 0 }) => {
               target="_blank" 
               rel="noopener noreferrer"
               className="prof-card__social-link"
-              title="LinkedIn"
+              aria-label={`${name} on LinkedIn`}
             >
               <BsLinkedin />
             </a>
@@ -58,7 +58,7 @@ const MemberCard = ({ member, index = 0 }) => {
               target="_blank" 
               rel="noopener noreferrer"
               className="prof-card__social-link"
-              title="Instagram"
+              aria-label={`${name} on Instagram`}
             >
               <BsInstagram />
             </a>
@@ -67,7 +67,7 @@ const MemberCard = ({ member, index = 0 }) => {
             <a 
               href={`mailto:${email}`} 
               className="prof-card__social-link"
-              title="Email"
+              aria-label={`Email ${name}`}
             >
               <BsEnvelope />
             </a>

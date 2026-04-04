@@ -18,6 +18,11 @@ const contactLimiter = rateLimit({
   legacyHeaders: false,       // Disable X-RateLimit-* headers
 });
 
+// Escapes special regex metacharacters to treat user input as a literal substring
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 // Get all events (with pagination and filters)
 router.get('/events', async (req, res) => {
   try {
@@ -33,9 +38,10 @@ router.get('/events', async (req, res) => {
     const eventsQuery = {};
     if (onLandingPage === true) eventsQuery.onLandingPage = { $eq: true };
     if (typeof search === 'string' && search.length > 0) {
+      const safeSearch = escapeRegex(search);
       eventsQuery.$or = [
-        { title: { $regex: String(search), $options: 'i' } },
-        { description: { $regex: String(search), $options: 'i' } }
+        { title: { $regex: safeSearch, $options: 'i' } },
+        { description: { $regex: safeSearch, $options: 'i' } }
       ];
     }
     if (typeof category === 'string' && category !== 'All') {

@@ -21,7 +21,7 @@ const EventsManage = () => {
     const fetchEvents = async () => {
         const res = await fetch(`${API_BASE_URL}/events`);
         const data = await res.json();
-        setEvents(Array.isArray(data) ? data : []);
+        setEvents(Array.isArray(data) ? data : (Array.isArray(data?.events) ? data.events : []));
     };
 
     const handleUpload = async (e) => {

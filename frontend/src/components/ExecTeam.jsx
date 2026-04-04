@@ -116,13 +116,14 @@ const ExecTeam = () => {
                 </motion.div>
 
                 <div className="flex justify-center mt-16">
-                    <Link to="/leadership">
-                        <Button
-                            className="px-10 py-7 bg-primaryDark/5 text-primaryDark border-2 border-primaryDark/10 rounded-2xl hover:bg-primaryDark hover:text-white hover:border-primaryDark transition-all duration-300 font-bold tracking-widest text-sm shadow-sm"
-                        >
+                    <Button
+                        asChild
+                        className="px-10 py-7 bg-primaryDark/5 text-primaryDark border-2 border-primaryDark/10 rounded-2xl hover:bg-primaryDark hover:text-white hover:border-primaryDark transition-all duration-300 font-bold tracking-widest text-sm shadow-sm"
+                    >
+                        <Link to="/leadership">
                             VIEW FULL TEAM
-                        </Button>
-                    </Link>
+                        </Link>
+                    </Button>
                 </div>
             </div>
         </section>

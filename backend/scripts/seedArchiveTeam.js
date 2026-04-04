@@ -91,6 +91,10 @@ const seedData = [
 ];
 
 const seedDB = async () => {
+    if (process.env.NODE_ENV === 'production') {
+        console.error('ERROR: Seeding is not allowed in production. Set NODE_ENV to development or test.');
+        process.exit(1);
+    }
     try {
         await mongoose.connect(process.env.MONGODB_URI);
         console.log("Connected to MongoDB...");

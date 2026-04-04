@@ -115,10 +115,18 @@ const TeamManage = () => {
     const openEdit = (member) => {
         setEditingMember(member);
         setFormData({
-            ...member,
-            linkedin: member.socials?.linkedin || '',
-            instagram: member.socials?.instagram || '',
-            onLandingPage: member.onLandingPage || false
+            name: member.name ?? '',
+            role: member.role ?? '',
+            bio: member.bio ?? '',
+            image: member.image ?? '',
+            category: member.category ?? 'executive',
+            year: member.year ?? '2023-2024',
+            rank: member.rank ?? 0,
+            isLead: !!member.isLead,
+            email: member.email ?? '',
+            linkedin: member.socials?.linkedin ?? '',
+            instagram: member.socials?.instagram ?? '',
+            onLandingPage: !!member.onLandingPage
         });
         setIsModalOpen(true);
     };

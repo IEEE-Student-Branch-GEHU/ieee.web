@@ -12,9 +12,6 @@ const YearSelector = ({ selectedYear, onYearChange }) => {
       .then(res => res.json())
       .then(data => {
         setYears(data);
-        if (data.length > 0 && !selectedYear) {
-          onYearChange(data[0]);
-        }
         setLoading(false);
       })
       .catch(err => {
@@ -22,6 +19,12 @@ const YearSelector = ({ selectedYear, onYearChange }) => {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    if (years.length > 0 && !selectedYear) {
+      onYearChange(years[0]);
+    }
+  }, [years, selectedYear, onYearChange]);
 
   if (loading || years.length === 0) return null;
 
