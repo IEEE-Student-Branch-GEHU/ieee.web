@@ -24,7 +24,7 @@ const LeadershipArchive = () => {
       try {
         const params = new URLSearchParams({ year: selectedYear });
         if (activeCategory !== 'all') params.append('category', activeCategory);
-        const res = await fetch(`${API_BASE_URL}/api/team?${params}`);
+        const res = await fetch(`${API_BASE_URL}/team?${params}`);
         if (!res.ok) throw new Error('Failed to fetch members');
         const data = await res.json();
         setMembers(data);

@@ -262,7 +262,7 @@ const TeamManage = () => {
                                     <input
                                         type="number"
                                         value={formData.rank}
-                                        onChange={(e) => setFormData({ ...formData, rank: parseInt(e.target.value) })}
+                                        onChange={(e) => setFormData({ ...formData, rank: e.target.value === '' ? 0 : Number(e.target.value) })}
                                         className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
                                     />
                                 </div>
@@ -295,10 +295,12 @@ const TeamManage = () => {
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Email</label>
-                                    <input
+                                <input
                                         type="email"
                                         value={formData.email}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        placeholder="Enter email address"
+                                        className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
                                     />
                                 </div>
                             <div>
