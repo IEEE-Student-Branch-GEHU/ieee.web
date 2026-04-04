@@ -26,6 +26,7 @@ router.get('/events', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 12;
     const skip = (page - 1) * limit;
+    const search = req.query.search || '';
     const onLandingPage = req.query.onLandingPage === 'true';
     const category = req.query.category || 'All';
 
@@ -40,7 +41,7 @@ router.get('/events', async (req, res) => {
       ];
     }
     if (category !== 'All') {
-      query.category = category;
+      query.category = { $eq: category };
     }
 
     const totalEvents = await Event.countDocuments(query);
@@ -68,8 +69,8 @@ router.get('/team', async (req, res) => {
     const { year, category, onLandingPage } = req.query;
     let query = {};
     
-    if (year) query.year = year;
-    if (category && category !== 'All') query.category = category;
+    if (year) query.year = { $eq: year };
+    if (category && category !== 'All') query.category = { $eq: category };
     if (onLandingPage === 'true') query.onLandingPage = true;
 
     // Sorting: rank (0 is highest) then createdAt
