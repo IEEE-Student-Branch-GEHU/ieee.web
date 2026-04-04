@@ -30,18 +30,16 @@ router.get('/events', async (req, res) => {
     const onLandingPage = req.query.onLandingPage === 'true';
     const category = req.query.category || 'All';
 
-    let query = {};
-    if (onLandingPage) {
-      query.onLandingPage = true;
-    }
+    const query = {};
+    if (onLandingPage) query.onLandingPage = true;
     if (search) {
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        { title: { $regex: String(search), $options: 'i' } },
+        { description: { $regex: String(search), $options: 'i' } }
       ];
     }
-    if (category !== 'All') {
-      query.category = { $eq: category };
+    if (category && category !== 'All') {
+      query.category = { $eq: String(category) };
     }
 
     const totalEvents = await Event.countDocuments(query);
@@ -67,11 +65,11 @@ router.get('/team', async (req, res) => {
     if (mongoose.connection.readyState !== 1) return res.json([]);
     
     const { year, category, onLandingPage } = req.query;
-    let query = {};
-    
-    if (year) query.year = { $eq: year };
-    if (category && category !== 'All') query.category = { $eq: category };
-    if (onLandingPage === 'true') query.onLandingPage = true;
+    const query = {
+      ...(year && { year: { $eq: String(year) } }),
+      ...(category && category !== 'All' && { category: { $eq: String(category) } }),
+      ...(onLandingPage === 'true' && { onLandingPage: true })
+    };
 
     // Sorting: rank (0 is highest) then createdAt
     const team = await Team.find(query).sort({ rank: 1, name: 1 });
