@@ -30,20 +30,20 @@ router.get('/events', async (req, res) => {
     const onLandingPage = req.query.onLandingPage === 'true';
     const category = req.query.category || 'All';
 
-    const query = {};
-    if (onLandingPage) query.onLandingPage = true;
-    if (search) {
-      query.$or = [
+    const eventsQuery = {};
+    if (onLandingPage === true) eventsQuery.onLandingPage = { $eq: true };
+    if (typeof search === 'string' && search.length > 0) {
+      eventsQuery.$or = [
         { title: { $regex: String(search), $options: 'i' } },
         { description: { $regex: String(search), $options: 'i' } }
       ];
     }
-    if (category && category !== 'All') {
-      query.category = { $eq: String(category) };
+    if (typeof category === 'string' && category !== 'All') {
+      eventsQuery.category = { $eq: String(category) };
     }
 
-    const totalEvents = await Event.countDocuments(query);
-    const events = await Event.find(query)
+    const totalEvents = await Event.countDocuments(eventsQuery);
+    const events = await Event.find(eventsQuery)
       .sort({ date: -1 })
       .skip(skip)
       .limit(limit);
@@ -65,14 +65,13 @@ router.get('/team', async (req, res) => {
     if (mongoose.connection.readyState !== 1) return res.json([]);
     
     const { year, category, onLandingPage } = req.query;
-    const query = {
-      ...(year && { year: { $eq: String(year) } }),
-      ...(category && category !== 'All' && { category: { $eq: String(category) } }),
-      ...(onLandingPage === 'true' && { onLandingPage: true })
-    };
+    const teamQuery = {};
+    if (typeof year === 'string') teamQuery.year = { $eq: year };
+    if (typeof category === 'string' && category !== 'All') teamQuery.category = { $eq: category };
+    if (onLandingPage === 'true') teamQuery.onLandingPage = { $eq: true };
 
     // Sorting: rank (0 is highest) then createdAt
-    const team = await Team.find(query).sort({ rank: 1, name: 1 });
+    const team = await Team.find(teamQuery).sort({ rank: 1, name: 1 });
     res.json(team);
   } catch (error) {
     res.status(500).json({ message: error.message });
