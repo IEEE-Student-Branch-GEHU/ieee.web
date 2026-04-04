@@ -41,24 +41,28 @@ const MemberCard = ({ member, index = 0 }) => {
 
         {/* Floating Social Actions (Slide up) */}
         <div className="prof-card__actions">
-          <a 
-            href={socials?.linkedin || '#'} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="prof-card__social-link"
-            title="LinkedIn"
-          >
-            <BsLinkedin />
-          </a>
-          <a 
-            href={socials?.instagram || '#'} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="prof-card__social-link"
-            title="Instagram"
-          >
-            <BsInstagram />
-          </a>
+          {socials?.linkedin && (
+            <a 
+              href={socials.linkedin} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="prof-card__social-link"
+              title="LinkedIn"
+            >
+              <BsLinkedin />
+            </a>
+          )}
+          {socials?.instagram && (
+            <a 
+              href={socials.instagram} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="prof-card__social-link"
+              title="Instagram"
+            >
+              <BsInstagram />
+            </a>
+          )}
           {email && (
             <a 
               href={`mailto:${email}`} 

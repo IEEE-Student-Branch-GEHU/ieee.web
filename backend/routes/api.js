@@ -72,7 +72,7 @@ router.get('/team', async (req, res) => {
     if (category && category !== 'All') query.category = category;
     if (onLandingPage === 'true') query.onLandingPage = true;
 
-    // Sorting: rank (0 is highest) then createdAt
+    // Sorting: rank (0 is highest) then name
     const team = await Team.find(query).sort({ rank: 1, name: 1 });
     res.json(team);
   } catch (error) {

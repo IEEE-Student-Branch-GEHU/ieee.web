@@ -8,7 +8,7 @@ const YearSelector = ({ selectedYear, onYearChange }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/team/years`)
+    fetch(`${API_BASE_URL}/team/years`)
       .then(res => res.json())
       .then(data => {
         setYears(data);
