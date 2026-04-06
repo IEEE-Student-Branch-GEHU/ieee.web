@@ -45,11 +45,26 @@ router.get('/events', async (req, res) => {
   }
 });
 
-// Get all team members
+// Get all team members (with filtering for archive)
 router.get('/team', async (req, res) => {
   try {
     if (mongoose.connection.readyState !== 1) return res.json([]);
-    const team = await Team.find().sort({ order: 1 });
+
+    // Defensive Type Casting & Sanitization for NoSQL Injection Protection
+    const query = {};
+    if (req.query.year) {
+      query.year = String(req.query.year);
+    }
+    if (req.query.category && req.query.category !== 'All') {
+      query.category = String(req.query.category);
+    }
+
+    const team = await Team.find(query).sort({ 
+      rank: 1, 
+      order: 1, 
+      createdAt: -1 
+    });
+    
     res.json(team);
   } catch (error) {
     res.status(500).json({ message: error.message });
