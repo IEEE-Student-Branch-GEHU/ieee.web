@@ -18,10 +18,12 @@ const Events = () => {
     const [eventsData, setEventsData] = useState([]);
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}/events`)
+        fetch(`${API_BASE_URL}/events?onLandingPage=true`)
             .then(res => res.json())
             .then(data => {
-                if (Array.isArray(data)) setEventsData(data);
+                if (data && Array.isArray(data.events)) {
+                    setEventsData(data.events);
+                }
             })
             .catch(err => console.error('Failed to fetch events:', err));
     }, []);

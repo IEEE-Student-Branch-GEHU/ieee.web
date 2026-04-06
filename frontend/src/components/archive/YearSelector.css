@@ -1,0 +1,114 @@
+/* ── Year Selector (Vertical Timeline Sidebar) ── */
+.year-history {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.year-history__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.year-history__line {
+  width: 3px;
+  height: 12px;
+  background: var(--color-primary);
+  border-radius: 99px;
+}
+
+.year-history__title {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #64748b;
+}
+
+.year-history__list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Year Item ── */
+.year-item {
+  display: flex;
+  align-items: stretch;
+  gap: 1.25rem;
+  padding: 0.75rem 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.year-item__timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 1rem;
+}
+
+.year-item__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  background: white;
+  z-index: 2;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.year-item__dot--active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(0, 98, 155, 0.1);
+  transform: scale(1.2);
+}
+
+.year-item__connector {
+  flex: 1;
+  width: 2px;
+  background: #e2e8f0;
+  margin: 4px 0;
+}
+
+.year-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-bottom: 1.5rem;
+}
+
+.year-item__label {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #64748b;
+  transition: color 0.2s;
+}
+
+.year-item--active .year-item__label {
+  color: var(--color-dark);
+}
+
+.year-item__status {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-primary);
+}
+
+.year-item:hover .year-item__label {
+  color: var(--color-dark);
+}
+
+.year-item:hover .year-item__dot {
+  border-color: #94a3b8;
+}
