@@ -11,6 +11,7 @@ import { Button } from "./ui/button";
 import { Calendar, MapPin } from 'lucide-react';
 
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Reveal } from "./animations/Reveal";
 import API_BASE_URL from '../config';
 
@@ -65,6 +66,7 @@ const Events = () => {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true, margin: "-100px" }}
+                    className="space-y-12"
                 >
                     <Carousel className="w-full">
                         <CarouselContent className="-ml-6">
@@ -126,6 +128,22 @@ const Events = () => {
                             <CarouselNext className="right-[-60px] bg-white border-2 border-primary/20 text-primary hover:bg-primary hover:text-white h-12 w-12" />
                         </div>
                     </Carousel>
+
+                    <div className="flex justify-center pt-8">
+                        <Link to="/events">
+                            <Button
+                                className="group px-10 py-7 bg-primary text-white font-bold rounded-2xl hover:bg-primaryDark transition-all duration-300 shadow-xl shadow-primary/20 flex items-center gap-3 uppercase tracking-widest text-xs"
+                            >
+                                View All Events
+                                <motion.span
+                                    animate={{ x: [0, 5, 0] }}
+                                    transition={{ repeat: Infinity, duration: 2 }}
+                                >
+                                    →
+                                </motion.span>
+                            </Button>
+                        </Link>
+                    </div>
                 </motion.div>
             </div>
         </section>
