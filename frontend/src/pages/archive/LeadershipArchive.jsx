@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import YearSelector from '../../components/archive/YearSelector';
 import MemberCard from '../../components/archive/MemberCard';
 import API_BASE_URL from '../../config';
+import { Skeleton } from '../../components/ui/skeleton';
 import ieeeLogo from '../../assets/logo.png';
 import './LeadershipArchive.css';
 
@@ -113,7 +114,13 @@ const LeadershipArchive = () => {
                 className="la-grid"
               >
                 {[...Array(6)].map((_, i) => (
-                  <div key={i} className="la-card-skeleton" />
+                  <div key={i} className="prof-card">
+                    <Skeleton className="prof-card__img-container rounded-none" />
+                    <div className="prof-card__content p-4 space-y-3">
+                      <Skeleton className="h-6 w-3/4" />
+                      <Skeleton className="h-4 w-1/2" />
+                    </div>
+                  </div>
                 ))}
               </motion.div>
             ) : error ? (
