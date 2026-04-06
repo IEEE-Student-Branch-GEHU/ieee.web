@@ -53,7 +53,7 @@ const FacultyManage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const url = editingMember ? `${API_BASE_URL}/admin/team/${editingMember._id || editingMember.id}` : `${API_BASE_URL}/admin/team`;
+        const url = editingMember ? `${API_BASE_URL}/admin/team/${editingMember._id}` : `${API_BASE_URL}/admin/team`;
         const method = editingMember ? 'PUT' : 'POST';
 
         // Ensure category is faculty
@@ -137,7 +137,7 @@ const FacultyManage = () => {
                                 </td>
                             </tr>
                         ) : team.map((member) => (
-                            <tr key={member.id} className="hover:bg-gray-50 transition-colors">
+                            <tr key={member._id} className="hover:bg-gray-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         {member.image ? (
@@ -156,7 +156,7 @@ const FacultyManage = () => {
                                         <button onClick={() => openEdit(member)} className="p-2 text-gray-400 hover:text-primary hover:bg-blue-50 rounded-lg transition-all">
                                             <Pencil size={18} />
                                         </button>
-                                        <button onClick={() => handleDelete(member.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
+                                        <button onClick={() => handleDelete(member._id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
                                             <Trash2 size={18} />
                                         </button>
                                     </div>

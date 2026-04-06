@@ -49,7 +49,7 @@ const EventsManage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const url = editingEvent ? `${API_BASE_URL}/admin/events/${editingEvent._id || editingEvent.id}` : `${API_BASE_URL}/admin/events`;
+        const url = editingEvent ? `${API_BASE_URL}/admin/events/${editingEvent._id}` : `${API_BASE_URL}/admin/events`;
         const method = editingEvent ? 'PUT' : 'POST';
 
         try {
@@ -125,7 +125,7 @@ const EventsManage = () => {
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                         {events.map((event) => (
-                            <tr key={event.id} className="hover:bg-gray-50 transition-colors">
+                            <tr key={event._id} className="hover:bg-gray-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         {event.image && (
@@ -152,7 +152,7 @@ const EventsManage = () => {
                                         <button onClick={() => openEdit(event)} className="p-2 text-gray-400 hover:text-primary hover:bg-blue-50 rounded-lg transition-all">
                                             <Pencil size={18} />
                                         </button>
-                                        <button onClick={() => handleDelete(event.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
+                                        <button onClick={() => handleDelete(event._id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
                                             <Trash2 size={18} />
                                         </button>
                                     </div>
