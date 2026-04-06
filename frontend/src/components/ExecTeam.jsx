@@ -1,3 +1,8 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from "./ui/button";
+import { motion } from "framer-motion";
+import { Reveal } from "./animations/Reveal";
 import MemberCard from "./ui/MemberCard";
 import API_BASE_URL from '../config';
 
@@ -12,7 +17,7 @@ const ExecTeam = () => {
     ];
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}/team`)
+        fetch(`${API_BASE_URL}/team?onLandingPage=true`)
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data) && data.length > 0) {
@@ -67,9 +72,12 @@ const ExecTeam = () => {
 
                 <div className="flex justify-center mt-16">
                     <Button
+                        asChild
                         className="px-10 py-7 bg-primaryDark/5 text-primaryDark border-2 border-primaryDark/10 rounded-2xl hover:bg-primaryDark hover:text-white hover:border-primaryDark transition-all duration-300 font-bold tracking-widest text-sm shadow-sm"
                     >
-                        VIEW FULL TEAM
+                        <Link to="/leadership">
+                            VIEW FULL TEAM
+                        </Link>
                     </Button>
                 </div>
             </div>
