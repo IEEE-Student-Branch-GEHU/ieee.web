@@ -50,13 +50,15 @@ router.get('/team', async (req, res) => {
   try {
     if (mongoose.connection.readyState !== 1) return res.json([]);
 
-    // Defensive Type Casting & Sanitization for NoSQL Injection Protection
     const query = {};
-    if (req.query.year) {
-      query.year = String(req.query.year);
+    
+    // Defensive Type Casting & Sanitization for NoSQL Injection Protection
+    if (req.query.year && typeof req.query.year === 'string') {
+      query.year = req.query.year;
     }
-    if (req.query.category && req.query.category !== 'All') {
-      query.category = String(req.query.category);
+    
+    if (req.query.category && req.query.category !== 'All' && typeof req.query.category === 'string') {
+      query.category = req.query.category;
     }
 
     const team = await Team.find(query).sort({ 
