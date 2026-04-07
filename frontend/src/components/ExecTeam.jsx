@@ -5,9 +5,11 @@ import { motion } from "framer-motion";
 import { Reveal } from "./animations/Reveal";
 import MemberCard from "./ui/MemberCard";
 import API_BASE_URL from '../config';
+import { Skeleton } from './ui/skeleton';
 
 const ExecTeam = () => {
     const [teamData, setTeamData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const fallbackTeam = [
         { name: "Placeholder Name", role: "Chairperson", category: "Executive" },
@@ -17,6 +19,7 @@ const ExecTeam = () => {
     ];
 
     useEffect(() => {
+        setLoading(true);
         fetch(`${API_BASE_URL}/team?onLandingPage=true`)
             .then(res => res.json())
             .then(data => {
@@ -33,7 +36,8 @@ const ExecTeam = () => {
             .catch(err => {
                 console.error('Failed to fetch team data:', err);
                 setTeamData(fallbackTeam);
-            });
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     const containerVariants = {
