@@ -6,9 +6,11 @@ import { motion } from "framer-motion";
 import { Reveal } from "./animations/Reveal";
 import { BsInstagram, BsLinkedin } from "react-icons/bs";
 import API_BASE_URL from '../config';
+import { Skeleton } from './ui/skeleton';
 
 const ExecTeam = () => {
     const [teamData, setTeamData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const fallbackTeam = [
         { name: "Placeholder Name", role: "Chairperson" },
@@ -18,6 +20,7 @@ const ExecTeam = () => {
     ];
 
     useEffect(() => {
+        setLoading(true);
         fetch(`${API_BASE_URL}/team?onLandingPage=true`)
             .then(res => res.json())
             .then(data => {
@@ -30,7 +33,8 @@ const ExecTeam = () => {
             .catch(err => {
                 console.error('Failed to fetch team data:', err);
                 setTeamData(fallbackTeam);
-            });
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     const containerVariants = {
@@ -71,48 +75,62 @@ const ExecTeam = () => {
                     viewport={{ once: true, margin: "-100px" }}
                     className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10"
                 >
-                    {teamData.map((member, index) => (
-                        <motion.div key={index} variants={itemVariants}>
-                            <Card
-                                className="group h-full flex flex-col items-center bg-white border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 rounded-3xl overflow-hidden"
-                            >
-                                <div className="aspect-[4/5] w-full relative overflow-hidden bg-gray-200">
-                                    <img
-                                        src={member.image || "https://via.placeholder.com/400x500"}
-                                        alt={member.name}
-                                        className="object-cover w-full h-full grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-in-out"
-                                    />
-                                    <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                                    <div className="absolute bottom-6 left-0 right-0 flex justify-center space-x-4 translate-y-20 group-hover:translate-y-0 transition-transform duration-500 delay-100">
-                                        <a
-                                            href={member.socials?.linkedin || "#"}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all shadow-lg"
-                                        >
-                                            <BsLinkedin className="text-lg" />
-                                        </a>
-                                        <a
-                                            href={member.socials?.instagram || "#"}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all shadow-lg"
-                                        >
-                                            <BsInstagram className="text-lg" />
-                                        </a>
+                    {loading ? (
+                        [...Array(4)].map((_, i) => (
+                            <motion.div key={i} variants={itemVariants}>
+                                <Card className="group h-full flex flex-col items-center bg-white border border-gray-100 shadow-sm rounded-3xl overflow-hidden">
+                                    <Skeleton className="aspect-[4/5] w-full rounded-none" />
+                                    <div className="text-center p-8 space-y-4 w-full flex flex-col items-center">
+                                        <Skeleton className="h-6 w-3/4" />
+                                        <Skeleton className="h-4 w-1/2" />
                                     </div>
-                                </div>
+                                </Card>
+                            </motion.div>
+                        ))
+                    ) : (
+                        teamData.map((member, index) => (
+                            <motion.div key={member._id || index} variants={itemVariants}>
+                                <Card
+                                    className="group h-full flex flex-col items-center bg-white border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 rounded-3xl overflow-hidden"
+                                >
+                                    <div className="aspect-[4/5] w-full relative overflow-hidden bg-gray-200">
+                                        <img
+                                            src={member.image || "https://via.placeholder.com/400x500"}
+                                            alt={member.name}
+                                            className="object-cover w-full h-full grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-in-out"
+                                        />
+                                        <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                                <div className="text-center p-8 space-y-2 flex-grow">
-                                    <h4 className="text-xl font-bold text-dark group-hover:text-primary transition-colors">
-                                        {member.name}
-                                    </h4>
-                                    <p className="text-primary/70 font-bold text-xs uppercase tracking-widest">{member.role}</p>
-                                </div>
-                            </Card>
-                        </motion.div>
-                    ))}
+                                        <div className="absolute bottom-6 left-0 right-0 flex justify-center space-x-4 translate-y-20 group-hover:translate-y-0 transition-transform duration-500 delay-100">
+                                            <a
+                                                href={member.socials?.linkedin || "#"}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all shadow-lg"
+                                            >
+                                                <BsLinkedin className="text-lg" />
+                                            </a>
+                                            <a
+                                                href={member.socials?.instagram || "#"}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all shadow-lg"
+                                            >
+                                                <BsInstagram className="text-lg" />
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div className="text-center p-8 space-y-2 flex-grow">
+                                        <h4 className="text-xl font-bold text-dark group-hover:text-primary transition-colors">
+                                            {member.name}
+                                        </h4>
+                                        <p className="text-primary/70 font-bold text-xs uppercase tracking-widest">{member.role}</p>
+                                    </div>
+                                </Card>
+                            </motion.div>
+                        ))
+                    )}
                 </motion.div>
 
                 <div className="flex justify-center mt-16">
