@@ -65,19 +65,32 @@ router.get('/events', async (req, res) => {
   }
 });
 
-// Get all team members (with filtering and sorting — Issue #41)
+// Get all team members (with filtering for archive)
 router.get('/team', async (req, res) => {
   try {
     if (mongoose.connection.readyState !== 1) return res.json([]);
-    
-    const { year, category, onLandingPage } = req.query;
-    const teamQuery = {};
-    if (typeof year === 'string') teamQuery.year = { $eq: year };
-    if (typeof category === 'string' && category !== 'All') teamQuery.category = { $eq: category };
-    if (onLandingPage === 'true') teamQuery.onLandingPage = { $eq: true };
 
-    // Sorting: rank (0 is highest) then createdAt
-    const team = await Team.find(teamQuery).sort({ rank: 1, name: 1 });
+    const query = {};
+    const { year, category, onLandingPage } = req.query;
+    
+    // Defensive Type Casting & Sanitization for NoSQL Injection Protection
+    if (typeof year === 'string') {
+      query.year = { $eq: year };
+    }
+    
+    if (typeof category === 'string' && category !== 'All') {
+      query.category = { $eq: category };
+    }
+
+    if (onLandingPage === 'true') {
+      query.onLandingPage = { $eq: true };
+    }
+
+    const team = await Team.find(query).sort({ 
+      rank: 1, 
+      order: 1, 
+      createdAt: -1 
+    });
     res.json(team);
   } catch (error) {
     res.status(500).json({ message: error.message });

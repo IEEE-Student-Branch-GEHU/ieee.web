@@ -3,34 +3,29 @@ const mongoose = require('mongoose');
 const teamSchema = new mongoose.Schema({
     name: { type: String, required: true },
     role: { type: String, required: true },
-    category: { type: String, required: true }, // e.g., 'Executive', 'Faculty'
-    image: { type: String }, // Cloudinary URL
+    category: { 
+        type: String, 
+        required: true,
+        enum: ['EXECUTIVE', 'TECHNICAL', 'CREATIVE', 'OPERATIONS', 'MEDIA', 'LEADS']
+    },
+    image: { type: String },
     year: {
         type: String,
         required: true,
-        default: '2023-2024',
-        match: [/^\d{4}-\d{4}$/, 'Year must be in YYYY-YYYY format'],
-        validate: {
-            validator: function(v) {
-                const parts = v && v.split('-');
-                return parts && parts.length === 2 && parseInt(parts[1]) === parseInt(parts[0]) + 1;
-            },
-            message: 'Year must represent consecutive years (e.g., 2023-2024)'
-        }
-    }, // e.g., '2023-2024'
-    rank: { type: Number, default: 0 }, // For custom sorting
-    isLead: { type: Boolean, default: false }, // For highlighting leads
-    email: { type: String }, // Optional contact info
-    socials: {
-        linkedin: { type: String },
-        twitter: { type: String },
-        instagram: { type: String },
-        github: { type: String }
+        default: '2025-26',
+        match: [/^\d{4}-\d{2,4}$/, 'Year must be in YYYY-YY or YYYY-YYYY format'],
     },
+    rank: { type: Number, default: 0 },
     order: { type: Number, default: 0 },
+    isLead: { type: Boolean, default: false },
     onLandingPage: { type: Boolean, default: false },
+    email: { type: String },
     bio: { type: String },
+    socials: {
+        linkedin: String,
+        instagram: String,
+        github: String,
+        twitter: String
+    },
     createdAt: { type: Date, default: Date.now }
-});
-
-module.exports = mongoose.model('Team', teamSchema);
+}, { timestamps: true });
