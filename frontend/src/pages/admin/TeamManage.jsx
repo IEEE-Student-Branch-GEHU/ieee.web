@@ -7,7 +7,12 @@ const TeamManage = () => {
     const [team, setTeam] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingMember, setEditingMember] = useState(null);
-    const [formData, setFormData] = useState({ name: '', role: '', bio: '', image: '', linkedin: '', instagram: '', category: 'executive' });
+    const [formData, setFormData] = useState({ 
+        name: '', role: '', bio: '', image: '', 
+        linkedin: '', instagram: '', category: 'executive',
+        year: '2023-2024', rank: 0, isLead: false, email: '',
+        onLandingPage: false
+    });
     const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
@@ -50,8 +55,16 @@ const TeamManage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const url = editingMember ? `${API_BASE_URL}/admin/team/${editingMember._id || editingMember.id}` : `${API_BASE_URL}/admin/team`;
+        const url = editingMember ? `${API_BASE_URL}/admin/team/${editingMember._id}` : `${API_BASE_URL}/admin/team`;
         const method = editingMember ? 'PUT' : 'POST';
+
+        const payload = {
+            ...formData,
+            socials: {
+                linkedin: formData.linkedin,
+                instagram: formData.instagram
+            }
+        };
 
         try {
             const res = await fetch(url, {
@@ -60,13 +73,18 @@ const TeamManage = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             });
 
             if (res.ok) {
                 setIsModalOpen(false);
                 setEditingMember(null);
-                setFormData({ name: '', role: '', bio: '', image: '', linkedin: '', instagram: '', category: 'executive' });
+                setFormData({ 
+                    name: '', role: '', bio: '', image: '', 
+                    linkedin: '', instagram: '', category: 'executive',
+                    year: '2023-2024', rank: 0, isLead: false, email: '',
+                    onLandingPage: false
+                });
                 fetchTeam();
             } else {
                 const errorData = await res.json();
@@ -96,7 +114,20 @@ const TeamManage = () => {
 
     const openEdit = (member) => {
         setEditingMember(member);
-        setFormData(member);
+        setFormData({
+            name: member.name ?? '',
+            role: member.role ?? '',
+            bio: member.bio ?? '',
+            image: member.image ?? '',
+            category: member.category ?? 'executive',
+            year: member.year ?? '2023-2024',
+            rank: member.rank ?? 0,
+            isLead: !!member.isLead,
+            email: member.email ?? '',
+            linkedin: member.socials?.linkedin ?? '',
+            instagram: member.socials?.instagram ?? '',
+            onLandingPage: !!member.onLandingPage
+        });
         setIsModalOpen(true);
     };
 
@@ -115,13 +146,15 @@ const TeamManage = () => {
                         <tr>
                             <th className="px-6 py-4 font-semibold">Member</th>
                             <th className="px-6 py-4 font-semibold">Role</th>
+                            <th className="px-6 py-4 font-semibold">Year/Rank</th>
                             <th className="px-6 py-4 font-semibold">Category</th>
+                            <th className="px-6 py-4 font-semibold text-center">Featured</th>
                             <th className="px-6 py-4 font-semibold text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                         {team.map((member) => (
-                            <tr key={member.id} className="hover:bg-gray-50 transition-colors">
+                            <tr key={member._id} className="hover:bg-gray-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         {member.image ? (
@@ -136,17 +169,37 @@ const TeamManage = () => {
                                 </td>
                                 <td className="px-6 py-4 text-sm text-gray-600">{member.role}</td>
                                 <td className="px-6 py-4 text-sm">
-                                    <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${member.category === 'faculty' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'
-                                        }`}>
-                                        {member.category || 'executive'}
-                                    </span>
+                                    <div className="flex flex-col">
+                                        <span className="text-gray-900 font-medium">{member.year}</span>
+                                        <span className="text-gray-400 text-xs">Priority: {member.rank}</span>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 text-sm">
+                                    <div className="flex items-center gap-2">
+                                        <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${member.category === 'faculty' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'
+                                            }`}>
+                                            {member.category || 'executive'}
+                                        </span>
+                                        {member.isLead && (
+                                            <span className="bg-amber-100 text-amber-600 px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                                                Lead
+                                            </span>
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 text-center">
+                                    {member.onLandingPage && (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                                            Home
+                                        </span>
+                                    )}
                                 </td>
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex justify-end gap-2">
                                         <button onClick={() => openEdit(member)} className="p-2 text-gray-400 hover:text-primary hover:bg-blue-50 rounded-lg transition-all">
                                             <Pencil size={18} />
                                         </button>
-                                        <button onClick={() => handleDelete(member.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
+                                        <button onClick={() => handleDelete(member._id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
                                             <Trash2 size={18} />
                                         </button>
                                     </div>
@@ -191,12 +244,73 @@ const TeamManage = () => {
                                 <select
                                     value={formData.category}
                                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                    className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none appearance-none"
+                                    className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
                                 >
-                                    <option value="executive">Executive Team</option>
+                                    <option value="executive">Executive Board</option>
+                                    <option value="technical">Technical Team</option>
+                                    <option value="creative">Creative/Media</option>
+                                    <option value="management">Management/PR</option>
+                                    <option value="member">General Member/Volunteer</option>
                                     <option value="faculty">Faculty Coordinator</option>
                                 </select>
                             </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Academic Year</label>
+                                    <input
+                                        placeholder="e.g. 2023-2024"
+                                        value={formData.year}
+                                        onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+                                        className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Priority Rank</label>
+                                    <input
+                                        type="number"
+                                        value={formData.rank}
+                                        onChange={(e) => setFormData({ ...formData, rank: e.target.value === '' ? 0 : Number(e.target.value) })}
+                                        className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="flex items-center gap-3 bg-blue-50/50 p-3 rounded-xl border border-blue-100">
+                                    <input
+                                        id="onLandingPage"
+                                        type="checkbox"
+                                        checked={formData.onLandingPage}
+                                        onChange={(e) => setFormData({ ...formData, onLandingPage: e.target.checked })}
+                                        className="w-4 h-4 text-primary rounded border-gray-300 outline-none"
+                                    />
+                                    <label htmlFor="onLandingPage" className="text-sm font-bold text-blue-700 cursor-pointer">
+                                        Add to Landing Page
+                                    </label>
+                                </div>
+                                <div className="grid grid-cols-1 gap-4">
+                                    <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border">
+                                        <input
+                                            id="isLead"
+                                            type="checkbox"
+                                            checked={formData.isLead}
+                                            onChange={(e) => setFormData({ ...formData, isLead: e.target.checked })}
+                                            className="w-4 h-4 text-primary rounded border-gray-300 outline-none"
+                                        />
+                                        <label htmlFor="isLead" className="text-sm font-bold text-gray-700 cursor-pointer">Executive Lead?</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Email</label>
+                                <input
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        placeholder="Enter email address"
+                                        className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
+                                    />
+                                </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Short Bio</label>
                                 <textarea
