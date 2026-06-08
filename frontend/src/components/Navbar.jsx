@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Instagram, Linkedin, Github, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { FaInstagram, FaLinkedinIn, FaGithub } from 'react-icons/fa6';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -33,9 +34,9 @@ const Navbar = () => {
     ];
 
     const socialLinks = [
-        { icon: <Instagram size={18} />, href: 'https://www.instagram.com/ieee_gehu' },
-        { icon: <Linkedin size={18} />, href: 'https://www.linkedin.com/company/ieeesb-gehu' },
-        { icon: <Github size={18} />, href: 'https://github.com/IEEE-Student-Branch-GEHU/ieee.web' },
+        { icon: <FaInstagram size={18} />, href: 'https://www.instagram.com/ieee_gehu' },
+        { icon: <FaLinkedinIn size={18} />, href: 'https://www.linkedin.com/company/ieeesb-gehu' },
+        { icon: <FaGithub size={18} />, href: 'https://github.com/IEEE-Student-Branch-GEHU/ieee.web' },
     ];
 
     return (

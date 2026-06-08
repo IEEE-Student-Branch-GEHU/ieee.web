@@ -31,10 +31,14 @@ vi.mock('../assets/logo.png', () => ({ default: 'test-logo.png' }));
 vi.mock('lucide-react', () => ({
   Menu: (props) => <span data-testid="icon-menu">Menu</span>,
   X: (props) => <span data-testid="icon-x">X</span>,
-  Instagram: (props) => <span data-testid="icon-instagram">Instagram</span>,
-  Linkedin: (props) => <span data-testid="icon-linkedin">Linkedin</span>,
-  Github: (props) => <span data-testid="icon-github">Github</span>,
   ArrowUpRight: (props) => <span data-testid="icon-arrow">↗</span>,
+}));
+
+// Mock react-icons/fa6 brand icons
+vi.mock('react-icons/fa6', () => ({
+  FaInstagram: (props) => <span data-testid="icon-instagram">Instagram</span>,
+  FaLinkedinIn: (props) => <span data-testid="icon-linkedin">Linkedin</span>,
+  FaGithub: (props) => <span data-testid="icon-github">Github</span>,
 }));
 
 /**
