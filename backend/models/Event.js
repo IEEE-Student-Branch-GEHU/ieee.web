@@ -9,6 +9,7 @@ const eventSchema = new mongoose.Schema({
     image: { type: String }, // Cloudinary URL
     category: { type: String, default: 'Upcoming' },
     registrationLink: { type: String },
+    onLandingPage: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
 });
 

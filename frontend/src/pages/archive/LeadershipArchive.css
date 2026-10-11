@@ -1,0 +1,250 @@
+/* ── Global Theme Integration ── */
+.la-root {
+  min-height: 100vh;
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  font-family: var(--font-body);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── Mesh Background (Matching Landing Page) ── */
+.la-root::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-light);
+  background-image:
+    radial-gradient(at 0% 0%, rgba(0, 98, 155, 0.1) 0px, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(0, 181, 226, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(112, 47, 138, 0.05) 0px, transparent 50%);
+  z-index: -1;
+}
+
+/* ── Grain Texture Overlay (Matching Landing Page) ── */
+.la-root::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* ── Layout ── */
+.la-layout {
+  display: flex;
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  gap: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Sidebar (History Navigation) ── */
+.la-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 6rem;
+  height: fit-content;
+}
+
+.la-sidebar__label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-sans);
+}
+
+/* ── Main Content ── */
+.la-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Nav ── */
+.la-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 3rem;
+  background: rgba(248, 250, 252, 0.8);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.la-nav__logo-img { height: 48px; }
+
+.la-nav__links { display: flex; gap: 2rem; align-items: center; }
+
+.la-nav__link {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s;
+  font-family: var(--font-sans);
+}
+
+.la-nav__link:hover { color: var(--color-primary); }
+
+.la-nav__back {
+  padding: 0.6rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: rgba(241, 245, 249, 0.8);
+  border-radius: 12px;
+  text-decoration: none;
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  transition: all 0.2s;
+  font-family: var(--font-sans);
+}
+
+.la-nav__back:hover {
+  background: white;
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(0, 98, 155, 0.1);
+}
+
+/* ── Header ── */
+.la-header { margin-bottom: 3rem; }
+
+.la-header__title {
+  font-family: var(--font-sans);
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -2px;
+  color: var(--color-dark);
+  margin-bottom: 1rem;
+}
+
+.la-header__highlight { color: var(--color-primary); }
+
+.la-header__sub {
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  color: #64748b;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+/* ── Category Filter (Top Bar) ── */
+.la-cat-bar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  margin-bottom: 3rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.la-cat-btn {
+  padding: 0.6rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  font-family: var(--font-sans);
+}
+
+.la-cat-btn:hover { background: #f1f5f9; color: var(--color-dark); }
+
+.la-cat-btn.active {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 98, 155, 0.2);
+}
+
+/* ── Sections ── */
+.la-section { margin-bottom: 4rem; }
+
+.la-section__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.la-section__title {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 2px;
+}
+
+.la-section__line {
+  flex: 1;
+  height: 1px;
+  background: rgba(226, 232, 240, 0.8);
+}
+
+/* ── Grid ── */
+.la-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+/* ── States ── */
+.la-error {
+  padding: 3rem;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 20px;
+  color: #991b1b;
+  text-align: center;
+}
+
+.la-empty {
+  padding: 5rem;
+  text-align: center;
+  background: white;
+  border: 1px dashed #cbd5e1;
+  border-radius: 32px;
+  color: #94a3b8;
+}
+
+.la-empty__icon { font-size: 3rem; margin-bottom: 1rem; }
+
+/* ── Footer ── */
+.la-footer {
+  padding: 4rem 3rem;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .la-layout { flex-direction: column; padding: 1.5rem; }
+  .la-sidebar { width: 100%; position: static; margin-bottom: 2rem; }
+  .la-nav { padding: 1rem; }
+  .la-header__title { font-size: 2.5rem; }
+}

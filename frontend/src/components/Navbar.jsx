@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Instagram, Linkedin, Github, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { FaInstagram, FaLinkedinIn, FaGithub } from 'react-icons/fa6';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -26,16 +27,16 @@ const Navbar = () => {
 
     const navLinks = [
         { name: 'Home', href: '/', id: '01', isRoute: true },
-        { name: 'Events', href: '/events', id: '02', isRoute: true },
+        { name: 'Events', href: '/#events', id: '02', isRoute: false },
         { name: 'Team', href: '/#team', id: '03', isRoute: false },
         { name: 'About', href: '/#about', id: '04', isRoute: false },
         { name: 'Contact', href: '/#contact', id: '05', isRoute: false },
     ];
 
     const socialLinks = [
-        { icon: <Instagram size={18} />, href: 'https://www.instagram.com/ieee_gehu' },
-        { icon: <Linkedin size={18} />, href: 'https://www.linkedin.com/company/ieeesb-gehu' },
-        { icon: <Github size={18} />, href: 'https://github.com/IEEE-Student-Branch-GEHU/ieee.web' },
+        { icon: <FaInstagram size={18} />, href: 'https://www.instagram.com/ieee_gehu' },
+        { icon: <FaLinkedinIn size={18} />, href: 'https://www.linkedin.com/company/ieeesb-gehu' },
+        { icon: <FaGithub size={18} />, href: 'https://github.com/IEEE-Student-Branch-GEHU/ieee.web' },
     ];
 
     return (
@@ -88,9 +89,6 @@ const Navbar = () => {
                                             to={link.href}
                                             className="group relative flex items-center gap-2"
                                         >
-                                            <span className="text-[10px] font-black text-primary/60 group-hover:text-secondary transition-colors duration-300">
-                                                {link.id}
-                                            </span>
                                             <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all ${scrolled ? 'text-gray-300 group-hover:text-white' : 'text-primaryDark/80 group-hover:text-primary'}`}>
                                                 {link.name}
                                             </span>
@@ -101,9 +99,6 @@ const Navbar = () => {
                                             href={link.href}
                                             className="group relative flex items-center gap-2"
                                         >
-                                            <span className="text-[10px] font-black text-primary/60 group-hover:text-secondary transition-colors duration-300">
-                                                {link.id}
-                                            </span>
                                             <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all ${scrolled ? 'text-gray-300 group-hover:text-white' : 'text-primaryDark/80 group-hover:text-primary'}`}>
                                                 {link.name}
                                             </span>
@@ -113,7 +108,6 @@ const Navbar = () => {
                                 </motion.div>
                             ))}
                         </div>
-
                         <motion.a
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -163,7 +157,6 @@ const Navbar = () => {
                                                 onClick={() => setIsOpen(false)}
                                                 className="flex items-center gap-6 group"
                                             >
-                                                <span className="text-sm font-black text-secondary">{link.id}</span>
                                                 <span className="text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors">
                                                     {link.name}
                                                 </span>
@@ -174,7 +167,6 @@ const Navbar = () => {
                                                 onClick={() => setIsOpen(false)}
                                                 className="flex items-center gap-6 group"
                                             >
-                                                <span className="text-sm font-black text-secondary">{link.id}</span>
                                                 <span className="text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors">
                                                     {link.name}
                                                 </span>

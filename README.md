@@ -1,128 +1,122 @@
-# 🌐 IEEE Student Branch - Graphic Era Hill University (Dehradun)
-<!-- Verification: CI/CD Pipeline & Branch Protection -->
+<div align="center">
+  <img src="frontend/src/assets/logo.png" alt="IEEE GEHU" width="110" />
+  <h2>IEEE Student Branch — GEHU Dehradun</h2>
+  <p><em>Advancing Technology for Humanity</em></p>
 
-<p align="center">
-  <img src="frontend/src/assets/logo.png" alt="IEEE GEHU Logo" width="180">
-</p>
+  <p>
+    <a href="https://github.com/IEEE-Student-Branch-GEHU/ieee.web/actions/workflows/ci.yml">
+      <img src="https://github.com/IEEE-Student-Branch-GEHU/ieee.web/actions/workflows/ci.yml/badge.svg" alt="CI" />
+    </a>
+    <img src="https://img.shields.io/badge/license-MIT-blue" alt="License" />
+    <img src="https://img.shields.io/badge/node-%3E%3D18-green" alt="Node.js" />
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs Welcome" />
+  </p>
 
-<p align="center">
-  <strong>"Advancing Technology for Humanity"</strong>
-</p>
-
-<p align="center">
-  <a href="https://img.shields.io/badge/status-active-success.svg"><img src="https://img.shields.io/badge/status-active-success.svg" alt="Project Status"></a>
-  <a href="https://github.com/IEEE-Student-Branch-GEHU/ieee.web/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
-  <a href="https://react.dev/"><img src="https://img.shields.io/badge/react-19-blue.svg?logo=react" alt="React"></a>
-  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/tailwind-v4-38B2AC.svg?logo=tailwind-css" alt="Tailwind"></a>
-  <a href="https://www.mongodb.com/"><img src="https://img.shields.io/badge/database-MongoDB-green.svg?logo=mongodb" alt="MongoDB"></a>
-</p>
-
----
-
-## 🚀 Overview
-
-Welcome to the official repository of the **IEEE Student Branch at Graphic Era Hill University (GEHU), Dehradun**. This premium platform is built to showcase our technical excellence, leadership, and vibrant student community.
-
-This version features a **Production-Ready Cloud Architecture**, utilizing MongoDB Atlas and Cloudinary to ensure data persistence and scalability across modern cloud platforms like Vercel and Render.
+  <p>
+    <a href="https://ieee-gehu.vercel.app"><strong>🌐 Live Site</strong></a> ·
+    <a href="SETUP.md"><strong>📦 Setup Guide</strong></a> ·
+    <a href="#api-reference"><strong>📡 API Docs</strong></a> ·
+    <a href="https://github.com/IEEE-Student-Branch-GEHU/ieee.web/blob/main/CONTRIBUTING.md"><strong>🤝 Contributing</strong></a> ·
+    <a href="https://github.com/IEEE-Student-Branch-GEHU/ieee.web/issues"><strong>🐛 Issues</strong></a>
+  </p>
+</div>
 
 ---
 
-## ✨ Key Features
+## Overview
 
-### 🏛️ Landing Page (Public)
-- **🎨 Premium UI/UX**: Crafted with Framer Motion for smooth, staggering reveal animations and staggered entries.
-- **👨‍🏫 Global Branding**: Clean, sanitized codebase dedicated exclusively to IEEE GEHU Dehradun.
-- **📅 Events Hub**: Interactive showcase for past and upcoming branch events.
-- **📬 Fluid Communication**: Professional contact system with modern form validation.
-
-### 🛡️ Management Portal (Admin)
-- **🔐 Secure Access**: JWT-protected administrative dashboard with auto-initialization for the default admin.
-- **☁️ Cloud Persistence**: Transitioned from local JSON storage to **MongoDB Atlas** for reliable data management.
-- **🖼️ Persistent Assets**: Integrated **Cloudinary** for permanent image hosting, replacing ephemeral local storage.
-- **📊 Activity Tracking**: Live statistics overview for events and member growth.
+Official web platform of the **IEEE Student Branch at Graphic Era Hill University, Dehradun**. A production-grade full-stack application with a public events portal, animated landing page, and a JWT-secured admin dashboard for live content management.
 
 ---
 
-## 🛠️ Technology Stack
+## Tech Stack
 
-| Layer | Technologies |
+| Layer | Technology |
 | :--- | :--- |
-| **Frontend** | React 19, Vite, Tailwind CSS v4, Framer Motion |
-| **Backend** | Node.js, Express.js, Mongoose |
-| **Database** | MongoDB Atlas (Cloud) |
-| **Storage** | Cloudinary (Cloud CMS) |
-| **Icons & UI** | Lucide React, React Icons, Radix UI |
-| **Deployment** | Vercel (Frontend), Render (Backend Ready) |
+| Frontend | React 19, Vite, Tailwind CSS v4, Framer Motion |
+| Backend | Node.js, Express.js, Mongoose |
+| Database | MongoDB Atlas |
+| Storage | Cloudinary |
+| Auth | JSON Web Tokens (JWT) |
+| Testing | Vitest, React Testing Library |
+| CI/CD | GitHub Actions |
+| Deployment | Vercel (frontend) · Render (backend) |
 
 ---
 
-## 🏗️ Project Structure
+## Features
 
-```bash
-IEEE-website/
-├── 📂 frontend/           # React Application
-│   ├── 📂 src/
-│   │   ├── 📂 components/ # Reusable UI & Animations
-│   │   ├── 📂 pages/      # Landing & Admin Entry
-│   │   └── 📂 assets/     # Branding Identity
-│   └── vite.config.js     # Dev server & Proxy config
+**Public Portal**
+- Animated landing page with faculty, events, and contact sections
+- Events Archive — searchable, filterable, server-side paginated
+- Responsive across all devices
+
+**Admin Dashboard**
+- Secure JWT login with auto-initialized admin account
+- Full CRUD for Events and Team Members with Cloudinary image uploads
+- Rate limiting via `express-rate-limit`
+
+---
+
+## Project Structure
+
+```
+ieee.web/
+├── frontend/               # React 19 application
+│   └── src/
+│       ├── components/     # Navbar, ArchiveNavbar, Footer, animations
+│       ├── pages/          # Home, EventsArchive, Admin (protected)
+│       └── test/           # Vitest unit tests
 │
-├── 📂 backend/            # Express Cloud Server
-│   ├── 📂 config/         # Cloudinary & DB Config
-│   ├── 📂 models/         # Mongoose Schemas (Admin, Event, Team)
-│   ├── 📂 routes/         # API endpoints (Auth & CRUD)
-│   └── server.js          # Entry point with Auto-Init
+├── backend/                # Node.js / Express REST API
+│   ├── models/             # Admin, Event, Team schemas
+│   ├── routes/             # api.js (public), auth.js (protected)
+│   └── server.js           # Entry point
 │
-└── 📂 .github/            # GitHub Actions (CI/CD)
+└── .github/workflows/      # CI pipeline
 ```
 
 ---
 
-## 🚀 Getting Started
+## API Reference
 
-### 1. Clone & Install
-```bash
-git clone https://github.com/IEEE-Student-Branch-GEHU/ieee.web.git
-cd IEEE-website
-```
+### Public
 
-### 2. Configure Environment Variables
-Create a `.env` file in the `backend/` directory based on the `backend/.env.example` file. You will need:
-- `MONGODB_URI`: Your MongoDB Atlas connection string.
-- `CLOUDINARY_CLOUD_NAME`, `API_KEY`, `API_SECRET`: From your Cloudinary dashboard.
-- `JWT_SECRET`: A secure key for admin sessions.
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| GET | `/api/events` | Paginated events (`?page`, `?limit`, `?search`, `?category`) |
+| GET | `/api/team` | All team members |
+| POST | `/api/contact` | Contact form submission |
 
-### 3. Launch Backend (Port 5000)
-```bash
-cd backend
-npm install
-node server.js
-```
+### Protected *(Bearer token required)*
 
-### 4. Launch Frontend (Port 5173)
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Visit: **[http://localhost:5173/IEEE-website/](http://localhost:5173/IEEE-website/)**
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| POST | `/api/auth/login` | Returns a JWT |
+| POST/PUT/DELETE | `/api/auth/events/:id` | Events CRUD |
+| POST/PUT/DELETE | `/api/auth/team/:id` | Team CRUD |
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-We value technological innovation. Feel free to fork, hack, and submit PRs to the official organization repository!
+1. Fork the repository
+2. Create a branch: `git checkout -b feat/your-feature`
+3. Commit using [Conventional Commits](https://www.conventionalcommits.org)
+4. Open a pull request against `main`
 
-1. Fork the repo.
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
-3. Commit changes (`git commit -m 'Add AmazingFeature'`).
-4. Push to the branch (`git push origin feature/AmazingFeature`).
-5. Open a Pull Request.
+> All PRs must pass the CI pipeline. Branch protection is enforced on `main`.
+
+For local setup instructions, see **[SETUP.md](SETUP.md)**.
 
 ---
 
-<p align="center">
-  Generated with ⚡ by the <strong>IEEE Student Branch GEHU Team</strong><br>
-  <em>Advancing Technology for Humanity</em>
-</p>
+## License
+
+MIT — see [`LICENSE`](LICENSE) for details.
+
+---
+
+<div align="center">
+  <sub>IEEE Student Branch · Graphic Era Hill University, Dehradun</sub>
+</div>
