@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import {
     BsGithub,
     BsInstagram,
@@ -10,7 +9,7 @@ import { MdEmail, MdOutlineLocationOn } from "react-icons/md";
 // MD Icons
 import IeeeLogoWhite from "../assets/ieee-logo-white.png";
 
-function Footer() {
+function Footer({ sectionLinkPrefix = '' }) {
     const footerLinks = [
         {
             icon: <BsLinkedin />,
@@ -62,10 +61,11 @@ function Footer() {
                     <div className="flex flex-col gap-4">
                         <h3 className="font-bold text-lg mb-2 uppercase tracking-wide">Quick Links</h3>
                         <div className="flex flex-col gap-3 text-sm font-light">
-                            <Link to="/" className="hover:text-gray-300 transition-colors">Home</Link>
-                            <a href="#events" className="hover:text-gray-300 transition-colors">Events</a>
-                            <a href="#team" className="hover:text-gray-300 transition-colors">Executive Committee</a>
-                            <a href="#contact" className="hover:text-gray-300 transition-colors">Join Us</a>
+                            <a href="/" className="hover:text-gray-300 transition-colors">Home</a>
+                            <a href={`${sectionLinkPrefix}#events`} className="hover:text-gray-300 transition-colors">Events</a>
+                             <a href="/community" className="hover:text-gray-300 transition-colors">Community</a>
+                             <a href="/member/login" className="hover:text-gray-300 transition-colors">Member sign in</a>
+                             <a href={`${sectionLinkPrefix}#contact`} className="hover:text-gray-300 transition-colors">Join Us</a>
                         </div>
                     </div>
                 </div>
@@ -102,6 +102,10 @@ function Footer() {
                                     Uttarakhand, India
                                 </address>
                             </div>
+                            <nav aria-label="Legal" className="flex flex-wrap gap-4 border-t border-white/10 pt-4 text-sm">
+                                <a href="/privacy" className="hover:text-gray-300 transition-colors">Privacy Policy</a>
+                                <a href="/terms" className="hover:text-gray-300 transition-colors">Terms and Conditions</a>
+                            </nav>
                         </div>
                     </div>
                 </div>

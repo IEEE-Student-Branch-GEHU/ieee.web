@@ -1,0 +1,589 @@
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root,
+[data-theme='light'] {
+    color-scheme: light;
+    --site-surface: #f8fafc;
+    --site-panel: #ffffff;
+    --site-panel-muted: #f1f5f9;
+    --site-input: #ffffff;
+    --site-text: #0f172a;
+    --site-heading: #0a1128;
+    --site-muted: #64748b;
+    --site-subtle: #475569;
+    --site-border: #e2e8f0;
+    --site-border-strong: #cbd5e1;
+    --site-control: #ffffff;
+    --site-accent: #00629b;
+    --brand-deep: #0a1128;
+}
+
+html.dark,
+[data-theme='dark'] {
+    color-scheme: dark;
+    --site-surface: #0f172a;
+    --site-panel: #17233b;
+    --site-panel-muted: #1e293b;
+    --site-input: #111c31;
+    --site-text: #f8fafc;
+    --site-heading: #f8fafc;
+    --site-muted: #a7b3c7;
+    --site-subtle: #cbd5e1;
+    --site-border: #334155;
+    --site-border-strong: #475569;
+    --site-control: #1e293b;
+    --site-accent: #7dd3fc;
+    --brand-deep: #0a1128;
+}
+
+body {
+    background-color: var(--site-surface);
+    color: var(--site-text);
+}
+
+.site-surface {
+    background-color: var(--site-surface);
+    color: var(--site-text);
+}
+
+.site-panel {
+    background-color: var(--site-panel);
+    color: var(--site-text);
+}
+
+.site-panel-muted {
+    background-color: var(--site-panel-muted);
+}
+
+.site-text {
+    color: var(--site-text);
+}
+
+.site-muted {
+    color: var(--site-muted);
+}
+
+.site-accent {
+    color: var(--site-accent);
+}
+
+.site-accent-muted {
+    color: color-mix(in srgb, var(--site-accent) 70%, transparent);
+}
+
+.site-link {
+    color: #00629b;
+}
+
+.site-link:hover {
+    color: #004a73;
+}
+
+html.dark .site-link {
+    color: #7dd3fc;
+}
+
+html.dark .site-link:hover {
+    color: #bae6fd;
+}
+
+.site-border {
+    border-color: var(--site-border);
+}
+
+/* Public legacy sections use these names instead of relying on generic utility
+   rewrites. This keeps branded image overlays and deep-blue panels dark. */
+.theme-public {
+    background-color: var(--site-surface);
+    color: var(--site-text);
+}
+
+.theme-public .public-section {
+    background-color: var(--site-surface);
+    color: var(--site-text);
+}
+
+.theme-public .public-section-muted {
+    background-color: var(--site-panel-muted);
+    color: var(--site-text);
+}
+
+.theme-public .public-panel,
+.theme-public .public-card {
+    background-color: var(--site-panel);
+    border-color: var(--site-border);
+    color: var(--site-text);
+}
+
+.theme-public .public-card.group:hover .public-heading {
+    color: var(--site-accent);
+}
+
+.theme-public .public-heading {
+    color: var(--site-heading);
+}
+
+.theme-public .public-body {
+    color: var(--site-muted);
+}
+
+.theme-public .public-subtle {
+    color: var(--site-subtle);
+}
+
+.theme-public .public-input {
+    background-color: var(--site-input);
+    border-color: var(--site-border);
+    color: var(--site-text);
+}
+
+.theme-public .public-input::placeholder {
+    color: var(--site-muted);
+}
+
+.theme-public .public-input:focus {
+    background-color: var(--site-panel);
+    border-color: #00629b;
+}
+
+.theme-public .public-icon-surface {
+    background-color: var(--site-panel-muted);
+}
+
+.theme-public .public-image-placeholder {
+    background-color: var(--site-panel-muted);
+}
+
+.theme-public .public-success-overlay {
+    background-color: color-mix(in srgb, var(--site-panel) 96%, transparent);
+}
+
+.theme-public .public-event-action,
+.theme-public .public-control {
+    background-color: var(--site-input);
+    border-color: var(--site-border);
+    color: var(--site-accent);
+}
+
+.theme-public .public-event-action:hover,
+.theme-public .public-control:hover {
+    background-color: #00629b;
+    border-color: #00629b;
+    color: #ffffff;
+}
+
+.theme-public .public-outline-button {
+    background-color: color-mix(in srgb, var(--site-panel-muted) 72%, transparent);
+    border-color: var(--site-border-strong);
+    color: var(--site-heading);
+}
+
+.theme-public .public-outline-button:hover {
+    background-color: var(--brand-deep);
+    border-color: var(--brand-deep);
+    color: #ffffff;
+}
+
+.theme-public .public-dark-panel {
+    background-color: var(--brand-deep);
+    color: #ffffff;
+}
+
+.theme-public .public-dark-muted {
+    color: #a7b3c7;
+}
+
+/* The archive is a complete themed surface. Its filters and cards retain the
+   existing geometry while their colors come from the same semantic tokens. */
+.archive-page {
+    background-color: var(--site-surface);
+    color: var(--site-text);
+}
+
+.archive-page .archive-navbar-panel,
+.archive-page .archive-filter-panel,
+.archive-page .archive-card,
+.archive-page .archive-error-panel {
+    background-color: var(--site-panel);
+    border-color: var(--site-border);
+    color: var(--site-text);
+}
+
+.archive-page .archive-heading {
+    color: var(--site-heading);
+}
+
+.archive-page .archive-muted {
+    color: var(--site-muted);
+}
+
+.archive-page .archive-input,
+.archive-page .archive-filter-button:not(.is-selected),
+.archive-page .archive-action,
+.archive-page .archive-page-button:not(.is-selected) {
+    background-color: var(--site-input);
+    border-color: var(--site-border);
+    color: var(--site-text);
+}
+
+.archive-page .archive-input::placeholder {
+    color: var(--site-muted);
+}
+
+.archive-page .archive-input:focus,
+.archive-page .archive-filter-button:not(.is-selected):hover,
+.archive-page .archive-action:hover,
+.archive-page .archive-page-button:not(.is-selected):hover {
+    background-color: color-mix(in srgb, var(--site-panel-muted) 80%, var(--site-panel));
+    color: var(--site-heading);
+}
+
+.archive-page .archive-input:focus {
+    border-color: #00629b;
+}
+
+.archive-page .archive-badge {
+    background-color: color-mix(in srgb, var(--site-panel) 88%, transparent);
+    border-color: var(--site-border);
+    color: var(--site-text);
+}
+
+.archive-page .archive-page-button:disabled {
+    color: var(--site-muted);
+}
+
+.archive-page .archive-filter-button.is-selected,
+.archive-page .archive-page-button.is-selected {
+    background-color: #00629b;
+    border-color: #00629b;
+    color: #ffffff;
+}
+
+.archive-page .archive-search-icon {
+    color: var(--site-muted);
+}
+
+.archive-page .archive-search:focus-within .archive-search-icon {
+    color: var(--site-accent);
+}
+
+.archive-page .archive-modal-trigger {
+    background-color: var(--site-input);
+    border-color: var(--site-border);
+    color: var(--site-text);
+}
+
+.archive-page .archive-modal-trigger:hover {
+    background-color: #00629b;
+    border-color: #00629b;
+    color: #ffffff;
+}
+
+.archive-empty-illustration {
+    mix-blend-mode: multiply;
+}
+
+html.dark .archive-page .archive-empty-illustration {
+    mix-blend-mode: screen;
+}
+
+.archive-navbar-panel {
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+.archive-nav-icon {
+    background-color: var(--site-input);
+    border-color: var(--site-border);
+    color: var(--site-muted);
+}
+
+.archive-nav-icon:hover {
+    background-color: var(--site-panel-muted);
+    color: var(--site-heading);
+}
+
+.archive-nav-label {
+    color: var(--site-muted);
+}
+
+.archive-nav-label:hover {
+    color: #00629b;
+}
+
+.archive-nav-divider {
+    background-color: var(--site-border);
+}
+
+/* Admin screens share the public tokens but retain the existing dark branded
+   sidebar and quick-tip card. */
+.admin-shell,
+.admin-login {
+    background-color: var(--site-surface);
+    color: var(--site-text);
+}
+
+/* The Next route adapters still share a few legacy utility names. Keep the
+   compatibility bridge inside the admin scope so public and branded surfaces
+   are not affected. */
+.admin-shell .bg-white {
+    background-color: var(--site-panel);
+}
+
+.admin-shell .bg-gray-50,
+.admin-shell .bg-gray-100 {
+    background-color: var(--site-panel-muted);
+}
+
+.admin-shell .bg-gray-200 {
+    background-color: var(--site-border-strong);
+}
+
+.admin-shell .text-gray-900,
+.admin-shell .text-gray-800,
+.admin-shell .text-gray-700 {
+    color: var(--site-heading);
+}
+
+.admin-shell .text-gray-600,
+.admin-shell .text-gray-500,
+.admin-shell .text-gray-400 {
+    color: var(--site-muted);
+}
+
+.admin-shell .border-gray-50,
+.admin-shell .border-gray-100,
+.admin-shell .border-gray-200,
+.admin-shell .border-gray-300 {
+    border-color: var(--site-border);
+}
+
+.admin-header,
+.admin-panel,
+.admin-table,
+.admin-modal,
+.admin-login-card {
+    background-color: var(--site-panel);
+    border-color: var(--site-border);
+    color: var(--site-text);
+}
+
+.admin-heading {
+    color: var(--site-heading);
+}
+
+.admin-muted,
+.admin-label {
+    color: var(--site-muted);
+}
+
+.admin-input {
+    background-color: var(--site-input);
+    border-color: var(--site-border-strong);
+    color: var(--site-text);
+}
+
+.admin-input::placeholder {
+    color: var(--site-muted);
+}
+
+.admin-input:focus {
+    border-color: #00629b;
+    box-shadow: 0 0 0 3px rgba(0, 98, 155, 0.16);
+}
+
+.admin-table-head {
+    background-color: var(--site-panel-muted);
+    color: var(--site-muted);
+}
+
+.admin-table-row {
+    border-color: var(--site-border);
+}
+
+.admin-table-row:hover {
+    background-color: var(--site-panel-muted);
+}
+
+.admin-table-body > tr {
+    border-color: var(--site-border);
+}
+
+.admin-table-primary {
+    color: var(--site-heading);
+}
+
+.admin-table-secondary {
+    color: var(--site-muted);
+}
+
+.admin-divider {
+    border-color: var(--site-border);
+}
+
+.admin-photo-button {
+    border-color: var(--site-border);
+    color: var(--site-text);
+}
+
+.admin-photo-button:hover {
+    background-color: var(--site-panel-muted);
+}
+
+.admin-icon-button {
+    color: var(--site-muted);
+}
+
+.admin-icon-button:hover {
+    background-color: var(--site-panel-muted);
+    color: var(--site-heading);
+}
+
+.admin-upload {
+    background-color: var(--site-input);
+    border-color: var(--site-border-strong);
+}
+
+.admin-profile-section {
+    border-color: var(--site-border);
+}
+
+.admin-modal-header {
+    background-color: var(--site-panel-muted);
+    border-color: var(--site-border);
+}
+
+.admin-status-error {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+    color: #b91c1c;
+}
+
+.admin-status-success {
+    color: #00629b;
+}
+
+.admin-dialog-item {
+    border-color: var(--site-border);
+}
+
+html.dark .admin-status-error {
+    background-color: rgba(127, 29, 29, 0.35);
+    border-color: rgba(248, 113, 113, 0.45);
+    color: #fca5a5;
+}
+
+.admin-login-top-link,
+.admin-login-footer {
+    color: var(--site-muted);
+}
+
+.admin-login-title {
+    color: var(--site-heading);
+}
+
+.admin-login-divider {
+    background-color: var(--site-border-strong);
+}
+
+.admin-login-card {
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.14);
+}
+
+html.dark .admin-login-card {
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+}
+
+/* Shared controls. Keeping these selectors explicit avoids making generic
+   Tailwind utilities behave differently on unrelated pages. */
+.theme-toggle {
+    background-color: var(--site-control);
+    border-color: var(--site-border-strong);
+    color: var(--site-heading);
+}
+
+.theme-toggle:hover {
+    background-color: var(--site-panel-muted);
+}
+
+.site-navbar {
+    color: #ffffff;
+}
+
+.site-navbar.is-scrolled {
+    background-color: color-mix(in srgb, var(--site-panel) 92%, transparent);
+    border-bottom: 1px solid var(--site-border);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+
+.site-nav-link {
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.site-nav-link:hover {
+    color: #00b5e2;
+}
+
+.site-navbar.is-scrolled .site-nav-link,
+.site-navbar.is-scrolled .site-nav-link:hover {
+    color: var(--site-heading);
+}
+
+.site-navbar:not(.is-scrolled) .theme-toggle,
+.site-nav-toggle {
+    background-color: rgba(10, 17, 40, 0.35);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+}
+
+.site-navbar:not(.is-scrolled) .theme-toggle:hover,
+.site-nav-toggle:hover {
+    background-color: rgba(10, 17, 40, 0.58);
+}
+
+.site-navbar.is-scrolled .theme-toggle,
+.site-navbar.is-scrolled .site-nav-toggle {
+    background-color: var(--site-control);
+    border-color: var(--site-border-strong);
+    color: var(--site-heading);
+}
+
+.site-mobile-menu {
+    background-color: rgba(10, 17, 40, 0.97);
+    color: #ffffff;
+}
+
+.site-mobile-menu .site-mobile-muted {
+    color: #a7b3c7;
+}
+
+.site-modal {
+    background-color: var(--site-panel);
+    border-color: var(--site-border);
+    color: var(--site-text);
+}
+
+.site-modal .site-modal-header {
+    border-color: var(--site-border);
+}
+
+[data-qr-surface] {
+    background: #ffffff;
+    color: #111827;
+}
+
+.dark .bg-mesh {
+    background-color: var(--site-surface);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .theme-toggle {
+        transition: none;
+    }
+}

@@ -1,39 +1,30 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { Card, CardTitle, CardDescription } from "./ui/card";
 import { Button } from "./ui/button";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { Reveal } from "./animations/Reveal";
 import { BsInstagram, BsLinkedin } from "react-icons/bs";
-import API_BASE_URL from '../config';
+import { fetchHomepageJson, normalizeTeamResponse } from '../lib/homepage-api';
+import { getMemberProfilePath } from '../lib/public-site';
 
 const ExecTeam = () => {
     const [teamData, setTeamData] = useState([]);
 
-    const fallbackTeam = [
-        { name: "Placeholder Name", role: "Chairperson" },
-        { name: "Placeholder Name", role: "Vice-Chair" },
-        { name: "Placeholder Name", role: "Secretary" },
-        { name: "Placeholder Name", role: "Webmaster" },
-    ];
-
     useEffect(() => {
-        fetch(`${API_BASE_URL}/team`)
-            .then(res => res.json())
-            .then(data => {
-                if (Array.isArray(data) && data.length > 0) {
-                    const filtered = data.filter(m =>
-                        !m.role.toLowerCase().includes('counselor') &&
-                        m.category !== 'faculty'
-                    );
-                    setTeamData(filtered);
-                } else {
-                    setTeamData(fallbackTeam);
-                }
-            })
+        const controller = new AbortController();
+
+        fetchHomepageJson('/team', { signal: controller.signal })
+            .then(data => setTeamData(normalizeTeamResponse(data).filter(member =>
+                !member.role?.toLowerCase().includes('counselor') && member.category !== 'faculty'
+            )))
             .catch(err => {
+                if (err.name === 'AbortError') return;
                 console.error('Failed to fetch team data:', err);
-                setTeamData(fallbackTeam);
             });
+
+        return () => controller.abort();
     }, []);
 
     const containerVariants = {
@@ -56,18 +47,18 @@ const ExecTeam = () => {
     };
 
     return (
-        <section id="team" className="py-24 bg-gray-50/50">
+        <section id="team" className="public-section-muted py-24">
             <div className="container mx-auto px-6 max-w-[1200px]">
                 <div className="flex flex-col items-center mb-16">
                     <Reveal>
-                        <h3 className="text-4xl md:text-5xl font-bold text-center uppercase text-primaryDark tracking-tight mb-4">
+                        <h3 className="public-heading text-4xl md:text-5xl font-bold text-center uppercase tracking-tight mb-4">
                             Executive Committee
                         </h3>
                     </Reveal>
                     <div className="w-24 h-1.5 bg-primary rounded-full" />
                 </div>
 
-                <motion.div
+                <Motion.div
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
@@ -75,11 +66,11 @@ const ExecTeam = () => {
                     className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10"
                 >
                     {teamData.map((member, index) => (
-                        <motion.div key={index} variants={itemVariants}>
-                            <Card
-                                className="group h-full flex flex-col items-center bg-white border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 rounded-3xl overflow-hidden"
-                            >
-                                <div className="aspect-[4/5] w-full relative overflow-hidden bg-gray-200">
+                        <Motion.div key={member._id || index} variants={itemVariants}>
+                             <Card
+                                 className="public-card group h-full flex flex-col items-center border shadow-sm hover:shadow-2xl transition-all duration-500 rounded-3xl overflow-hidden"
+                             >
+                                <div className="public-image-placeholder aspect-[4/5] w-full relative overflow-hidden">
                                     <img
                                         src={member.image || "https://via.placeholder.com/400x500"}
                                         alt={member.name}
@@ -107,22 +98,23 @@ const ExecTeam = () => {
                                     </div>
                                 </div>
 
-                                <div className="text-center p-8 space-y-2 flex-grow">
-                                    <h4 className="text-xl font-bold text-dark group-hover:text-primary transition-colors">
-                                        {member.name}
-                                    </h4>
-                                    <p className="text-primary/70 font-bold text-xs uppercase tracking-widest">{member.role}</p>
+                                 <div className="text-center p-8 space-y-2 flex-grow">
+                                      <h4 className="public-heading text-xl font-bold group-hover:text-primary transition-colors">
+                                         <a href={getMemberProfilePath(member._id)} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary">{member.name}</a>
+                                     </h4>
+                                     <p className="site-accent-muted font-bold text-xs uppercase tracking-widest">{member.role}</p>
                                 </div>
                             </Card>
-                        </motion.div>
+                        </Motion.div>
                     ))}
-                </motion.div>
+                </Motion.div>
 
                 <div className="flex justify-center mt-16">
                     <Button
-                        className="px-10 py-7 bg-primaryDark/5 text-primaryDark border-2 border-primaryDark/10 rounded-2xl hover:bg-primaryDark hover:text-white hover:border-primaryDark transition-all duration-300 font-bold tracking-widest text-sm shadow-sm"
+                        asChild
+                         className="public-outline-button px-10 py-7 border-2 rounded-2xl hover:bg-primaryDark hover:text-white hover:border-primaryDark transition-all duration-300 font-bold tracking-widest text-sm shadow-sm"
                     >
-                        VIEW FULL TEAM
+                         <a href="/community">VIEW FULL TEAM</a>
                     </Button>
                 </div>
             </div>

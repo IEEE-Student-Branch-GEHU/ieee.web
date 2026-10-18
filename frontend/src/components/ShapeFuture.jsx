@@ -1,4 +1,6 @@
-import { motion } from "framer-motion";
+'use client';
+
+import { motion as Motion } from "framer-motion";
 import { Reveal } from "./animations/Reveal";
 import { ArrowRight } from "lucide-react";
 
@@ -6,12 +8,12 @@ const ShapeFuture = () => {
     const imageSrc = "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1742&auto=format&fit=crop";
 
     return (
-        <section className="py-24 relative overflow-hidden">
+        <section className="public-section py-24 relative overflow-hidden">
             {/* Background Decorative Elements */}
             <div className="absolute top-1/2 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[140px] -z-10 -translate-y-1/2" />
 
             <div className="container mx-auto px-6">
-                <div className="bg-primaryDark rounded-[4rem] overflow-hidden relative group">
+                <div className="public-dark-panel bg-primaryDark rounded-[4rem] overflow-hidden relative group">
                     {/* Animated Background Mesh */}
                     <div className="absolute inset-0 bg-mesh-dark opacity-40" />
                     <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[160px] -mr-1/4 -mt-1/4 group-hover:bg-primary/30 transition-colors duration-1000" />
@@ -28,14 +30,14 @@ const ShapeFuture = () => {
                                 </h2>
                             </Reveal>
                             <Reveal>
-                                <p className="text-gray-400 text-lg font-medium leading-relaxed max-w-xl">
+                                <p className="public-dark-muted text-lg font-medium leading-relaxed max-w-xl">
                                     Creating isn’t just what we do; it’s how we think. We’re a community
                                     of global innovators eager to explore new frontiers together.
                                     Are you ready to leave your mark?
                                 </p>
                             </Reveal>
 
-                            <motion.div
+                            <Motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
@@ -56,10 +58,10 @@ const ShapeFuture = () => {
                                 >
                                     IEEE Global
                                 </a>
-                            </motion.div>
+                            </Motion.div>
                         </div>
 
-                        <motion.div
+                        <Motion.div
                             initial={{ opacity: 0, scale: 0.8, rotate: 5 }}
                             whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
                             viewport={{ once: true }}
@@ -76,7 +78,7 @@ const ShapeFuture = () => {
                             </div>
 
                             {/* Floating Stats Card */}
-                            <motion.div
+                            <Motion.div
                                 animate={{ y: [0, -20, 0] }}
                                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
                                 className="absolute -bottom-10 -left-10 glass-dark p-8 rounded-[2rem] border border-white/10 hidden md:block z-20"
@@ -87,11 +89,11 @@ const ShapeFuture = () => {
                                     </div>
                                     <div>
                                         <h4 className="text-white font-black text-xl tracking-tight">Active Tech</h4>
-                                        <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">Innovation Hub</p>
+                                         <p className="public-dark-muted text-xs font-bold uppercase tracking-widest">Innovation Hub</p>
                                     </div>
                                 </div>
-                            </motion.div>
-                        </motion.div>
+                            </Motion.div>
+                        </Motion.div>
                     </div>
                 </div>
             </div>

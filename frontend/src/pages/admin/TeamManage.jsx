@@ -2,12 +2,18 @@ import { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash2, X, Upload } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import API_BASE_URL from '../../config';
+import { fetchJson } from '../../lib/http';
+import MemberProfileActions from '../../components/admin/MemberProfileActions';
+import MemberProfileFields from '../../components/admin/MemberProfileFields';
+import { buildMemberPayload, createMemberForm } from '../../components/admin/memberProfile';
+import MemberAccountProvisioning from '../../components/admin/MemberAccountProvisioning';
+import { getStableMemberId } from '../../lib/public-site';
 
 const TeamManage = () => {
     const [team, setTeam] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingMember, setEditingMember] = useState(null);
-    const [formData, setFormData] = useState({ name: '', role: '', bio: '', image: '', linkedin: '', instagram: '', category: 'executive' });
+    const [formData, setFormData] = useState(() => createMemberForm(null, 'executive'));
     const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
@@ -15,8 +21,7 @@ const TeamManage = () => {
     }, []);
 
     const fetchTeam = async () => {
-        const res = await fetch(`${API_BASE_URL}/team`);
-        const data = await res.json();
+        const data = await fetchJson(`${API_BASE_URL}/team`);
         if (Array.isArray(data)) {
             // Exclude Faculty members from the general Team members list
             setTeam(data.filter(m => m.category !== 'faculty'));
@@ -34,14 +39,13 @@ const TeamManage = () => {
         form.append('image', file);
 
         try {
-            const res = await fetch(`${API_BASE_URL}/admin/upload`, {
+            const data = await fetchJson(`${API_BASE_URL}/admin/upload`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` },
                 body: form
             });
-            const data = await res.json();
-            if (res.ok) setFormData({ ...formData, image: data.url });
-        } catch (err) {
+            setFormData(previous => ({ ...previous, image: data.url }));
+        } catch {
             alert('Upload failed');
         } finally {
             setUploading(false);
@@ -50,68 +54,68 @@ const TeamManage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const url = editingMember ? `${API_BASE_URL}/admin/team/${editingMember._id || editingMember.id}` : `${API_BASE_URL}/admin/team`;
+        const memberId = getStableMemberId(editingMember);
+        if (editingMember && !memberId) {
+            alert('This member has no valid MongoDB profile ID and cannot be edited.');
+            return;
+        }
+        const url = editingMember ? `${API_BASE_URL}/admin/team/${memberId}` : `${API_BASE_URL}/admin/team`;
         const method = editingMember ? 'PUT' : 'POST';
 
         try {
-            const res = await fetch(url, {
+            await fetchJson(url, {
                 method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(buildMemberPayload(formData))
             });
 
-            if (res.ok) {
-                setIsModalOpen(false);
-                setEditingMember(null);
-                setFormData({ name: '', role: '', bio: '', image: '', linkedin: '', instagram: '', category: 'executive' });
-                fetchTeam();
-            } else {
-                const errorData = await res.json();
-                alert(`Error: ${errorData.message || 'Failed to save member.'}`);
-            }
+            setIsModalOpen(false);
+            setEditingMember(null);
+            setFormData(createMemberForm(null, 'executive'));
+            fetchTeam();
         } catch (err) {
-            alert('A networking error occurred. Please check your connection.');
+            alert(err.message || 'A networking error occurred. Please check your connection.');
         }
     };
 
     const handleDelete = async (id) => {
+        if (!id) {
+            alert('This member has no valid MongoDB profile ID and cannot be deleted.');
+            return;
+        }
         if (!window.confirm('Are you sure you want to delete this member?')) return;
         try {
-            const res = await fetch(`${API_BASE_URL}/admin/team/${id}`, {
+            await fetchJson(`${API_BASE_URL}/admin/team/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
             });
-            if (res.ok) {
-                fetchTeam();
-            } else {
-                alert('Failed to delete member.');
-            }
+            fetchTeam();
         } catch (err) {
-            alert('Networking error occurred.');
+            alert(err.message || 'Networking error occurred.');
         }
     };
 
     const openEdit = (member) => {
         setEditingMember(member);
-        setFormData(member);
+        setFormData(createMemberForm(member, member.category || 'executive'));
         setIsModalOpen(true);
     };
 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-gray-800">Manage Team Members</h2>
-                <Button onClick={() => { setEditingMember(null); setIsModalOpen(true); }} className="flex gap-2 items-center bg-primary hover:bg-primaryDark text-white">
+                 <h2 className="admin-heading text-2xl font-bold">Manage Team Members</h2>
+                <Button onClick={() => { setEditingMember(null); setFormData(createMemberForm(null, 'executive')); setIsModalOpen(true); }} className="flex gap-2 items-center bg-primary hover:bg-primaryDark text-white">
                     <Plus size={18} /> Add Member
                 </Button>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <table className="w-full text-left border-collapse">
-                    <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+             <div className="admin-table rounded-2xl shadow-sm border overflow-hidden">
+                 <table className="w-full text-left border-collapse">
+                     <thead className="admin-table-head text-xs uppercase tracking-wider">
                         <tr>
                             <th className="px-6 py-4 font-semibold">Member</th>
                             <th className="px-6 py-4 font-semibold">Role</th>
@@ -119,22 +123,22 @@ const TeamManage = () => {
                             <th className="px-6 py-4 font-semibold text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                     <tbody className="admin-table-body divide-y">
                         {team.map((member) => (
-                            <tr key={member.id} className="hover:bg-gray-50 transition-colors">
+                              <tr key={getStableMemberId(member) || `${member.name}-${member.role}`} className="admin-table-row transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         {member.image ? (
                                             <img src={member.image} alt="" className="w-10 h-10 rounded-full object-cover" />
                                         ) : (
                                             <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 font-bold uppercase overflow-hidden">
-                                                {member.name.substring(0, 2)}
-                                            </div>
+                                                {member.name?.substring(0, 2)}
+             </div>
                                         )}
-                                        <span className="font-medium text-gray-900">{member.name}</span>
+                                         <span className="admin-table-primary font-medium">{member.name}</span>
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 text-sm text-gray-600">{member.role}</td>
+                                 <td className="admin-table-secondary px-6 py-4 text-sm">{member.role}</td>
                                 <td className="px-6 py-4 text-sm">
                                     <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${member.category === 'faculty' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'
                                         }`}>
@@ -142,11 +146,12 @@ const TeamManage = () => {
                                     </span>
                                 </td>
                                 <td className="px-6 py-4 text-right">
-                                    <div className="flex justify-end gap-2">
-                                        <button onClick={() => openEdit(member)} className="p-2 text-gray-400 hover:text-primary hover:bg-blue-50 rounded-lg transition-all">
+                                    <div className="flex flex-wrap justify-end gap-2">
+                                        <MemberProfileActions member={member} />
+                                         <button type="button" aria-label={`Edit ${member.name}`} onClick={() => openEdit(member)} className="admin-icon-button p-2 rounded-lg transition-all">
                                             <Pencil size={18} />
                                         </button>
-                                        <button onClick={() => handleDelete(member.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
+                                          <button type="button" aria-label={`Delete ${member.name}`} onClick={() => handleDelete(getStableMemberId(member))} className="admin-icon-button p-2 rounded-lg transition-all">
                                             <Trash2 size={18} />
                                         </button>
                                     </div>
@@ -155,87 +160,65 @@ const TeamManage = () => {
                         ))}
                     </tbody>
                 </table>
-            </div>
+             </div>
 
-            {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-                    <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-                        <div className="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
-                            <h3 className="font-bold text-gray-800">{editingMember ? 'Edit Member' : 'Add New Member'}</h3>
-                            <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
+             <MemberAccountProvisioning members={team} />
+
+             {isModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4 backdrop-blur-sm">
+                     <div className="admin-modal my-4 flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border shadow-2xl animate-in zoom-in-95 duration-200">
+                         <div className="admin-modal-header px-6 py-4 border-b flex justify-between items-center">
+                             <h3 className="admin-heading font-bold">{editingMember ? 'Edit Member' : 'Add New Member'}</h3>
+                             <button type="button" aria-label="Close member form" onClick={() => setIsModalOpen(false)} className="admin-icon-button"><X size={20} /></button>
                         </div>
-                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
+                        <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto p-6">
+                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Name</label>
+                                     <label htmlFor="team-member-name" className="admin-label block text-xs font-bold uppercase mb-1">Name</label>
                                     <input
+                                        id="team-member-name"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
+                                         className="admin-input w-full px-4 py-2 border rounded-xl outline-none"
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Role</label>
+                                     <label htmlFor="team-member-role" className="admin-label block text-xs font-bold uppercase mb-1">Role</label>
                                     <input
+                                        id="team-member-role"
                                         placeholder="e.g. Chairperson"
                                         value={formData.role}
                                         onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                        className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
+                                         className="admin-input w-full px-4 py-2 border rounded-xl outline-none"
                                         required
                                     />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Category</label>
+                                 <label htmlFor="team-member-category" className="admin-label block text-xs font-bold uppercase mb-1">Category</label>
                                 <select
+                                    id="team-member-category"
                                     value={formData.category}
                                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                    className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none appearance-none"
+                                     className="admin-input w-full px-4 py-2 border rounded-xl outline-none appearance-none"
                                 >
                                     <option value="executive">Executive Team</option>
                                     <option value="faculty">Faculty Coordinator</option>
                                 </select>
                             </div>
+                            <MemberProfileFields formData={formData} onChange={setFormData} idPrefix="team-member" />
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Short Bio</label>
-                                <textarea
-                                    value={formData.bio}
-                                    onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                                    className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none h-20 resize-none"
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">LinkedIn URL</label>
-                                    <input
-                                        type="url"
-                                        value={formData.linkedin}
-                                        onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
-                                        className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Instagram URL</label>
-                                    <input
-                                        type="url"
-                                        value={formData.instagram}
-                                        onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
-                                        className="w-full px-4 py-2 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Photo</label>
+                                 <label className="admin-label block text-xs font-bold uppercase mb-1">Photo</label>
                                 <div className="flex items-center gap-4">
                                     <div className="flex-1">
-                                        <div className="relative group overflow-hidden bg-gray-50 border border-dashed border-gray-300 rounded-xl hover:border-primary transition-all">
+                                         <div className="admin-upload relative group overflow-hidden border border-dashed rounded-xl hover:border-primary transition-all">
                                             <input
                                                 type="file"
                                                 onChange={handleUpload}
                                                 className="absolute inset-0 opacity-0 cursor-pointer"
                                             />
-                                            <div className="py-2 flex items-center justify-center gap-2 text-gray-500 group-hover:text-primary italic text-sm">
+                                             <div className="admin-muted py-2 flex items-center justify-center gap-2 group-hover:text-primary italic text-sm">
                                                 <Upload size={16} /> {uploading ? 'Uploading...' : 'Click to upload'}
                                             </div>
                                         </div>

@@ -1,5 +1,6 @@
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Calendar, Users, LogOut, Home, GraduationCap } from 'lucide-react';
+import { ThemeToggle } from '../theme/ThemeToggle';
 
 const AdminLayout = ({ children }) => {
     const navigate = useNavigate();
@@ -18,7 +19,7 @@ const AdminLayout = ({ children }) => {
     };
 
     return (
-        <div className="flex h-screen bg-gray-50 overflow-hidden">
+        <div className="admin-shell site-surface flex h-screen overflow-hidden">
             {/* Sidebar */}
             <aside className="w-64 bg-slate-900 text-white flex flex-col pt-6">
                 <div className="px-6 mb-10 flex flex-col">
@@ -65,11 +66,12 @@ const AdminLayout = ({ children }) => {
 
             {/* Main Content */}
             <main className="flex-1 flex flex-col overflow-hidden">
-                <header className="h-16 bg-white border-b flex items-center justify-between px-8 shrink-0">
-                    <h1 className="text-lg font-semibold text-gray-800 italic">
+                <header className="admin-header h-16 border-b flex items-center justify-between px-8 shrink-0">
+                    <h1 className="admin-heading text-lg font-semibold italic">
                         {menuItems.find(item => item.path === location.pathname)?.name || 'Admin Management'}
                     </h1>
                     <div className="flex items-center gap-4">
+                         <ThemeToggle />
                         <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">
                             AD
                         </div>

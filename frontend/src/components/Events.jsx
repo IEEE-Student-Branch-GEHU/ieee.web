@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "./ui/card";
 import {
@@ -10,20 +12,32 @@ import {
 import { Button } from "./ui/button";
 import { Calendar, MapPin } from 'lucide-react';
 
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { Reveal } from "./animations/Reveal";
-import API_BASE_URL from '../config';
+import { fetchHomepageJson, normalizeEventsResponse } from '../lib/homepage-api';
+import EventHighlights from './EventHighlights';
 
 const Events = () => {
     const [eventsData, setEventsData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [selectedEvent, setSelectedEvent] = useState(null);
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}/events`)
-            .then(res => res.json())
-            .then(data => {
-                if (Array.isArray(data)) setEventsData(data);
+        const controller = new AbortController();
+
+        fetchHomepageJson('/events?limit=12', { signal: controller.signal })
+            .then(data => setEventsData(normalizeEventsResponse(data)))
+            .catch(err => {
+                if (err.name === 'AbortError') return;
+                console.error('Failed to fetch events:', err);
+                setError('Unable to load events right now.');
             })
-            .catch(err => console.error('Failed to fetch events:', err));
+            .finally(() => {
+                if (!controller.signal.aborted) setLoading(false);
+            });
+
+        return () => controller.abort();
     }, []);
 
     const containerVariants = {
@@ -47,32 +61,39 @@ const Events = () => {
     };
 
     return (
-        <section id="events" className="py-24 bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+        <section id="events" className="public-section py-24 overflow-hidden">
             <div className="container mx-auto max-w-[1200px] space-y-12 px-6 xl:px-0">
                 <div className="flex flex-col items-center">
                     <Reveal>
-                        <h3 className="text-4xl md:text-5xl font-bold text-center uppercase text-primaryDark tracking-tighter mb-4">
+                        <h3 className="public-heading text-4xl md:text-5xl font-bold text-center uppercase tracking-tighter mb-4">
                             LATEST EVENTS
                         </h3>
                     </Reveal>
                     <div className="w-24 h-1.5 bg-primary rounded-full" />
                 </div>
 
-                <motion.div
+                <Motion.div
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true, margin: "-100px" }}
                 >
-                    <Carousel className="w-full">
-                        <CarouselContent className="-ml-6">
-                            {eventsData.map((event, index) => (
+                    {loading ? (
+                        <p className="public-body py-12 text-center">Loading events...</p>
+                    ) : error ? (
+                        <p role="alert" className="public-body py-12 text-center">{error}</p>
+                    ) : eventsData.length === 0 ? (
+                        <p className="public-body py-12 text-center">No events available yet.</p>
+                    ) : (
+                        <Carousel className="w-full">
+                            <CarouselContent className="-ml-6">
+                                {eventsData.map((event, index) => (
                                 <CarouselItem
                                     key={index}
                                     className="pl-6 md:basis-1/2 lg:basis-1/3"
                                 >
-                                    <motion.div variants={itemVariants}>
-                                        <Card className="h-[34rem] shadow-xl rounded-2xl overflow-hidden border border-gray-100 flex flex-col group hover:shadow-2xl transition-all duration-500 bg-white">
+                                    <Motion.div variants={itemVariants}>
+                                        <Card className="public-card h-[34rem] shadow-xl rounded-2xl overflow-hidden border flex flex-col group hover:shadow-2xl transition-all duration-500">
                                             <CardContent className="flex flex-col p-0 gap-6 h-full relative">
                                                 <div className="w-full space-y-5 flex-grow">
                                                     <div className="aspect-[4/3] relative w-full overflow-hidden">
@@ -88,44 +109,44 @@ const Events = () => {
                                                     </div>
 
                                                     <div className="px-6 flex flex-col gap-3">
-                                                        <h2 className="text-2xl font-bold text-dark leading-tight group-hover:text-primary transition-colors duration-300">
+                                                         <h2 className="public-heading text-2xl font-bold leading-tight group-hover:text-primary transition-colors duration-300">
                                                             {event.title}
                                                         </h2>
 
-                                                        <div className="flex items-center gap-2 text-primary/80 font-bold text-xs uppercase tracking-wider">
-                                                            <Calendar size={14} className="text-primary" />
+                                                         <div className="site-accent-muted flex items-center gap-2 font-bold text-xs uppercase tracking-wider">
+                                                             <Calendar size={14} className="site-accent" />
                                                             <span>{new Date(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                                                         </div>
 
-                                                        <p className="text-sm text-gray-600 leading-relaxed line-clamp-4 font-medium">
+                                                         <p className="public-body text-sm leading-relaxed line-clamp-4 font-medium">
                                                             {event.description}
                                                         </p>
                                                     </div>
                                                 </div>
 
                                                 <div className="px-6 pb-6">
-                                                    <a href="#about" className="block w-full">
-                                                        <Button
-                                                            className="font-bold w-full bg-primary/10 text-primary border-2 border-primary/20 rounded-xl hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 py-6"
-                                                        >
-                                                            Discover More
-                                                        </Button>
-                                                    </a>
+                                                    <Button type="button" aria-label={`View highlights for ${event.title}`} aria-haspopup="dialog" onClick={() => setSelectedEvent(event)}
+                                                     className="public-event-action site-accent font-bold w-full bg-primary/10 border-2 border-primary/20 rounded-xl hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 py-6"
+                                                    >
+                                                        View Highlights
+                                                    </Button>
                                                 </div>
                                             </CardContent>
                                         </Card>
-                                    </motion.div>
+                                    </Motion.div>
                                 </CarouselItem>
-                            ))}
-                        </CarouselContent>
+                                ))}
+                            </CarouselContent>
 
-                        <div className="hidden xl:block">
-                            <CarouselPrevious className="left-[-60px] bg-white border-2 border-primary/20 text-primary hover:bg-primary hover:text-white h-12 w-12" />
-                            <CarouselNext className="right-[-60px] bg-white border-2 border-primary/20 text-primary hover:bg-primary hover:text-white h-12 w-12" />
-                        </div>
-                    </Carousel>
-                </motion.div>
+                            <div className="hidden xl:block">
+                                 <CarouselPrevious className="public-control left-[-60px] border-2 border-primary/20 text-primary hover:bg-primary hover:text-white h-12 w-12" />
+                                 <CarouselNext className="public-control right-[-60px] border-2 border-primary/20 text-primary hover:bg-primary hover:text-white h-12 w-12" />
+                            </div>
+                        </Carousel>
+                    )}
+                </Motion.div>
             </div>
+            {selectedEvent && <EventHighlights key={selectedEvent._id || selectedEvent.id || selectedEvent.title} event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
         </section>
     );
 };

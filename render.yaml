@@ -1,17 +1,28 @@
 services:
   - type: web
     name: ieee-gehu-api
-    env: node
+    runtime: node
     rootDir: backend
-    buildCommand: npm install
-    startCommand: node server.js
+    buildCommand: npm ci
+    startCommand: npm start
     plan: free
+    healthCheckPath: /health
     envVars:
+      - key: NODE_ENV
+        value: production
       - key: NODE_VERSION
-        value: 18.17.0
-      - key: PORT
-        value: "5000"
-      - key: MONGO_URI
-        value: "pending"
+        value: 20.19.0
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
       - key: FRONTEND_URL
         value: https://ieee-web-seven.vercel.app

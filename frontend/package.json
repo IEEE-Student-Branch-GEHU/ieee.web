@@ -3,9 +3,15 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=20.19.0 <25"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "dev:next": "next dev",
+    "build:next": "next build",
+    "start:next": "next start",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run"
@@ -20,6 +26,8 @@
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.33.0",
     "lucide-react": "^0.563.0",
+    "next": "^16.4.0",
+    "qrcode": "^1.5.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
@@ -28,6 +36,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@tailwindcss/postcss": "^4.1.18",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
