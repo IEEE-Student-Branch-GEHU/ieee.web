@@ -35,6 +35,7 @@ process.env.NODE_ENV = 'test';
 process.env.MONGODB_URI = '';
 process.env.ADMIN_USERNAME = 'ieee_test_admin';
 process.env.ADMIN_PASSWORD = CURRENT_PASSWORD;
+process.env.JWT_SECRET = 'password-reset-test-signing-secret-at-least-32-characters';
 
 const { hashAdminPassword } = require('../services/admin-credentials');
 const { resetAdminPassword } = require('../scripts/reset-admin-password');

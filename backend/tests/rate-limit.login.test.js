@@ -6,6 +6,7 @@ const loadApp = () => {
   jest.resetModules();
   process.env.MONGODB_URI = 'pending';
   process.env.TRUST_PROXY_HOPS = '0';
+process.env.JWT_SECRET = 'rate-limit-test-signing-secret-at-least-32-characters';
   return require('../server');
 };
 
