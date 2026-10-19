@@ -21,7 +21,7 @@ describe('homepage navigation', () => {
     expect(screen.getAllByRole('link', { name: /home/i })[0]).toHaveAttribute('href', '/');
     expect(screen.getAllByRole('link', { name: /events/i })[0]).toHaveAttribute('href', '/events');
     expect(screen.getAllByRole('link', { name: /^community$/i })[0]).toHaveAttribute('href', '/community');
-    expect(screen.queryAllByRole('link', { name: /^team(s)?$/i })).toHaveLength(0);
+    expect(screen.getAllByRole('link', { name: /^team$/i })[0]).toHaveAttribute('href', '/leadership');
     expect(screen.getAllByRole('link', { name: /about/i })[0]).toHaveAttribute('href', '/#about');
     expect(screen.getAllByRole('link', { name: /contact/i })[0]).toHaveAttribute('href', '/#contact');
   });

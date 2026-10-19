@@ -20,6 +20,7 @@ const eventSchema = new mongoose.Schema({
     },
     category: { type: String, default: 'Upcoming' },
     registrationLink: { type: String },
+    onLandingPage: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
 });
 

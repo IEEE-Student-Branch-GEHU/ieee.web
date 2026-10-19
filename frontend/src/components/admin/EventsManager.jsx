@@ -34,7 +34,10 @@ const EventsManager = () => {
     }
   }, [page]);
 
-  useEffect(() => { fetchEvents(); }, [fetchEvents]);
+  // This effect starts an async remote-state synchronization; the callback
+  // updates React state after the request resolves.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { void fetchEvents(); }, [fetchEvents]);
 
   const handleSave = async (payload) => {
     const id = editingEvent?._id || editingEvent?.id;
@@ -76,10 +79,10 @@ const EventsManager = () => {
        <div className="admin-table overflow-x-auto rounded-2xl border shadow-sm">
          <table className="w-full border-collapse text-left">
            <thead className="admin-table-head text-xs uppercase tracking-wider">
-            <tr><th className="px-6 py-4">Event</th><th className="px-6 py-4">Date</th><th className="px-6 py-4">Category</th><th className="px-6 py-4 text-right">Actions</th></tr>
+             <tr><th className="px-6 py-4">Event</th><th className="px-6 py-4">Date</th><th className="px-6 py-4">Category</th><th className="px-6 py-4">Landing page</th><th className="px-6 py-4 text-right">Actions</th></tr>
           </thead>
            <tbody className="admin-table-body divide-y">
-             {!loading && events.length === 0 && <tr><td colSpan={4} className="admin-muted px-6 py-10 text-center">No events available.</td></tr>}
+              {!loading && events.length === 0 && <tr><td colSpan={5} className="admin-muted px-6 py-10 text-center">No events available.</td></tr>}
             {events.map(event => (
                <tr key={event._id || event.id} className="admin-table-row">
                 <td className="px-6 py-4"><div className="flex items-center gap-3">
@@ -88,7 +91,8 @@ const EventsManager = () => {
                 </div></td>
                  <td className="admin-table-secondary px-6 py-4 text-sm">{event.date}</td>
                 <td className="px-6 py-4"><span className="rounded-md bg-blue-100 px-2 py-1 text-[10px] font-bold uppercase text-blue-700">{event.category}</span></td>
-                <td className="px-6 py-4 text-right"><div className="flex justify-end gap-2">
+                 <td className="px-6 py-4 text-sm">{event.onLandingPage ? 'Shown' : 'Hidden'}</td>
+                 <td className="px-6 py-4 text-right"><div className="flex justify-end gap-2">
                    <button type="button" aria-label={`Edit ${event.title}`} onClick={() => openEditor(event)} className="admin-icon-button rounded-lg p-3 focus-visible:outline-2 focus-visible:outline-primary"><Pencil size={18} /></button>
                    <button type="button" aria-label={`Delete ${event.title}`} onClick={() => handleDelete(event._id || event.id)} className="admin-icon-button rounded-lg p-3 focus-visible:outline-2 focus-visible:outline-primary"><Trash2 size={18} /></button>
                 </div></td>

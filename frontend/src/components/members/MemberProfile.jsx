@@ -1,14 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Github, Instagram, Linkedin, Twitter } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
+import { BsGithub, BsInstagram, BsLinkedin, BsTwitterX } from 'react-icons/bs';
 import Navbar from '../Navbar';
 import Footer from '../Footer';
 import MemberQr from './MemberQr';
 import API_BASE_URL from '../../config';
 import { fetchJson } from '../../lib/http';
 
-const socialIcons = { linkedin: Linkedin, instagram: Instagram, twitter: Twitter, github: Github };
+const socialIcons = { linkedin: BsLinkedin, instagram: BsInstagram, twitter: BsTwitterX, github: BsGithub };
 
 const MemberProfile = ({ memberId }) => {
   const [member, setMember] = useState(null);

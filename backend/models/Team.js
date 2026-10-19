@@ -36,7 +36,9 @@ const boundedStringArray = () => ({
 const teamSchema = new mongoose.Schema({
     name: { type: String, required: true },
     role: { type: String, required: true },
-    category: { type: String, required: true }, // e.g., 'Executive', 'Faculty'
+    // Category remains open for compatibility with existing lowercase and
+    // historical values used by the admin UI and archive records.
+    category: { type: String, required: true },
     image: { ...publicUrl }, // Cloudinary URL
     socials: { type: socialsSchema },
     bio: { type: String, maxlength: MAX_BIO_LENGTH },
@@ -50,6 +52,9 @@ const teamSchema = new mongoose.Schema({
     isLead: { type: Boolean },
     rank: { type: Number },
     order: { type: Number, default: 0 },
+    // Used only to select profiles shown on the landing page; public profile
+    // serialization remains limited to the approved member fields.
+    onLandingPage: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
 });
 

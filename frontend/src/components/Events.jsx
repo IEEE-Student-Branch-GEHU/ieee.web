@@ -26,7 +26,7 @@ const Events = () => {
     useEffect(() => {
         const controller = new AbortController();
 
-        fetchHomepageJson('/events?limit=12', { signal: controller.signal })
+        fetchHomepageJson('/events?limit=12&onLandingPage=true', { signal: controller.signal })
             .then(data => setEventsData(normalizeEventsResponse(data)))
             .catch(err => {
                 if (err.name === 'AbortError') return;

@@ -10,6 +10,7 @@ export default defineConfig(() => {
   validateViteBuildEnvironment({
     isVercel: process.env.VERCEL === '1',
     apiUrl: process.env.VITE_API_URL,
+    publicSiteUrl: process.env.VITE_PUBLIC_SITE_URL,
   })
 
   return {

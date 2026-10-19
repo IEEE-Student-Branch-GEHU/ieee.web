@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Menu, X, Instagram, Linkedin, Github, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { FaInstagram, FaLinkedinIn, FaGithub } from 'react-icons/fa6';
 import { motion as Motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { ThemeToggle } from './theme/ThemeToggle';
 
@@ -32,14 +33,15 @@ const Navbar = ({ surface = false }) => {
         { name: 'Home', href: '/', id: '01', isRoute: true },
         { name: 'Events', href: '/events', id: '02', isRoute: true },
         { name: 'Community', href: '/community', id: '03', isRoute: true },
-        { name: 'About', href: '/#about', id: '04', isRoute: false },
-        { name: 'Contact', href: '/#contact', id: '05', isRoute: false },
+        { name: 'Team', href: '/leadership', id: '04', isRoute: true },
+        { name: 'About', href: '/#about', id: '05', isRoute: false },
+        { name: 'Contact', href: '/#contact', id: '06', isRoute: false },
     ];
 
     const socialLinks = [
-        { icon: <Instagram size={18} />, href: 'https://www.instagram.com/ieee_gehu' },
-        { icon: <Linkedin size={18} />, href: 'https://www.linkedin.com/company/ieeesb-gehu' },
-        { icon: <Github size={18} />, href: 'https://github.com/IEEE-Student-Branch-GEHU/ieee.web' },
+        { icon: <FaInstagram size={18} />, href: 'https://www.instagram.com/ieee_gehu' },
+        { icon: <FaLinkedinIn size={18} />, href: 'https://www.linkedin.com/company/ieeesb-gehu' },
+        { icon: <FaGithub size={18} />, href: 'https://github.com/IEEE-Student-Branch-GEHU/ieee.web' },
     ];
 
     return (

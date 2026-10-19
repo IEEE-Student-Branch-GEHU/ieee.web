@@ -15,7 +15,7 @@ const ExecTeam = () => {
     useEffect(() => {
         const controller = new AbortController();
 
-        fetchHomepageJson('/team', { signal: controller.signal })
+        fetchHomepageJson('/team?onLandingPage=true', { signal: controller.signal })
             .then(data => setTeamData(normalizeTeamResponse(data).filter(member =>
                 !member.role?.toLowerCase().includes('counselor') && member.category !== 'faculty'
             )))
@@ -114,7 +114,7 @@ const ExecTeam = () => {
                         asChild
                          className="public-outline-button px-10 py-7 border-2 rounded-2xl hover:bg-primaryDark hover:text-white hover:border-primaryDark transition-all duration-300 font-bold tracking-widest text-sm shadow-sm"
                     >
-                         <a href="/community">VIEW FULL TEAM</a>
+                         <a href="/leadership">VIEW FULL TEAM</a>
                     </Button>
                 </div>
             </div>

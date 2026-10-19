@@ -14,10 +14,6 @@ const FacultyManage = () => {
     const [formData, setFormData] = useState(() => createMemberForm(null, 'faculty'));
     const [uploading, setUploading] = useState(false);
 
-    useEffect(() => {
-        fetchTeam();
-    }, []);
-
     const fetchTeam = async () => {
         try {
             const data = await fetchJson(`${API_BASE_URL}/team`);
@@ -30,6 +26,12 @@ const FacultyManage = () => {
             console.error('Failed to fetch team:', err);
         }
     };
+
+    // Start the async remote-state synchronization after the component mounts.
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        void fetchTeam();
+    }, []);
 
     const handleUpload = async (e) => {
         const file = e.target.files[0];

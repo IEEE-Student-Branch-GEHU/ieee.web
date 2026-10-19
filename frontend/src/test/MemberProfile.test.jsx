@@ -148,6 +148,29 @@ describe('MemberQr', () => {
     expect(qrToString.mock.calls[0][0]).not.toContain(member.socials.github);
   });
 
+  it('keeps the QR destination unchanged when editable profile fields change', async () => {
+    vi.stubEnv('VITE_PUBLIC_SITE_URL', 'https://8.8.8.8');
+    const { rerender } = render(<MemberQr member={member} />);
+
+    await screen.findByRole('img', { name: 'QR code linking to Approved Member profile' });
+    const originalDestination = qrToString.mock.calls[0][0];
+    const editedMember = {
+      ...member,
+      name: 'Renamed Member',
+      role: 'Updated Designation',
+      image: 'https://cdn.example/updated-member.jpg',
+      academicYear: 'Final Year',
+      branch: 'Electronics',
+    };
+
+    rerender(<MemberQr member={editedMember} />);
+
+    expect(qrToString).toHaveBeenCalledTimes(1);
+    expect(qrToString).toHaveBeenCalledWith(originalDestination, expect.any(Object));
+    expect(screen.getByRole('link', { name: /Open public profile/i })).toHaveAttribute('href', originalDestination);
+    expect(getMemberProfileUrl(editedMember._id, { allowLocalPreview: false })).toBe(originalDestination);
+  });
+
   it('does not display or download a previous member QR while a new one is generating', async () => {
     vi.stubEnv('VITE_PUBLIC_SITE_URL', 'https://8.8.8.8');
     let resolveNextQr;

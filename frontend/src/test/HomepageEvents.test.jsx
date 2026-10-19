@@ -52,7 +52,7 @@ describe('homepage events section', () => {
     await waitFor(() => {
       expect(screen.getByText('Backend Workshop')).toBeInTheDocument();
     });
-    expect(fetch).toHaveBeenCalledWith('/api/events?limit=12', expect.any(Object));
+    expect(fetch).toHaveBeenCalledWith('/api/events?limit=12&onLandingPage=true', expect.any(Object));
   });
 
   it('shows an API error instead of placeholder event data', async () => {

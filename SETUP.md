@@ -162,7 +162,15 @@ variables are present, the Vite `VITE_API_URL` value wins for the active build.
 The Vite URL may include `/api`; the frontend normalizes it exactly once.
 Set `VITE_PUBLIC_SITE_URL` only after the organizer confirms the canonical
 HTTPS domain. It is used for member profile QR destinations; production does
-not silently fall back to localhost when this value is absent.
+not silently fall back to localhost when this value is absent. Hosted Vite
+builds reject a missing, non-HTTPS, local, placeholder, or path-bearing public
+origin so that printable QR codes cannot be generated with an unsafe
+destination.
+Each printable member QR encodes only the configured origin plus
+`/members/<team-object-id>`. The Team MongoDB `_id` is never replaced by an
+editable name, role, photo, or academic field, so profile edits do not change
+an already printed destination. Deleted or invalid IDs resolve to the public
+not-found/error states instead of exposing protected data.
 
 Render checks `/health`, which returns `503` when the running process is
 connected to an unavailable database and `200` with

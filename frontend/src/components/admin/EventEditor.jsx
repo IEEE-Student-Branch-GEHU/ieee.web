@@ -8,11 +8,11 @@ import { adminFetchJson } from '../../lib/admin-api';
 import { isHighlightUrl, MAX_CAPTION_LENGTH, MAX_HIGHLIGHTS, normalizeHighlights } from '../../lib/event-highlights';
 
 const initialForm = (event) => {
-  const form = { title: '', date: '', description: '', image: '', category: 'Technical' };
+  const form = { title: '', date: '', description: '', image: '', category: 'Technical', onLandingPage: false };
   for (const field of ['title', 'date', 'description', 'image', 'category', 'time', 'location', 'registrationLink']) {
     if (typeof event?.[field] === 'string') form[field] = event[field];
   }
-  return { ...form, highlights: normalizeHighlights(event?.highlights) };
+  return { ...form, onLandingPage: event?.onLandingPage === true, highlights: normalizeHighlights(event?.highlights) };
 };
 
 const inputClass = 'admin-input w-full min-w-0 rounded-xl border px-4 py-2 outline-none';
@@ -142,6 +142,10 @@ const EventEditor = ({ event, onSave, onClose }) => {
               </select>
             </div>
           </div>
+          <label htmlFor="event-on-landing-page" className="flex items-center gap-3 rounded-xl border p-3 text-sm font-semibold">
+            <input id="event-on-landing-page" type="checkbox" checked={form.onLandingPage} onChange={e => setForm({ ...form, onLandingPage: e.target.checked })} />
+            Show this event on the landing page
+          </label>
           <div>
             <label htmlFor="event-description" className="mb-1 block text-sm font-bold">Description</label>
             <textarea id="event-description" rows={3} className={inputClass} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} required />

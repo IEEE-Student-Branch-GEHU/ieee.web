@@ -36,6 +36,10 @@ const Contact = () => {
                 body: JSON.stringify(formData)
             });
 
+            if (data?.success === false) {
+                throw new Error(data.message || 'Unable to submit your message.');
+            }
+
             setSuccessMessage(data.message || 'Your message was received.');
             setStatus('success');
             setFormData({ firstName: '', lastName: '', email: '', message: '' });

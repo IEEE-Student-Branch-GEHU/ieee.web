@@ -139,7 +139,7 @@ const sanitizeCredentials = (body) => {
 };
 
 const eventAllowedKeys = new Set([
-  'title', 'date', 'time', 'location', 'description', 'image', 'category', 'registrationLink', 'highlights',
+  'title', 'date', 'time', 'location', 'description', 'image', 'category', 'registrationLink', 'highlights', 'onLandingPage',
   // Accepted only to keep the existing Vite edit form compatible; never written back.
   '_id', 'id', '__v', 'createdAt',
 ]);
@@ -179,6 +179,7 @@ const sanitizeEvent = (body, { partial = false } = {}) => {
   }
   // Omission preserves existing photos on partial updates; [] explicitly clears the gallery.
   if (body.highlights !== undefined) result.highlights = sanitizeHighlights(body.highlights);
+  if (body.onLandingPage !== undefined) result.onLandingPage = optionalBoolean(body.onLandingPage, 'onLandingPage');
 
   if (!partial) {
     result.title = requiredString(body.title, 'title');
@@ -195,7 +196,7 @@ const sanitizeEvent = (body, { partial = false } = {}) => {
 const socialKeys = new Set(PUBLIC_SOCIAL_KEYS);
 const teamAllowedKeys = new Set([
   'name', 'role', 'category', 'image', 'socials', 'order', 'bio', 'committee', 'academicYear', 'branch',
-  'skills', 'interests', 'achievements', 'year', 'isLead', 'rank',
+  'skills', 'interests', 'achievements', 'year', 'isLead', 'rank', 'onLandingPage',
   // Legacy Vite fields are normalized into socials or intentionally discarded.
   'linkedin', 'instagram',
   // Accepted only for existing edit forms; never written back.
@@ -252,6 +253,7 @@ const sanitizeTeam = (body, { partial = false } = {}) => {
   }
   if (body.isLead !== undefined) result.isLead = optionalBoolean(body.isLead, 'isLead');
   if (body.rank !== undefined) result.rank = optionalNumber(body.rank, 'rank');
+  if (body.onLandingPage !== undefined) result.onLandingPage = optionalBoolean(body.onLandingPage, 'onLandingPage');
 
   const socials = sanitizeSocials(body.socials);
   const legacyLinkedin = optionalPublicUrl(body.linkedin, 'linkedin');

@@ -5,11 +5,15 @@ const mongoose = require('mongoose');
 const mockTeamFind = jest.fn();
 const mockTeamFindById = jest.fn();
 const mockTeamDistinct = jest.fn();
+const mockCertificateFind = jest.fn();
 
 jest.mock('../models/Team', () => ({
   find: mockTeamFind,
   findById: mockTeamFindById,
   distinct: mockTeamDistinct,
+}));
+jest.mock('../models/Certificate', () => ({
+  find: mockCertificateFind,
 }));
 
 const apiRoutes = require('../routes/api');
@@ -57,6 +61,7 @@ beforeEach(() => {
   mockTeamFind.mockReset();
   mockTeamFindById.mockReset();
   mockTeamDistinct.mockReset();
+  mockCertificateFind.mockReset();
 });
 
 afterAll(() => {
@@ -272,6 +277,16 @@ describe('public team routes', () => {
 
     expect(response.status).toBe(500);
     expect(response.body).toEqual({ message: 'Unable to fetch team years' });
+  });
+
+  it('does not expose public certificates for a deleted team member', async () => {
+    mockTeamFindById.mockResolvedValue(null);
+
+    const response = await request(createApp()).get(`/api/team/${validId}/certificates`);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({ message: 'Team member not found' });
+    expect(mockCertificateFind).not.toHaveBeenCalled();
   });
 });
 

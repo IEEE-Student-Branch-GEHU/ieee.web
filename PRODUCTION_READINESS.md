@@ -17,6 +17,8 @@ organizer confirms one HTTPS origin and it has been verified in Vercel.
 - [ ] Set Render `FRONTEND_URL` to the exact confirmed HTTPS origin.
 - [ ] Set Vercel `VITE_API_URL` to the deployed Render API origin, then rebuild.
 - [ ] Set Vercel `VITE_PUBLIC_SITE_URL` to the same confirmed public origin.
+- [ ] Rebuild after setting `VITE_PUBLIC_SITE_URL`; hosted Vite builds reject an
+      unset or non-public origin before printable QR codes can be generated.
 - [x] Favicon is referenced by the active Vite `index.html` and included in `frontend/public/favicon.png`.
 - [ ] Verify the favicon response and browser-tab rendering on a running production-like preview.
 - [x] Repository search found no website AI attribution label or badge.
