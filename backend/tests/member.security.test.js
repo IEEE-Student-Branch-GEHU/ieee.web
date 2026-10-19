@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const request = require('supertest');
 const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
 
 const MEMBER_A_ID = '507f1f77bcf86cd799439011';
 const MEMBER_B_ID = '507f1f77bcf86cd799439012';
@@ -428,7 +429,7 @@ describe('public certificate visibility and admin separation', () => {
 
   it('rejects a member token at the administrator boundary', async () => {
     const app = express();
-    app.get('/admin-only', adminAuth, (req, res) => res.json({ ok: true }));
+    app.get('/admin-only', rateLimit(), adminAuth, (req, res) => res.json({ ok: true }));
     const response = await request(app).get('/admin-only').set('Authorization', `Bearer ${authTokenFor()}`);
     expect(response.status).toBe(401);
   });

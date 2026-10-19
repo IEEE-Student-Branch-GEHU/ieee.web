@@ -70,26 +70,40 @@ const sortTeamMembers = (members) => [...members].sort(compareTeamMembers);
 // Get all events (with pagination and filters)
 router.get('/events', async (req, res) => {
   try {
-    for (const field of ['page', 'limit', 'search', 'category', 'onLandingPage']) {
-      if (req.query[field] !== undefined && typeof req.query[field] !== 'string') {
+    const {
+      page: pageParam,
+      limit: limitParam,
+      search: searchParam,
+      category: categoryParam,
+      onLandingPage: onLandingPageParam,
+    } = req.query;
+    const queryParams = {
+      page: pageParam,
+      limit: limitParam,
+      search: searchParam,
+      category: categoryParam,
+      onLandingPage: onLandingPageParam,
+    };
+    for (const [field, value] of Object.entries(queryParams)) {
+      if (value !== undefined && typeof value !== 'string') {
         return res.status(400).json({ message: `${field} must be a string` });
       }
     }
 
-    if (req.query.search && req.query.search.length > 200) {
+    if (typeof searchParam === 'string' && searchParam.length > 200) {
       return res.status(400).json({ message: 'search must be at most 200 characters' });
     }
-    if (req.query.onLandingPage !== undefined && !['true', 'false'].includes(req.query.onLandingPage)) {
+    if (typeof onLandingPageParam === 'string' && !['true', 'false'].includes(onLandingPageParam)) {
       return res.status(400).json({ message: 'onLandingPage must be true or false' });
     }
 
     if (mongoose.connection.readyState !== 1) return res.json({ events: [], totalPages: 0 });
 
-    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 12));
+    const page = Math.max(1, parseInt(pageParam, 10) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(limitParam, 10) || 12));
     const skip = (page - 1) * limit;
-    const search = req.query.search || '';
-    const category = req.query.category || 'All';
+    const search = typeof searchParam === 'string' ? searchParam : '';
+    const category = typeof categoryParam === 'string' ? categoryParam : 'All';
 
     const query = {};
     if (search) {
@@ -100,9 +114,9 @@ router.get('/events', async (req, res) => {
       ];
     }
     if (category !== 'All') {
-      query.category = category;
+      query.category = { $eq: category };
     }
-    if (req.query.onLandingPage === 'true') query.onLandingPage = true;
+    if (onLandingPageParam === 'true') query.onLandingPage = true;
 
     const totalEvents = await Event.countDocuments(query);
     const events = await Event.find(query)

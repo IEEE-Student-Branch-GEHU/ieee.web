@@ -21,12 +21,11 @@ const run = async () => {
     && /^\$2[aby]\$\d{2}\$/.test(record.password);
   const passwordMatches = storedHashIsBcrypt && await verifyAdminPassword(password, record.password);
 
-  console.log(JSON.stringify({
-    databaseName: mongoose.connection.name,
-    accountExists: Boolean(record),
-    storedHashIsBcrypt,
-    configuredPasswordMatches: Boolean(passwordMatches),
-  }));
+  if (!record || !passwordMatches) {
+    throw new Error('Admin diagnostic could not verify the configured account');
+  }
+
+  console.log(JSON.stringify({ diagnostic: 'admin_credentials_verified' }));
 };
 
 run()
