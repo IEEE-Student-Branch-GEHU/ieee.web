@@ -1,16 +1,26 @@
-# React + Vite
+# IEEE GEHU frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The production frontend uses the Next.js App Router. Route files live under
+`src/app/` and use the repository's `.next.jsx` page extension configured in
+`next.config.mjs`. The public member profile route is
+`src/app/members/[memberId]/page.next.jsx`, so stable QR destinations resolve
+through Next without a client-side router or login.
 
-Currently, two official plugins are available:
+## Commands
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+npm run dev          # Next.js development server
+npm run build        # production Next.js build
+npm run start        # serve the Next.js build
+npm test             # Vitest component and contract tests
+```
 
-## React Compiler
+The repository keeps a legacy Vite adapter for compatibility with existing
+React Router component tests and optional local previews. Its commands are
+explicitly named `dev:vite`, `build:vite`, and `preview:vite`; Vite is not the
+production deployment target. Vitest still uses Vite's React plugin for its
+test transform.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Set `NEXT_PUBLIC_API_URL` and the verified HTTPS `NEXT_PUBLIC_SITE_URL` for a
+hosted build. The latter is the origin used when generating printable member
+QR codes.

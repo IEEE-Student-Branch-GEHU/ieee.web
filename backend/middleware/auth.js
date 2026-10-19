@@ -1,4 +1,8 @@
-const jwt = require('jsonwebtoken');
+const { getEnvironmentConfig } = require('../config/environment');
+const {
+    ADMIN_TOKEN_PURPOSE,
+    verifyAdminToken,
+} = require('../services/admin-auth');
 
 const auth = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -8,7 +12,14 @@ const auth = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'ieee_secret_key');
+        const { jwtSecret } = getEnvironmentConfig();
+        if (!jwtSecret) {
+            return res.status(503).json({ message: 'Authentication is not configured' });
+        }
+        const decoded = verifyAdminToken(token, jwtSecret);
+        if (decoded?.purpose !== ADMIN_TOKEN_PURPOSE) {
+            return res.status(401).json({ message: 'Token is not valid' });
+        }
         req.admin = decoded;
         next();
     } catch (err) {

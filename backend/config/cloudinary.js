@@ -1,11 +1,13 @@
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
-require('dotenv').config();
+const { getEnvironmentConfig } = require('./environment');
+
+const { cloudinary: cloudinaryConfig } = getEnvironmentConfig();
 
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+    cloud_name: cloudinaryConfig.cloudName,
+    api_key: cloudinaryConfig.apiKey,
+    api_secret: cloudinaryConfig.apiSecret,
 });
 
 const storage = new CloudinaryStorage({
@@ -17,4 +19,14 @@ const storage = new CloudinaryStorage({
     }
 });
 
-module.exports = { cloudinary, storage };
+const certificateStorage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'ieee-website/certificates',
+        resource_type: 'auto',
+        type: 'authenticated',
+        allowed_formats: ['pdf', 'jpg', 'png', 'jpeg', 'webp'],
+    },
+});
+
+module.exports = { certificateStorage, cloudinary, storage };

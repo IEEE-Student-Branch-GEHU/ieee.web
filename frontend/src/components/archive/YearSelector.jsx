@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import API_BASE_URL from '../../config';
 import './YearSelector.css';
 
@@ -34,7 +34,7 @@ const YearSelector = ({ selectedYear, onYearChange }) => {
         <span className="year-history__line" />
         <h4 className="year-history__title">Archive Timeline</h4>
       </div>
-      
+
       <div className="year-history__list">
         {years.map((year, index) => (
           <button
@@ -53,14 +53,14 @@ const YearSelector = ({ selectedYear, onYearChange }) => {
               <span className="year-item__label">{year}</span>
               <AnimatePresence>
                 {selectedYear === year && (
-                  <motion.span 
+                  <Motion.span
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
                     className="year-item__status"
                   >
                     Active Session
-                  </motion.span>
+                  </Motion.span>
                 )}
               </AnimatePresence>
             </div>

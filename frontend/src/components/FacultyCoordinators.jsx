@@ -1,35 +1,27 @@
+'use client';
+
 import React, { useState, useEffect } from "react";
 import { Card } from "./ui/card";
 import { BsLinkedin } from "react-icons/bs";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { Reveal } from "./animations/Reveal";
-import API_BASE_URL from "../config";
+import { fetchHomepageJson, normalizeTeamResponse } from "../lib/homepage-api";
+import { getMemberProfilePath } from "../lib/public-site";
 
 const FacultyCoordinators = () => {
     const [coordinators, setCoordinators] = useState([]);
 
-    const fallbackCoordinators = [
-        { name: "Placeholder Coordinator", role: "Faculty Advisor", bio: "Guidance and support for technical initiatives.", image: null },
-        { name: "Placeholder Coordinator", role: "Technical Advisor", bio: "Mentoring students in research and development.", image: null },
-    ];
-
     useEffect(() => {
-        fetch(`${API_BASE_URL}/team`)
-            .then(res => res.json())
-            .then(data => {
-                if (Array.isArray(data) && data.length > 0) {
-                    const filtered = data.filter(m =>
-                        m.category === 'faculty'
-                    );
-                    setCoordinators(filtered.length > 0 ? filtered : fallbackCoordinators);
-                } else {
-                    setCoordinators(fallbackCoordinators);
-                }
-            })
+        const controller = new AbortController();
+
+        fetchHomepageJson('/team', { signal: controller.signal })
+            .then(data => setCoordinators(normalizeTeamResponse(data).filter(member => member.category === 'faculty')))
             .catch(err => {
+                if (err.name === 'AbortError') return;
                 console.error('Failed to fetch coordinator data:', err);
-                setCoordinators(fallbackCoordinators);
             });
+
+        return () => controller.abort();
     }, []);
 
     const containerVariants = {
@@ -53,23 +45,23 @@ const FacultyCoordinators = () => {
     };
 
     return (
-        <section className="py-24 bg-gray-50 overflow-hidden">
+        <section className="public-section-muted py-24 overflow-hidden">
             <div className="container mx-auto px-6 max-w-[1200px] space-y-16">
                 <div className="flex flex-col items-center text-center">
                     <Reveal>
-                        <h3 className="text-4xl md:text-5xl font-bold uppercase text-primaryDark tracking-tight mb-4">
+                        <h3 className="public-heading text-4xl md:text-5xl font-bold uppercase tracking-tight mb-4">
                             Faculty Coordinators
                         </h3>
                     </Reveal>
                     <div className="w-24 h-1.5 bg-primary rounded-full mb-6" />
                     <Reveal>
-                        <p className="max-w-2xl text-gray-500 font-medium leading-relaxed">
+                        <p className="public-body max-w-2xl font-medium leading-relaxed">
                             Our dedicated faculty members who guide and support the student branch initiatives with technical expertise and leadership.
                         </p>
                     </Reveal>
                 </div>
 
-                <motion.div
+                <Motion.div
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
@@ -77,11 +69,11 @@ const FacultyCoordinators = () => {
                     className="flex flex-wrap justify-center gap-10"
                 >
                     {coordinators.map((coordinator, index) => (
-                        <motion.div key={index} variants={itemVariants} className="w-full max-w-[350px]">
+                        <Motion.div key={coordinator._id || index} variants={itemVariants} className="w-full max-w-[350px]">
                             <Card
-                                className="group flex flex-col items-center bg-white border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] overflow-hidden p-2"
+                                 className="public-card group flex flex-col items-center border shadow-sm hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] overflow-hidden p-2"
                             >
-                                <div className="aspect-square w-full relative rounded-[2rem] overflow-hidden bg-gray-100">
+                                <div className="public-image-placeholder aspect-square w-full relative rounded-[2rem] overflow-hidden">
                                     <img
                                         src={coordinator.image || "https://via.placeholder.com/400x400"}
                                         alt={coordinator.name}
@@ -91,15 +83,17 @@ const FacultyCoordinators = () => {
                                 </div>
 
                                 <div className="text-center p-8 space-y-3 flex-grow">
-                                    <h4 className="text-2xl font-bold text-dark group-hover:text-primary transition-colors">
-                                        {coordinator.name}
+                                      <h4 className="public-heading text-2xl font-bold group-hover:text-primary transition-colors">
+                                         <a href={getMemberProfilePath(coordinator._id)} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary">{coordinator.name}</a>
                                     </h4>
-                                    <p className="text-primary font-bold text-xs uppercase tracking-widest">
+                                    <p className="site-accent font-bold text-xs uppercase tracking-widest">
                                         {coordinator.role}
                                     </p>
-                                    <p className="text-gray-500 text-sm font-medium leading-relaxed italic line-clamp-3">
-                                        "{coordinator.bio}"
-                                    </p>
+                                    {coordinator.bio && (
+                                         <p className="public-body text-sm font-medium leading-relaxed italic line-clamp-3">
+                                            "{coordinator.bio}"
+                                        </p>
+                                    )}
                                 </div>
 
                                 {coordinator.linkedin && (
@@ -108,16 +102,16 @@ const FacultyCoordinators = () => {
                                             href={coordinator.linkedin}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="w-12 h-12 bg-primary/5 rounded-2xl flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all shadow-sm"
+                                             className="site-accent w-12 h-12 bg-primary/5 rounded-2xl flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-sm"
                                         >
                                             <BsLinkedin className="text-xl" />
                                         </a>
                                     </div>
                                 )}
                             </Card>
-                        </motion.div>
+                        </Motion.div>
                     ))}
-                </motion.div>
+                </Motion.div>
             </div>
         </section >
     );

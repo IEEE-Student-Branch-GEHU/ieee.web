@@ -6,16 +6,16 @@ import Navbar from './Navbar';
 // Mock framer-motion — mirrors established pattern from Reveal.test.jsx / EventsArchive.test.jsx
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, style, className, ...props }) => (
+    div: ({ children, style, className }) => (
       <div style={style} className={className}>{children}</div>
     ),
-    a: ({ children, href, target, rel, className, ...props }) => (
+    a: ({ children, href, target, rel, className }) => (
       <a href={href} target={target} rel={rel} className={className}>{children}</a>
     ),
-    button: ({ children, onClick, className, ...props }) => (
+    button: ({ children, onClick, className }) => (
       <button onClick={onClick} className={className}>{children}</button>
     ),
-    img: ({ src, alt, className, ...props }) => (
+    img: ({ src, alt, className }) => (
       <img src={src} alt={alt} className={className} />
     ),
   },
@@ -29,16 +29,21 @@ vi.mock('../assets/logo.png', () => ({ default: 'test-logo.png' }));
 
 // Mock lucide-react icons as simple labeled elements
 vi.mock('lucide-react', () => ({
-  Menu: (props) => <span data-testid="icon-menu">Menu</span>,
-  X: (props) => <span data-testid="icon-x">X</span>,
-  ArrowUpRight: (props) => <span data-testid="icon-arrow">↗</span>,
+  Menu: () => <span data-testid="icon-menu">Menu</span>,
+  X: () => <span data-testid="icon-x">X</span>,
+  ArrowUpRight: () => <span data-testid="icon-arrow">↗</span>,
+  Moon: () => <span data-testid="icon-moon">Moon</span>,
+  Sun: () => <span data-testid="icon-sun">Sun</span>,
+  Instagram: () => <span data-testid="icon-instagram">Instagram</span>,
+  Linkedin: () => <span data-testid="icon-linkedin">Linkedin</span>,
+  Github: () => <span data-testid="icon-github">Github</span>,
 }));
 
 // Mock react-icons/fa6 brand icons
 vi.mock('react-icons/fa6', () => ({
-  FaInstagram: (props) => <span data-testid="icon-instagram">Instagram</span>,
-  FaLinkedinIn: (props) => <span data-testid="icon-linkedin">Linkedin</span>,
-  FaGithub: (props) => <span data-testid="icon-github">Github</span>,
+  FaInstagram: () => <span data-testid="icon-instagram">Instagram</span>,
+  FaLinkedinIn: () => <span data-testid="icon-linkedin">Linkedin</span>,
+  FaGithub: () => <span data-testid="icon-github">Github</span>,
 }));
 
 /**

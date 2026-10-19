@@ -1,0 +1,7 @@
+# Antigravity agents directory
+.agents/
+
+# Local secrets
+.env
+.env.*
+!.env.example

@@ -55,7 +55,7 @@ const mockAllMembers = [...mockLeads, ...mockCoreMembers, ...mockGeneralMembers]
 describe('LeadershipArchive Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    global.fetch = vi.fn();
+    globalThis.fetch = vi.fn();
   });
 
   afterEach(() => {
@@ -81,14 +81,14 @@ describe('LeadershipArchive Component', () => {
   };
 
   it('renders the page with header and year selector', async () => {
-    global.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
+    globalThis.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
     await renderComponent();
     expect(screen.getByTestId('year-selector')).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
   });
 
   it('fetches members when a year is selected', async () => {
-    global.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
+    globalThis.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
     await renderComponent();
 
     await act(async () => {
@@ -96,14 +96,14 @@ describe('LeadershipArchive Component', () => {
     });
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(
+      expect(globalThis.fetch).toHaveBeenCalledWith(
         expect.stringContaining('/api/team?year=2023-2024')
       );
     });
   });
 
   it('groups members into leads, core, and general sections', async () => {
-    global.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
+    globalThis.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
     await renderComponent();
 
     await act(async () => {
@@ -118,7 +118,7 @@ describe('LeadershipArchive Component', () => {
   });
 
   it('displays all member cards after fetch', async () => {
-    global.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
+    globalThis.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
     await renderComponent();
 
     await act(async () => {
@@ -131,7 +131,7 @@ describe('LeadershipArchive Component', () => {
   });
 
   it('shows empty state when no members found for selected year', async () => {
-    global.fetch = vi.fn(() => mockMembersResponse([]));
+    globalThis.fetch = vi.fn(() => mockMembersResponse([]));
     await renderComponent();
 
     await act(async () => {
@@ -144,7 +144,7 @@ describe('LeadershipArchive Component', () => {
   });
 
   it('shows error state when fetch fails', async () => {
-    global.fetch = vi.fn(() =>
+    globalThis.fetch = vi.fn(() =>
       Promise.resolve({ ok: false, json: () => Promise.resolve({}) })
     );
     await renderComponent();
@@ -159,7 +159,7 @@ describe('LeadershipArchive Component', () => {
   });
 
   it('renders category filter buttons when a year is selected', async () => {
-    global.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
+    globalThis.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
     await renderComponent();
 
     await act(async () => {
@@ -173,7 +173,7 @@ describe('LeadershipArchive Component', () => {
   });
 
   it('applies category filter to fetch request', async () => {
-    global.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
+    globalThis.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
     await renderComponent();
 
     await act(async () => {
@@ -184,21 +184,21 @@ describe('LeadershipArchive Component', () => {
       expect(screen.getByRole('button', { name: /Technical/i })).toBeInTheDocument();
     });
 
-    global.fetch = vi.fn(() => mockMembersResponse([mockCoreMembers[0]]));
+    globalThis.fetch = vi.fn(() => mockMembersResponse([mockCoreMembers[0]]));
 
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Technical/i }));
     });
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(
+      expect(globalThis.fetch).toHaveBeenCalledWith(
         expect.stringContaining('category=technical')
       );
     });
   });
 
   it('shows member count in results footer', async () => {
-    global.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
+    globalThis.fetch = vi.fn(() => mockMembersResponse(mockAllMembers));
     await renderComponent();
 
     await act(async () => {
