@@ -4,10 +4,10 @@
 
 **Production launch readiness: BLOCKED**
 
-The repository contains the Vite production frontend and Render backend
-configuration, but the canonical public domain is not verified. The README
-and Render configuration currently name different Vercel hostnames. Do not
-generate production member QR codes or publish canonical URLs until the
+The repository contains the Next.js App Router production frontend and Render
+backend configuration, but the canonical public domain is not verified. The
+README and Render configuration currently name different Vercel hostnames. Do
+not generate production member QR codes or publish canonical URLs until the
 organizer confirms one HTTPS origin and it has been verified in Vercel.
 
 ## Checklist
@@ -15,11 +15,11 @@ organizer confirms one HTTPS origin and it has been verified in Vercel.
 - [ ] Confirm the canonical custom domain and whether the apex or `www` host is primary.
 - [ ] Connect the confirmed domain in Vercel and verify DNS and TLS.
 - [ ] Set Render `FRONTEND_URL` to the exact confirmed HTTPS origin.
-- [ ] Set Vercel `VITE_API_URL` to the deployed Render API origin, then rebuild.
-- [ ] Set Vercel `VITE_PUBLIC_SITE_URL` to the same confirmed public origin.
-- [ ] Rebuild after setting `VITE_PUBLIC_SITE_URL`; hosted Vite builds reject an
-      unset or non-public origin before printable QR codes can be generated.
-- [x] Favicon is referenced by the active Vite `index.html` and included in `frontend/public/favicon.png`.
+- [ ] Set Vercel `NEXT_PUBLIC_API_URL` to the deployed Render API origin, then rebuild.
+- [ ] Set Vercel `NEXT_PUBLIC_SITE_URL` to the same confirmed public origin.
+- [ ] Rebuild after setting `NEXT_PUBLIC_SITE_URL`; hosted Next.js builds reject
+      an unset or non-public origin before printable QR codes can be generated.
+- [x] Favicon is referenced by the active Next.js layout and included in `frontend/public/favicon.png`.
 - [ ] Verify the favicon response and browser-tab rendering on a running production-like preview.
 - [x] Repository search found no website AI attribution label or badge.
 - [ ] Verify the absence of that label in the deployed DOM and any hosting-injected UI.
@@ -34,15 +34,18 @@ organizer confirms one HTTPS origin and it has been verified in Vercel.
 - [ ] Test `/community/scan` from HTTPS or localhost: grant camera permission only after pressing Start, scan an approved QR, confirm the correct read-only profile opens, stop/deny camera access, and verify unsupported browsers show a safe fallback.
 - [ ] Test theme persistence, system preference, keyboard access, responsive layouts, and reduced motion in a real browser.
 - [ ] Run accessibility checks against homepage, events, team/profile, legal, and admin flows.
-- [x] Run the backend and frontend test suites and both production builds locally; the full frontend lint command still reports existing repository errors listed below.
+- [x] Run the backend and frontend test suites and the Next.js production build locally; the legacy Vite adapter is not the production build target.
 
 ## Local verification notes
 
-- Backend Jest: 16 suites and 254 tests passed with `npm test -- --runInBand`; the deployment suite includes the member-profile `PATCH` CORS preflight regression.
-- Frontend Vitest: 25 files and 219 tests passed across bounded runs using `npm test -- --pool=threads --maxWorkers=1 --no-file-parallelism`. A single all-files invocation exceeded the local 900-second tool limit after its completed files printed green results; the remaining 8 files passed in a separate bounded command.
-- QR/profile/scanner/routing-focused Vitest passed, including actual SVG generation, stable URL assertions, canonical-origin validation, download behavior, invalid-profile handling, admin profile actions, camera cleanup, and route coverage.
-- Vite and incremental Next.js production builds passed after the member-flow changes. Vite retains the existing large JavaScript chunk warning.
-- Scoped ESLint for the changed JavaScript/JSX files passed with no errors. Repository-wide ESLint still reports existing legacy errors in unrelated animation/UI/test files; no new errors were reported in the scoped changed files.
+- Backend Jest: 17 suites and 260 tests passed with `npm test -- --runInBand`; the deployment suite includes the member-profile `PATCH` CORS preflight regression.
+- The existing frontend suite passed in bounded runs before the architecture-targeting changes: 29 files and 259 tests using `npm test -- --pool=threads --maxWorkers=1 --no-file-parallelism`.
+- After the architecture changes, focused Next.js/deployment/profile/archive checks passed, including 8 Next route-contract tests, 14 deployment tests, 27 member-profile tests, 42 public-origin/QR tests, 9 leadership-archive tests, and 12 API configuration tests.
+- Next.js production build passed after the member-flow changes. The legacy
+  Vite adapter remains available for tests and optional previews but is not the
+  production deployment target.
+- `npm run build` and `npm run build:next` both use and pass the Next.js App Router production build. The Vite adapter remains available only for tests and optional previews.
+- Scoped ESLint for the changed architecture/configuration files passed with no errors.
 
 ## Member data
 

@@ -1,12 +1,16 @@
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { normalizeApiBaseUrl, validateViteBuildEnvironment } from '../lib/deployment-config';
+import {
+  normalizeApiBaseUrl,
+  validateNextBuildEnvironment,
+  validateViteBuildEnvironment,
+} from '../lib/deployment-config';
 
 const vercelConfig = JSON.parse(readFileSync('vercel.json', 'utf8'));
 
 afterEach(() => vi.unstubAllEnvs());
 
-describe('Vercel Vite build configuration', () => {
+describe('hosted frontend build configuration', () => {
   it('fails a hosted build with no backend API URL', () => {
     vi.stubEnv('VERCEL', '1');
     vi.stubEnv('VITE_API_URL', '');
@@ -64,7 +68,29 @@ describe('Vercel Vite build configuration', () => {
     expect(normalizeApiBaseUrl('')).toBe('/api');
   });
 
-  it('marks draft legal routes as non-indexable in the active Vite deployment', () => {
+  it('requires the Next.js public environment variables for hosted builds', () => {
+    expect(() => validateNextBuildEnvironment({
+      isVercel: true,
+      apiUrl: '',
+      publicSiteUrl: 'https://ieee-gehu.example.org',
+    })).toThrow('NEXT_PUBLIC_API_URL');
+
+    expect(() => validateNextBuildEnvironment({
+      isVercel: true,
+      apiUrl: 'https://your-render-service.onrender.com/api',
+      publicSiteUrl: '',
+    })).toThrow('NEXT_PUBLIC_SITE_URL');
+  });
+
+  it('accepts a verified Next.js production environment', () => {
+    expect(() => validateNextBuildEnvironment({
+      isVercel: true,
+      apiUrl: 'https://your-render-service.onrender.com/api',
+      publicSiteUrl: 'https://ieee-gehu.example.org',
+    })).not.toThrow();
+  });
+
+  it('marks draft legal routes as non-indexable in the active Next.js deployment', () => {
     const legalHeaders = Object.fromEntries(
       vercelConfig.headers.map(({ source, headers }) => [source, Object.fromEntries(headers.map(header => [header.key, header.value]))]),
     );

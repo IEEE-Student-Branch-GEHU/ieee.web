@@ -7,13 +7,16 @@
     "node": ">=20.19.0 <25"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "dev:next": "next dev",
     "build:next": "next build",
     "start:next": "next start",
+    "dev:vite": "vite",
+    "build:vite": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview:vite": "vite preview",
     "test": "vitest run"
   },
   "dependencies": {

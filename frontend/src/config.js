@@ -11,5 +11,5 @@ const nextDevelopmentApiUrl = typeof process !== 'undefined'
     ? 'http://127.0.0.1:5000/api'
     : undefined;
 
-const API_BASE_URL = normalizeApiBaseUrl(viteApiUrl || nextApiUrl || nextDevelopmentApiUrl);
+const API_BASE_URL = normalizeApiBaseUrl(nextApiUrl || viteApiUrl || nextDevelopmentApiUrl);
 export default API_BASE_URL;

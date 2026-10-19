@@ -33,7 +33,7 @@ Official web platform of the **IEEE Student Branch at Graphic Era Hill Universit
 
 | Layer | Technology |
 | :--- | :--- |
-| Frontend | React 19, Vite, Tailwind CSS v4, Framer Motion |
+| Frontend | Next.js App Router, React 19, Tailwind CSS v4, Framer Motion |
 | Backend | Node.js, Express.js, Mongoose |
 | Database | MongoDB Atlas |
 | Storage | Cloudinary |
@@ -70,9 +70,10 @@ Official web platform of the **IEEE Student Branch at Graphic Era Hill Universit
 ieee.web/
 ├── frontend/               # React 19 application
 │   └── src/
-│       ├── components/     # Navbar, ArchiveNavbar, Footer, animations
-│       ├── pages/          # Home, EventsArchive, Admin (protected)
-│       └── test/           # Vitest unit tests
+│       ├── app/             # Next.js App Router pages and layouts
+│       ├── components/     # Navbar, archive, member, admin, animations
+│       ├── pages/           # Shared client page components and legacy Vite adapters
+│       └── test/            # Vitest unit tests
 │
 ├── backend/                # Node.js / Express REST API
 │   ├── models/             # Admin, Event, Team, Member, Certificate schemas

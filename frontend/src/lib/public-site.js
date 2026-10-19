@@ -15,7 +15,7 @@ const LOCAL_HOSTNAME_SUFFIXES = [
 const readConfiguredOrigin = () => {
   const viteOrigin = import.meta.env?.VITE_PUBLIC_SITE_URL;
   const nextOrigin = typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_SITE_URL : undefined;
-  return (viteOrigin || nextOrigin || '').trim().replace(/\/+$/, '');
+  return (nextOrigin || viteOrigin || '').trim().replace(/\/+$/, '');
 };
 
 const isValidOrigin = (origin) => {

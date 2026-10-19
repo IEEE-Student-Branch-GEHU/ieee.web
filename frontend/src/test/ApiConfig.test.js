@@ -45,12 +45,12 @@ describe('cross-bundler API configuration', () => {
     expect(base).toBe('http://127.0.0.1:5000/api');
   });
 
-  it('prefers the active Vite API variable when both frameworks are configured', async () => {
+  it('prefers the active Next.js API variable when both frameworks are configured', async () => {
     vi.stubEnv('VITE_API_URL', 'https://vite.example.invalid');
     vi.stubEnv('NEXT_PUBLIC_API_URL', 'https://next.example.invalid');
     vi.resetModules();
     const { default: base } = await import('../config');
-    expect(base).toBe('https://vite.example.invalid/api');
+    expect(base).toBe('https://next.example.invalid/api');
   });
 
   it('normalizes repeated trailing slashes without duplicating the API prefix', async () => {

@@ -1,5 +1,6 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import YearSelector from '../../components/archive/YearSelector';
 import MemberCard from '../../components/archive/MemberCard';
@@ -48,14 +49,14 @@ const LeadershipArchive = () => {
     <div className="la-root">
       {/* Navbar with official branding */}
       <nav className="la-nav">
-        <Link to="/" className="la-nav__logo">
+        <a href="/" className="la-nav__logo">
           <img src={ieeeLogo} alt="IEEE GEHU" className="la-nav__logo-img" />
-        </Link>
+        </a>
         <div className="la-nav__links">
-          <Link to="/events" className="la-nav__link">Events Archive</Link>
-          <Link to="/" className="la-nav__back">
+          <a href="/events" className="la-nav__link">Events Archive</a>
+          <a href="/" className="la-nav__back">
             Return to Home
-          </Link>
+          </a>
         </div>
       </nav>
 

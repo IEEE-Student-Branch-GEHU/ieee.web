@@ -100,9 +100,9 @@ stored hash:
 npm run inspect-admin
 ```
 
-This reports only the selected database name, whether the username exists,
-whether the stored value has a bcrypt format, and whether the configured test
-password matches. Do not run it with a production `.env` file.
+This prints only a generic success message when the configured account and
+password verify; failures exit nonzero without printing account, hash, or
+password details. Do not run it with a production `.env` file.
 
 For the dedicated `ieee_test_admin` account only, synchronize its existing
 password hash with the current `ADMIN_PASSWORD` without creating a duplicate:
@@ -136,7 +136,7 @@ cd frontend && npm run dev
 ```bash
 # Backend tests
 cd backend
-npm test -- --runInBand
+npm test
 
 # Frontend tests. The constrained worker flags are intentional for this
 # repository's CI/container environments.
@@ -153,19 +153,22 @@ when working on a focused flow.
 
 | Service | Platform | Config |
 | :--- | :--- | :--- |
-| Frontend | [Vercel](https://vercel.com) | Set `VITE_API_URL` to the Render origin or origin plus `/api`; use the `frontend/` root, `npm run build`, and `dist` output |
+| Frontend | [Vercel](https://vercel.com) | Set `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_SITE_URL`; use the `frontend/` root and the Next.js build (`npm run build` / `npm run build:next`) |
 | Backend | [Render](https://render.com) | Use `render.yaml`, set the `sync: false` secrets, and keep `TRUST_PROXY_HOPS=1` only when Render is the single trusted proxy hop |
 
-The production frontend is the Vite application. The Next.js application is an
-incremental migration and is not the Vercel production target. When both API
-variables are present, the Vite `VITE_API_URL` value wins for the active build.
-The Vite URL may include `/api`; the frontend normalizes it exactly once.
-Set `VITE_PUBLIC_SITE_URL` only after the organizer confirms the canonical
-HTTPS domain. It is used for member profile QR destinations; production does
-not silently fall back to localhost when this value is absent. Hosted Vite
-builds reject a missing, non-HTTPS, local, placeholder, or path-bearing public
-origin so that printable QR codes cannot be generated with an unsafe
-destination.
+The production frontend is the Next.js App Router application. Its page files
+use the `.next.jsx` extension configured in `next.config.mjs`, and Vercel is
+configured with `framework: "nextjs"` and `npm run build:next`. The legacy Vite
+adapter remains available only for compatibility tests and optional local
+previews; its commands are `dev:vite`, `build:vite`, and `preview:vite`.
+
+Set `NEXT_PUBLIC_API_URL` to the Render origin or origin plus `/api`; the
+frontend normalizes it exactly once. Set `NEXT_PUBLIC_SITE_URL` only after the
+organizer confirms the canonical HTTPS domain. Hosted Next.js builds reject a
+missing, non-HTTPS, local, placeholder, or path-bearing public origin so that
+printable QR codes cannot be generated with an unsafe destination. The legacy
+Vite adapter accepts the equivalent `VITE_*` variables only when it is run
+explicitly.
 Each printable member QR encodes only the configured origin plus
 `/members/<team-object-id>`. The Team MongoDB `_id` is never replaced by an
 editable name, role, photo, or academic field, so profile edits do not change

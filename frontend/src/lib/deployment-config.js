@@ -48,13 +48,13 @@ const isPrivateIpv4 = (hostname) => {
     || first >= 224;
 };
 
-export const normalizePublicSiteOrigin = (value) => {
+export const normalizePublicSiteOrigin = (value, variableName = 'VITE_PUBLIC_SITE_URL') => {
   const candidate = typeof value === 'string' ? value.trim().replace(/\/+$/, '') : '';
   let parsed;
   try {
     parsed = new URL(candidate);
   } catch {
-    throw new Error('VITE_PUBLIC_SITE_URL must be a valid HTTPS origin');
+    throw new Error(`${variableName} must be a valid HTTPS origin`);
   }
 
   const hostname = parsed.hostname.toLowerCase().replace(/^\[/, '').replace(/\]$/, '').replace(/\.$/, '');
@@ -72,17 +72,37 @@ export const normalizePublicSiteOrigin = (value) => {
     || isLocalHostname
     || hostname.includes(':')
     || isPrivateIpv4(hostname)) {
-    throw new Error('VITE_PUBLIC_SITE_URL must be a valid HTTPS public origin');
+    throw new Error(`${variableName} must be a valid HTTPS public origin`);
   }
 
   return parsed.origin;
 };
 
-export const validateViteBuildEnvironment = ({ isVercel, apiUrl, publicSiteUrl }) => {
+const validateHostedBuildEnvironment = ({ isVercel, apiUrl, publicSiteUrl, apiVariable, publicSiteVariable }) => {
   if (!isVercel) return;
-  if (!apiUrl?.trim()) throw new Error('VITE_API_URL is required for Vercel production builds');
-  if (!apiUrl.trim().startsWith('https://')) throw new Error('VITE_API_URL must use HTTPS for Vercel production builds');
+  if (!apiUrl?.trim()) throw new Error(`${apiVariable} is required for Vercel production builds`);
+  if (!apiUrl.trim().startsWith('https://')) throw new Error(`${apiVariable} must use HTTPS for Vercel production builds`);
   normalizeApiBaseUrl(apiUrl);
-  if (!publicSiteUrl?.trim()) throw new Error('VITE_PUBLIC_SITE_URL is required for Vercel production builds');
-  normalizePublicSiteOrigin(publicSiteUrl);
+  if (!publicSiteUrl?.trim()) throw new Error(`${publicSiteVariable} is required for Vercel production builds`);
+  normalizePublicSiteOrigin(publicSiteUrl, publicSiteVariable);
 };
+
+export const validateViteBuildEnvironment = ({ isVercel, apiUrl, publicSiteUrl }) => (
+  validateHostedBuildEnvironment({
+    isVercel,
+    apiUrl,
+    publicSiteUrl,
+    apiVariable: 'VITE_API_URL',
+    publicSiteVariable: 'VITE_PUBLIC_SITE_URL',
+  })
+);
+
+export const validateNextBuildEnvironment = ({ isVercel, apiUrl, publicSiteUrl }) => (
+  validateHostedBuildEnvironment({
+    isVercel,
+    apiUrl,
+    publicSiteUrl,
+    apiVariable: 'NEXT_PUBLIC_API_URL',
+    publicSiteVariable: 'NEXT_PUBLIC_SITE_URL',
+  })
+);
