@@ -18,6 +18,7 @@ const nextConfig = {
     'express',
     'express-mongo-sanitize',
     'express-rate-limit',
+    'google-auth-library',
     'jsonwebtoken',
     'mongoose',
     'multer',

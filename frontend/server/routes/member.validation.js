@@ -144,6 +144,22 @@ const sanitizeProvisioning = (body) => {
   return { username, teamId: assertValidId(body.teamId, 'team') };
 };
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const sanitizeGoogleAuthorization = (body) => {
+  assertObjectBody(body);
+  assertAllowedKeys(body, new Set(['email']));
+  const email = requiredString(body.email, 'email', { maxLength: 254 }).trim().toLowerCase();
+  if (!EMAIL_PATTERN.test(email)) throw new MemberRequestValidationError('email must be a valid email address');
+  return { email };
+};
+
+const sanitizeGoogleCredential = (body) => {
+  assertObjectBody(body);
+  assertAllowedKeys(body, new Set(['credential']));
+  return { credential: requiredString(body.credential, 'credential', { maxLength: 4096 }) };
+};
+
 const sanitizeMemberProfileUpdate = (body) => {
   assertObjectBody(body);
   const allowedKeys = new Set([
@@ -212,6 +228,8 @@ module.exports = {
   sanitizeMemberActivation,
   sanitizeMemberCredentials,
   sanitizeMemberProfileUpdate,
+  sanitizeGoogleAuthorization,
+  sanitizeGoogleCredential,
   sanitizeProvisioning,
   sanitizeSocials,
 };

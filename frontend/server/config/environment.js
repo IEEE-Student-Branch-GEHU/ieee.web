@@ -105,6 +105,8 @@ const getEnvironmentConfig = (sourceEnv = process.env) => {
       apiSecret: env.CLOUDINARY_API_SECRET?.trim() || null,
     }),
     trustedProxyHops: trustedProxyHops ?? 0,
+    // The OAuth client ID is public; the browser button uses the same value.
+    googleClientId: (env.GOOGLE_CLIENT_ID || env.NEXT_PUBLIC_GOOGLE_CLIENT_ID)?.trim() || null,
   });
 };
 

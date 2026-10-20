@@ -90,6 +90,29 @@ member sets a password at `/member/activate` and can then sign in at
 `/member/login`. Existing Team records remain public and read-only until an
 administrator explicitly links one through this flow.
 
+### Volunteer Google sign-in
+
+Volunteers can also sign in with Google, from the footer's "Volunteer login"
+button or from `/member/login`. Only emails an administrator authorized can
+sign in; there is no self-registration.
+
+1. In [Google Cloud Console](https://console.cloud.google.com/apis/credentials),
+   create an **OAuth client ID** of type **Web application**. Under
+   **Authorized JavaScript origins**, add the production origin (the value of
+   `NEXT_PUBLIC_SITE_URL`) and `http://localhost:3000` for local development.
+   No redirect URI or client secret is needed.
+2. Set `NEXT_PUBLIC_GOOGLE_CLIENT_ID` to the client ID (in Vercel for
+   Production, then redeploy). The ID is public; the server also reads it to
+   check that Google issued each token for this site.
+3. In the admin panel, open **Team** and use **Volunteer Google sign-in** to
+   authorize a volunteer's Google account email for their Team profile. A
+   profile without a member account gets one with no password, so Google is
+   its only sign-in method.
+
+On first sign-in the Google account is bound to the member account, so a
+re-assigned email address cannot take it over. Changing or removing the
+authorized email signs the volunteer out everywhere.
+
 Member access tokens use the configured `JWT_SECRET` with a separate token
 purpose, issuer, audience, subject, expiry, and token-version check. Signing
 out increments the account token version so the current token is rejected on

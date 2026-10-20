@@ -56,6 +56,16 @@ export const loginMember = async (username, password) => {
   return data;
 };
 
+export const loginMemberWithGoogle = async (credential) => {
+  const data = await requestMemberJson('/member/google', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ credential }),
+  });
+  if (!data?.token) throw new Error('Authentication response did not include a token.');
+  return data;
+};
+
 export const activateMember = (token, password) => requestMemberJson('/member/activate', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },

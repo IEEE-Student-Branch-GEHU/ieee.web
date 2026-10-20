@@ -20,9 +20,14 @@ const {
 } = require('./admin.validation');
 const {
     MemberRequestValidationError,
+    sanitizeGoogleAuthorization,
     sanitizeProvisioning,
 } = require('./member.validation');
-const { provisionMemberAccount } = require('../services/member-provisioning');
+const {
+    authorizeMemberGoogleEmail,
+    provisionMemberAccount,
+    revokeMemberGoogleEmail,
+} = require('../services/member-provisioning');
 const { createAdminToken } = require('../services/admin-auth');
 
 const upload = createUploadMiddleware(storage);
@@ -130,6 +135,56 @@ router.post('/members/provision', auth, async (req, res) => {
             return res.status(409).json({ message: 'A member account or team link already exists' });
         }
         return res.status(500).json({ message: 'Unable to provision member account' });
+    }
+});
+
+// Volunteer Google sign-in: administrators authorize one Google account email
+// per Team profile. Only authorized emails can sign in with Google.
+router.get('/members/google', auth, async (req, res) => {
+    try {
+        const Member = require('../models/Member');
+        const members = await Member.find({ email: { $exists: true } }, 'teamId email status');
+        res.json(members.map(member => ({
+            teamId: String(member.teamId),
+            email: member.email,
+            status: member.status,
+        })));
+    } catch (error) {
+        res.status(500).json({ message: 'Unable to fetch volunteer Google access' });
+    }
+});
+
+router.put('/members/:teamId/google', auth, async (req, res) => {
+    try {
+        const Member = require('../models/Member');
+        const teamId = String(assertValidId(req.params.teamId, 'team member'));
+        const { email } = sanitizeGoogleAuthorization(req.body);
+        const member = await authorizeMemberGoogleEmail({ MemberModel: Member, TeamModel: Team, teamId, email });
+        res.json({ teamId, email: member.email, status: member.status });
+    } catch (error) {
+        if (error instanceof RequestValidationError || error instanceof MemberRequestValidationError) {
+            return res.status(400).json({ message: error.message });
+        }
+        if (error.code === 'TEAM_NOT_FOUND') return res.status(404).json({ message: error.message });
+        if (error.code === 'EMAIL_IN_USE' || error.code === 11000) {
+            return res.status(409).json({ message: 'This email is already authorized for another member' });
+        }
+        res.status(500).json({ message: 'Unable to authorize volunteer email' });
+    }
+});
+
+router.delete('/members/:teamId/google', auth, async (req, res) => {
+    try {
+        const Member = require('../models/Member');
+        const teamId = String(assertValidId(req.params.teamId, 'team member'));
+        const member = await revokeMemberGoogleEmail({ MemberModel: Member, teamId });
+        if (!member) return res.status(404).json({ message: 'No authorized email for this member' });
+        res.json({ message: 'Volunteer Google access removed' });
+    } catch (error) {
+        if (error instanceof RequestValidationError) {
+            return res.status(400).json({ message: error.message });
+        }
+        res.status(500).json({ message: 'Unable to remove volunteer Google access' });
     }
 });
 

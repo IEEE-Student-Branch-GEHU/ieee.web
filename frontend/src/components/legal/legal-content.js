@@ -59,6 +59,7 @@ export const legalContent = {
         title: 'Administrative security',
         paragraphs: [
           'Admin credentials are handled with bcrypt password hashing and comparison. The admin sign-in endpoint returns a JSON Web Token (JWT), and the frontend stores that token in browser localStorage under the key adminToken for authenticated admin requests. This storage behavior applies to the administrative interface, not to ordinary public browsing.',
+          "Volunteers authorized by an administrator can sign in with Google. Google's sign-in script loads only where the button appears, and the website receives the account's email address and Google account identifier to match it against the authorized email. The member token is then stored in localStorage under memberToken. Google's own privacy policy applies to the sign-in process.",
           'The backend applies rate limiting to API requests and uses a stricter limiter for admin login attempts. These measures reduce risk, but no absolute security guarantee is made.',
         ],
       },
