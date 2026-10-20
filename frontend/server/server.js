@@ -6,6 +6,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const { getEnvironmentConfig } = require('./config/environment');
 const { createCorsMiddleware, createOriginGuard } = require('./middleware/cors');
 const { createGlobalLimiter } = require('./config/rate-limit');
+const { connectDatabase } = require('./config/database');
 
 const app = express();
 const config = getEnvironmentConfig();
@@ -48,12 +49,13 @@ app.use('/api', apiRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/member', memberRoutes);
 
-// Process availability check. Render uses /health below for readiness.
+// Process availability check for the standalone server.
 app.get('/', (req, res) => {
   res.send('IEEE Website Backend is Running');
 });
 
-app.get('/health', (req, res) => {
+// Readiness check. Next.js rewrites /health to /api/health.
+app.get(['/health', '/api/health'], (req, res) => {
   res.set('Cache-Control', 'no-store');
   if (mongoose.connection.readyState !== 1) {
     return res.status(503).json({ status: 'not_ready', database: 'disconnected' });
@@ -61,17 +63,12 @@ app.get('/health', (req, res) => {
   return res.json({ status: 'ready', database: 'connected' });
 });
 
+const ensureDatabase = () => connectDatabase(config.mongoUri);
+
 const startServer = async () => {
   if (config.mongoUri) {
-    try {
-      await mongoose.connect(config.mongoUri, { serverSelectionTimeoutMS: 10000 });
-      console.log('Connected to MongoDB Atlas');
-    } catch (error) {
-      const startupError = new Error('MongoDB connection failed');
-      startupError.code = 'MONGODB_CONNECTION_FAILED';
-      startupError.cause = error;
-      throw startupError;
-    }
+    await ensureDatabase();
+    console.log('Connected to MongoDB Atlas');
   }
 
   return new Promise((resolve) => {
@@ -84,6 +81,7 @@ const startServer = async () => {
 };
 
 app.startServer = startServer;
+app.ensureDatabase = ensureDatabase;
 
 if (require.main === module) {
   startServer().catch((error) => {

@@ -9,15 +9,6 @@ updates:
         patterns:
           - "*" # Group all frontend updates into one PR
 
-  - package-ecosystem: "npm"
-    directory: "/backend"
-    schedule:
-      interval: "weekly"
-    groups:
-      dependencies:
-        patterns:
-          - "*" # Group all backend updates into one PR
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

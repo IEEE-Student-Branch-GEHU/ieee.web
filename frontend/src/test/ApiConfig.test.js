@@ -36,13 +36,13 @@ describe('cross-bundler API configuration', () => {
     expect(base).toBe('https://vite.example.invalid/api');
   });
 
-  it('uses the local backend for an unconfigured Next development client', async () => {
+  it('uses the same-origin API for an unconfigured Next development client', async () => {
     vi.stubEnv('NODE_ENV', 'development');
     vi.stubEnv('NEXT_PUBLIC_API_URL', '');
     vi.stubEnv('VITE_API_URL', '');
     vi.resetModules();
     const { default: base } = await import('../config');
-    expect(base).toBe('http://127.0.0.1:5000/api');
+    expect(base).toBe('/api');
   });
 
   it('prefers the active Next.js API variable when both frameworks are configured', async () => {

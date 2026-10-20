@@ -4,9 +4,8 @@
 
 **Production launch readiness: BLOCKED**
 
-The repository contains the Next.js App Router production frontend and Render
-backend configuration, but the canonical public domain is not verified. The
-README and Render configuration currently name different Vercel hostnames. Do
+The repository is a single Next.js application (site and Express API) deployed
+to Vercel, but the canonical public domain is not verified. Do
 not generate production member QR codes or publish canonical URLs until the
 organizer confirms one HTTPS origin and it has been verified in Vercel.
 
@@ -14,8 +13,8 @@ organizer confirms one HTTPS origin and it has been verified in Vercel.
 
 - [ ] Confirm the canonical custom domain and whether the apex or `www` host is primary.
 - [ ] Connect the confirmed domain in Vercel and verify DNS and TLS.
-- [ ] Set Render `FRONTEND_URL` to the exact confirmed HTTPS origin.
-- [ ] Set Vercel `NEXT_PUBLIC_API_URL` to the deployed Render API origin, then rebuild.
+- [ ] Set the API secrets in Vercel (`MONGODB_URI`, `JWT_SECRET`, Cloudinary, `TRUST_PROXY_HOPS=1`) and leave `NEXT_PUBLIC_API_URL` unset.
+- [ ] Allow Vercel in MongoDB Atlas Network Access.
 - [ ] Set Vercel `NEXT_PUBLIC_SITE_URL` to the same confirmed public origin.
 - [ ] Rebuild after setting `NEXT_PUBLIC_SITE_URL`; hosted Next.js builds reject
       an unset or non-public origin before printable QR codes can be generated.
@@ -60,7 +59,7 @@ Do not add fictional records or modify production records to fill missing data.
 The following cannot be proven from this local workspace alone:
 
 - Vercel custom-domain ownership, DNS, TLS, and deployed hostname.
-- Render environment values and live CORS behavior.
+- Vercel environment values and live origin checks.
 - MongoDB/Cloudinary production readiness.
 - QR scanning on a physical device or production-like deployment.
 - Final legal approval and retention/contact decisions.

@@ -8,8 +8,24 @@ validateNextBuildEnvironment({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pageExtensions: ['next.jsx'],
+  // next.jsx: App Router pages. next.js: the API route that mounts server/.
+  pageExtensions: ['next.jsx', 'next.js'],
   reactStrictMode: true,
+  // Node-only server dependencies are required at runtime instead of bundled.
+  serverExternalPackages: [
+    'bcryptjs',
+    'cloudinary',
+    'express',
+    'express-mongo-sanitize',
+    'express-rate-limit',
+    'jsonwebtoken',
+    'mongoose',
+    'multer',
+    'multer-storage-cloudinary',
+  ],
+  async rewrites() {
+    return [{ source: '/health', destination: '/api/health' }];
+  },
 };
 
 export default nextConfig;

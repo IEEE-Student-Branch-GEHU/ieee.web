@@ -2,7 +2,7 @@
 "frontend":
 - "frontend/**/*"
 "backend":
-- "backend/**/*"
+- "frontend/server/**/*"
 "docs":
 - "*.md"
 - "docs/**/*"

@@ -80,9 +80,11 @@ export const normalizePublicSiteOrigin = (value, variableName = 'VITE_PUBLIC_SIT
 
 const validateHostedBuildEnvironment = ({ isVercel, apiUrl, publicSiteUrl, apiVariable, publicSiteVariable }) => {
   if (!isVercel) return;
-  if (!apiUrl?.trim()) throw new Error(`${apiVariable} is required for Vercel production builds`);
-  if (!apiUrl.trim().startsWith('https://')) throw new Error(`${apiVariable} must use HTTPS for Vercel production builds`);
-  normalizeApiBaseUrl(apiUrl);
+  // An unset API URL means the same-origin /api served by this deployment.
+  if (apiUrl?.trim()) {
+    if (!apiUrl.trim().startsWith('https://')) throw new Error(`${apiVariable} must use HTTPS for Vercel production builds`);
+    normalizeApiBaseUrl(apiUrl);
+  }
   if (!publicSiteUrl?.trim()) throw new Error(`${publicSiteVariable} is required for Vercel production builds`);
   normalizePublicSiteOrigin(publicSiteUrl, publicSiteVariable);
 };

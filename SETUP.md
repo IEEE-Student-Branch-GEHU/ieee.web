@@ -23,23 +23,25 @@ cd ieee.web
 
 **2. Install dependencies**
 
+The site and its API are one Next.js app in `frontend/`. The Express API lives
+in `frontend/server/` and is served at `/api` by `src/pages/api/[...path].next.js`.
+
 ```bash
-cd backend && npm ci
-cd ../frontend && npm ci
+cd frontend && npm ci
 ```
 
 ---
 
 ## Environment Variables
 
-Create a `.env` file inside `backend/`:
+Copy `frontend/.env.example` to `frontend/.env.local` and fill it in:
 
 ```env
 # MongoDB Atlas
 MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/ieee-gehu
 
-# Exact browser origin allowed by the backend
-FRONTEND_URL=http://localhost:5173
+# Public origin for QR codes; also the allowed browser origin for the API
+NEXT_PUBLIC_SITE_URL=https://your-verified-domain.example
 
 # Number of trusted reverse-proxy hops. Use 0 locally.
 TRUST_PROXY_HOPS=0
@@ -56,16 +58,16 @@ JWT_SECRET=replace_with_a_random_secret_at_least_32_characters_long
 > **Never commit `.env` files.** The file is already in `.gitignore`.
 
 In production, `NODE_ENV=production` also requires all three Cloudinary values,
-`MONGODB_URI`, `JWT_SECRET`, and `FRONTEND_URL`. The old `MONGO_URI` name is
-not consumed; update existing Render services to `MONGODB_URI` before deploying.
+`MONGODB_URI`, `JWT_SECRET`, and `NEXT_PUBLIC_SITE_URL` (or `FRONTEND_URL`).
+The old `MONGO_URI` name is not consumed.
 Production JWT secrets must be random and at least 32 characters. The server
 does not create a default administrator or use a fallback signing key. Create
 an administrator through the one-off script below; provide the credentials
 through the shell environment or a temporary secret manager entry, never in
-`render.yaml` or source control:
+source control:
 
 ```bash
-cd backend
+cd frontend
 read -r -p "Admin username: " ADMIN_USERNAME
 read -r -s -p "Admin password: " ADMIN_PASSWORD; printf '\n'
 export ADMIN_USERNAME ADMIN_PASSWORD
@@ -122,25 +124,24 @@ does not operate against production databases.
 ## Running Locally
 
 ```bash
-# Terminal 1 — Backend (http://localhost:5000)
-cd backend && npm start
-
-# Terminal 2 — Frontend (http://localhost:5173)
+# Site and API together (http://localhost:3000, API at /api)
 cd frontend && npm run dev
 ```
+
+`npm run start:api` still runs the API on its own (port 5000) if needed.
 
 ---
 
 ## Running Tests
 
 ```bash
-# Backend tests
-cd backend
-npm test
+cd frontend
+
+# API tests (Jest, server/tests)
+npm run test:server
 
 # Frontend tests. The constrained worker flags are intentional for this
 # repository's CI/container environments.
-cd ../frontend
 npm test -- --pool=threads --maxWorkers=1 --no-file-parallelism
 ```
 
@@ -151,46 +152,49 @@ when working on a focused flow.
 
 ## Deployment
 
-| Service | Platform | Config |
-| :--- | :--- | :--- |
-| Frontend | [Vercel](https://vercel.com) | Set `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_SITE_URL`; use the `frontend/` root and the Next.js build (`npm run build` / `npm run build:next`) |
-| Backend | [Render](https://render.com) | Use `render.yaml`, set the `sync: false` secrets, and keep `TRUST_PROXY_HOPS=1` only when Render is the single trusted proxy hop |
+The whole site, including the API, deploys as one Vercel project:
 
-The production frontend is the Next.js App Router application. Its page files
-use the `.next.jsx` extension configured in `next.config.mjs`, and Vercel is
-configured with `framework: "nextjs"` and `npm run build:next`. The legacy Vite
-adapter remains available only for compatibility tests and optional local
-previews; its commands are `dev:vite`, `build:vite`, and `preview:vite`.
+- Root Directory: `frontend`, Framework Preset: Next.js, Node.js 20.x or 22.x.
+- Environment variables (Production and Preview): `NEXT_PUBLIC_SITE_URL`,
+  `MONGODB_URI`, `JWT_SECRET`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`,
+  `CLOUDINARY_API_SECRET`, and `TRUST_PROXY_HOPS=1`. Leave
+  `NEXT_PUBLIC_API_URL` unset so the site calls its own `/api`.
+- MongoDB Atlas Network Access must allow Vercel's dynamic IPs
+  (`0.0.0.0/0` together with a strong database password).
 
-Set `NEXT_PUBLIC_API_URL` to the Render origin or origin plus `/api`; the
-frontend normalizes it exactly once. Set `NEXT_PUBLIC_SITE_URL` only after the
-organizer confirms the canonical HTTPS domain. Hosted Next.js builds reject a
-missing, non-HTTPS, local, placeholder, or path-bearing public origin so that
-printable QR codes cannot be generated with an unsafe destination. The legacy
-Vite adapter accepts the equivalent `VITE_*` variables only when it is run
-explicitly.
-Each printable member QR encodes only the configured origin plus
-`/members/<team-object-id>`. The Team MongoDB `_id` is never replaced by an
-editable name, role, photo, or academic field, so profile edits do not change
-an already printed destination. Deleted or invalid IDs resolve to the public
-not-found/error states instead of exposing protected data.
+Page files use the `.next.jsx` extension configured in `next.config.mjs`; the
+API route uses `.next.js`. The legacy Vite adapter remains available only for
+compatibility tests and optional local previews (`dev:vite`, `build:vite`,
+`preview:vite`).
 
-Render checks `/health`, which returns `503` when the running process is
-connected to an unavailable database and `200` with
-`{ "status": "ready", "database": "connected" }` when MongoDB is ready. `/`
-only proves that the Node process is serving HTTP. Uploaded images use
-Cloudinary, so they do not rely on Render's ephemeral local filesystem. The
-rate limiter remains process-local and must use a shared store before scaling
-the backend beyond one instance.
+Set `NEXT_PUBLIC_SITE_URL` only after the organizer confirms the canonical
+HTTPS domain. Hosted builds reject a missing, non-HTTPS, local, placeholder, or
+path-bearing public origin so that printable QR codes cannot be generated with
+an unsafe destination. Each printable member QR encodes only the configured
+origin plus `/members/<team-object-id>`. The Team MongoDB `_id` is never
+replaced by an editable name, role, photo, or academic field, so profile edits
+do not change an already printed destination. Deleted or invalid IDs resolve to
+the public not-found/error states instead of exposing protected data.
 
-Before deployment, allow the Render service to reach MongoDB Atlas through its
-Network Access rules and verify the actual Render ingress topology before
-changing `TRUST_PROXY_HOPS`. After deployment, manually verify the Render
-`/health` and `/api/events` responses, the Vercel Events page, and the admin
-login using real environment values. For the member workflow, create an
-approved Team profile in the admin panel, upload a test photo, provision and
-activate the account, open and refresh `/members/<team-object-id>`, generate
-and download the SVG QR, and scan it from a physical phone over HTTPS. Also
-test camera denial and unsupported-browser fallback. No live deployment,
-Cloudinary upload, MongoDB production write, or physical-device operation is
-performed by the repository tests.
+The API accepts browser requests from its own origin (so preview deployments
+work), from `NEXT_PUBLIC_SITE_URL`/`FRONTEND_URL`, and from localhost in
+development. `/health` (rewritten to `/api/health`) returns `503` when MongoDB
+is unavailable and `200` with `{ "status": "ready", "database": "connected" }`
+when it is ready.
+
+Serverless limits to keep in mind:
+
+- Vercel rejects request bodies over 4.5 MB, so image and certificate uploads
+  above that fail even though the API allows 10 MB.
+- The rate limiter is in memory, so each warm function instance counts
+  separately. Use a shared store (for example Upstash Redis) for strict limits.
+- Uploaded images use Cloudinary; nothing relies on the local filesystem.
+
+After deployment, manually verify `/health`, `/api/events`, the Events page,
+and the admin login. For the member workflow, create an approved Team profile
+in the admin panel, upload a test photo, provision and activate the account,
+open and refresh `/members/<team-object-id>`, generate and download the SVG QR,
+and scan it from a physical phone over HTTPS. Also test camera denial and
+unsupported-browser fallback. No live deployment, Cloudinary upload, MongoDB
+production write, or physical-device operation is performed by the repository
+tests.

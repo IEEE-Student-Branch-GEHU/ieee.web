@@ -1,11 +1,22 @@
 const cors = require('cors');
 
+// The API is served by the same Next.js deployment as the pages, so a browser
+// request whose Origin matches the requested host is same-origin. This keeps
+// Vercel preview deployments working without listing every preview URL.
+const isSameOrigin = (req, requestOrigin) => {
+  try {
+    return new URL(requestOrigin).host === req.get('host');
+  } catch {
+    return false;
+  }
+};
+
 const createOriginGuard = (allowedOrigins) => (req, res, next) => {
   const requestOrigin = req.get('Origin');
 
   // Non-browser clients do not send Origin and are still protected by the API
   // authentication and rate-limit middleware.
-  if (!requestOrigin || allowedOrigins.includes(requestOrigin)) return next();
+  if (!requestOrigin || allowedOrigins.includes(requestOrigin) || isSameOrigin(req, requestOrigin)) return next();
 
   return res.status(403).json({ message: 'Origin is not allowed' });
 };

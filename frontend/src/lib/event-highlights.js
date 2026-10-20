@@ -1,4 +1,4 @@
-// Keep these limits aligned with backend/validation/event-highlights.js.
+// Keep these limits aligned with server/validation/event-highlights.js.
 export const MAX_HIGHLIGHTS = 50;
 export const MAX_CAPTION_LENGTH = 300;
 

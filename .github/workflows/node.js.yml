@@ -28,10 +28,6 @@ jobs:
         cache: 'npm'
         cache-dependency-path: '**/package-lock.json'
 
-    - name: Install Backend
-      working-directory: ./backend
-      run: npm ci || npm install --legacy-peer-deps
-
     - name: Install Frontend
       working-directory: ./frontend
       run: npm ci
