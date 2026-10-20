@@ -6,10 +6,10 @@ import Hero from './Hero';
 // Mock framer-motion
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, className, ...props }) => <div className={className}>{children}</div>,
-    img: ({ src, alt, className, ...props }) => <img src={src} alt={alt} className={className} />,
-    h1: ({ children, className, ...props }) => <h1 className={className}>{children}</h1>,
-    p: ({ children, className, ...props }) => <p className={className}>{children}</p>,
+    div: ({ children, className }) => <div className={className}>{children}</div>,
+    img: ({ src, alt, className }) => <img src={src} alt={alt} className={className} />,
+    h1: ({ children, className }) => <h1 className={className}>{children}</h1>,
+    p: ({ children, className }) => <p className={className}>{children}</p>,
   },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
@@ -21,14 +21,14 @@ vi.mock('embla-carousel-autoplay', () => ({
 
 // Mock Carousel UI components as simple pass-through containers
 vi.mock('./ui/carousel', () => ({
-  Carousel: ({ children, className, ...props }) => <div className={className} data-testid="carousel">{children}</div>,
+  Carousel: ({ children, className }) => <div className={className} data-testid="carousel">{children}</div>,
   CarouselContent: ({ children, className }) => <div className={className} data-testid="carousel-content">{children}</div>,
   CarouselItem: ({ children, className }) => <div className={className} role="group" aria-roledescription="slide">{children}</div>,
 }));
 
 // Mock Button UI component as native button
 vi.mock('./ui/button', () => ({
-  Button: ({ children, className, size, variant, ...props }) => (
+  Button: ({ children, className, ...props }) => (
     <button className={className} {...props}>{children}</button>
   ),
 }));

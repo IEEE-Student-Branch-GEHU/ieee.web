@@ -1,6 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import YearSelector from '../../components/archive/YearSelector';
 import MemberCard from '../../components/archive/MemberCard';
 import API_BASE_URL from '../../config';
@@ -48,14 +49,14 @@ const LeadershipArchive = () => {
     <div className="la-root">
       {/* Navbar with official branding */}
       <nav className="la-nav">
-        <Link to="/" className="la-nav__logo">
+        <a href="/" className="la-nav__logo">
           <img src={ieeeLogo} alt="IEEE GEHU" className="la-nav__logo-img" />
-        </Link>
+        </a>
         <div className="la-nav__links">
-          <Link to="/events" className="la-nav__link">Events Archive</Link>
-          <Link to="/" className="la-nav__back">
+          <a href="/events" className="la-nav__link">Events Archive</a>
+          <a href="/" className="la-nav__back">
             Return to Home
-          </Link>
+          </a>
         </div>
       </nav>
 
@@ -70,22 +71,22 @@ const LeadershipArchive = () => {
         {/* Main Content Area */}
         <main className="la-content">
           <header className="la-header">
-            <motion.h1 
+            <Motion.h1
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="la-header__title"
             >
               The <span className="la-header__highlight">Leadership</span> Chronicle
-            </motion.h1>
-            <motion.p 
+            </Motion.h1>
+            <Motion.p
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
               className="la-header__sub"
             >
-              A professional directory of students and faculty who have shaped 
+              A professional directory of students and faculty who have shaped
               the legacy of the IEEE Student Branch at GEHU Dehradun.
-            </motion.p>
+            </Motion.p>
           </header>
 
           {/* Category Bar */}
@@ -106,7 +107,7 @@ const LeadershipArchive = () => {
           {/* Animated Transition Grid */}
           <AnimatePresence mode="wait">
             {loading ? (
-              <motion.div 
+              <Motion.div
                 key="loading"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -122,9 +123,9 @@ const LeadershipArchive = () => {
                     </div>
                   </div>
                 ))}
-              </motion.div>
+              </Motion.div>
             ) : error ? (
-              <motion.div 
+              <Motion.div
                 key="error"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -132,9 +133,9 @@ const LeadershipArchive = () => {
                 className="la-error"
               >
                 <span>⚠</span> {error}
-              </motion.div>
+              </Motion.div>
             ) : members.length === 0 && selectedYear ? (
-              <motion.div 
+              <Motion.div
                 key="empty"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -144,9 +145,9 @@ const LeadershipArchive = () => {
                 <div className="la-empty__icon">📑</div>
                 <p>No records found for session <strong>{selectedYear}</strong> in this category.</p>
                 <p className="la-empty__sub">Please select a different category or year.</p>
-              </motion.div>
+              </Motion.div>
             ) : (
-              <motion.div 
+              <Motion.div
                 key="content"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -201,7 +202,7 @@ const LeadershipArchive = () => {
                 <p className="la-count">
                   Records Found: <strong>{members.length}</strong> profiles for {selectedYear}
                 </p>
-              </motion.div>
+              </Motion.div>
             )}
           </AnimatePresence>
         </main>

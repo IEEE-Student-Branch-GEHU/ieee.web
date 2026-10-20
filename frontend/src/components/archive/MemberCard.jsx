@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import { BsLinkedin, BsInstagram, BsEnvelope } from 'react-icons/bs';
 import ieeeLogo from '../../assets/logo.png';
 import './MemberCard.css';
@@ -11,7 +11,7 @@ const MemberCard = ({ member, index = 0 }) => {
     : '??';
 
   return (
-    <motion.div
+    <Motion.div
       layout
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -35,16 +35,16 @@ const MemberCard = ({ member, index = 0 }) => {
             <span className="prof-card__initials">{initials}</span>
           </div>
         )}
-        
+
         {/* Overlay on Hover */}
         <div className="prof-card__overlay" />
 
         {/* Floating Social Actions (Slide up) */}
         <div className="prof-card__actions">
           {socials?.linkedin && (
-            <a 
-              href={socials.linkedin} 
-              target="_blank" 
+            <a
+              href={socials.linkedin}
+              target="_blank"
               rel="noopener noreferrer"
               className="prof-card__social-link"
               aria-label={`${name} on LinkedIn`}
@@ -53,9 +53,9 @@ const MemberCard = ({ member, index = 0 }) => {
             </a>
           )}
           {socials?.instagram && (
-            <a 
-              href={socials.instagram} 
-              target="_blank" 
+            <a
+              href={socials.instagram}
+              target="_blank"
               rel="noopener noreferrer"
               className="prof-card__social-link"
               aria-label={`${name} on Instagram`}
@@ -64,8 +64,8 @@ const MemberCard = ({ member, index = 0 }) => {
             </a>
           )}
           {email && (
-            <a 
-              href={`mailto:${email}`} 
+            <a
+              href={`mailto:${email}`}
               className="prof-card__social-link"
               aria-label={`Email ${name}`}
             >
@@ -80,7 +80,7 @@ const MemberCard = ({ member, index = 0 }) => {
         <h3 className="prof-card__name">{name}</h3>
         <p className="prof-card__role">{role}</p>
       </div>
-    </motion.div>
+    </Motion.div>
   );
 };
 

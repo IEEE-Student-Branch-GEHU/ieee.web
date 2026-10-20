@@ -5,8 +5,8 @@ import Contact from './Contact';
 // Mock framer-motion
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, className, ...props }) => <div className={className}>{children}</div>,
-    button: ({ children, onClick, className, type, disabled, ...props }) => (
+    div: ({ children, className }) => <div className={className}>{children}</div>,
+    button: ({ children, onClick, className, type, disabled }) => (
       <button onClick={onClick} className={className} type={type} disabled={disabled}>{children}</button>
     ),
   },
@@ -24,18 +24,18 @@ vi.mock('../config', () => ({
 
 // Mock lucide-react icons
 vi.mock('lucide-react', () => ({
-  Send: (props) => <span data-testid="icon-send">Send</span>,
-  Phone: (props) => <span data-testid="icon-phone">Phone</span>,
-  MapPin: (props) => <span data-testid="icon-mappin">MapPin</span>,
-  Mail: (props) => <span data-testid="icon-mail">Mail</span>,
-  Loader2: (props) => <span data-testid="icon-loader">Loading</span>,
-  CheckCircle: (props) => <span data-testid="icon-check">Check</span>,
+  Send: () => <span data-testid="icon-send">Send</span>,
+  Phone: () => <span data-testid="icon-phone">Phone</span>,
+  MapPin: () => <span data-testid="icon-mappin">MapPin</span>,
+  Mail: () => <span data-testid="icon-mail">Mail</span>,
+  Loader2: () => <span data-testid="icon-loader">Loading</span>,
+  CheckCircle: () => <span data-testid="icon-check">Check</span>,
 }));
 
 describe('Contact Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    global.fetch = vi.fn();
+    globalThis.fetch = vi.fn();
   });
 
   afterEach(() => {
@@ -99,7 +99,7 @@ describe('Contact Component', () => {
 
   it('shows loading state during form submission', async () => {
     // Mock a slow fetch that never resolves during this test
-    global.fetch = vi.fn(() => new Promise(() => {}));
+    globalThis.fetch = vi.fn(() => new Promise(() => {}));
 
     render(<Contact />);
 
@@ -120,7 +120,7 @@ describe('Contact Component', () => {
   });
 
   it('shows success message on successful submission', async () => {
-    global.fetch = vi.fn(() =>
+    globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({ success: true }),
@@ -149,7 +149,7 @@ describe('Contact Component', () => {
   it('handles API error gracefully (network failure)', async () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    global.fetch = vi.fn(() => Promise.reject(new Error('Network error')));
+    globalThis.fetch = vi.fn(() => Promise.reject(new Error('Network error')));
 
     render(<Contact />);
 
@@ -173,7 +173,7 @@ describe('Contact Component', () => {
   });
 
   it('handles non-success API response', async () => {
-    global.fetch = vi.fn(() =>
+    globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({ success: false }),
@@ -202,7 +202,7 @@ describe('Contact Component', () => {
   });
 
   it('calls fetch with correct URL and payload', async () => {
-    global.fetch = vi.fn(() =>
+    globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({ success: true }),
@@ -222,7 +222,7 @@ describe('Contact Component', () => {
     });
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(
+      expect(globalThis.fetch).toHaveBeenCalledWith(
         'http://localhost:5000/api/contact',
         expect.objectContaining({
           method: 'POST',
@@ -239,7 +239,7 @@ describe('Contact Component', () => {
   });
 
   it('disables submit button while submitting', async () => {
-    global.fetch = vi.fn(() => new Promise(() => {})); // Never resolves
+    globalThis.fetch = vi.fn(() => new Promise(() => {})); // Never resolves
 
     render(<Contact />);
 

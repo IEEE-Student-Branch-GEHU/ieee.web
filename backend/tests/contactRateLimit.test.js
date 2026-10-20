@@ -4,10 +4,10 @@ const rateLimit = require('express-rate-limit');
 
 /**
  * Contact API Rate Limiting Tests (Issue #23)
- * 
+ *
  * These tests verify that the contact form endpoint correctly
  * enforces rate limiting to prevent spam abuse.
- * 
+ *
  * Uses an isolated Express app (no MongoDB dependency)
  * to ensure CI compatibility without database credentials.
  */
