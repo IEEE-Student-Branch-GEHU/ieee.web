@@ -17,6 +17,7 @@ const {
   assertValidId,
   MemberRequestValidationError,
   sanitizeCertificateMetadata,
+  sanitizeGoogleCredential,
   sanitizeMemberActivation,
   sanitizeMemberCredentials,
   sanitizeMemberProfileUpdate,
@@ -27,6 +28,7 @@ const {
   verifyMemberPassword,
   createMemberToken,
 } = require('../services/member-auth');
+const { verifyGoogleCredential } = require('../services/google-auth');
 const { PUBLIC_TEAM_PROJECTION, serializePublicTeamMember } = require('../validation/team-public');
 const { serializeCertificate } = require('../validation/certificate-public');
 const { getCertificateDestroyOptions } = require('../services/certificate-storage');
@@ -126,6 +128,58 @@ router.post('/login', loginLimiter, async (req, res) => {
   } catch (error) {
     if (handleValidationError(res, error)) return undefined;
     return res.status(500).json({ message: 'Server error during member login' });
+  }
+});
+
+// Volunteer sign-in with Google. The account must have been authorized by an
+// administrator through /api/admin/members/:teamId/google; there is no
+// self-registration.
+router.post('/google', loginLimiter, async (req, res) => {
+  try {
+    const { jwtSecret, googleClientId } = getEnvironmentConfig();
+    if (!jwtSecret || !googleClientId) return res.status(503).json({ message: 'Google sign-in is not configured' });
+
+    const { credential } = sanitizeGoogleCredential(req.body);
+    let identity;
+    try {
+      identity = await verifyGoogleCredential(credential, googleClientId);
+    } catch {
+      return res.status(401).json({ message: 'Google sign-in could not be verified' });
+    }
+
+    const notAuthorized = () => res.status(403).json({ message: 'This Google account is not authorized for volunteer access' });
+    let member = await maybeSelect(Member.findOne({ email: identity.email }), '+googleSubject');
+    if (!member || member.status === 'disabled') return notAuthorized();
+    if (member.googleSubject && member.googleSubject !== identity.subject) return notAuthorized();
+
+    if (!member.googleSubject || member.status !== 'active') {
+      // Bind the Google account on first sign-in. The administrator's email
+      // authorization also activates a pending account.
+      member = await Member.findOneAndUpdate(
+        {
+          _id: member._id,
+          email: identity.email,
+          status: { $ne: 'disabled' },
+          $or: [{ googleSubject: { $exists: false } }, { googleSubject: identity.subject }],
+        },
+        {
+          $set: { googleSubject: identity.subject, status: 'active' },
+          $unset: { activationTokenHash: 1, activationExpiresAt: 1 },
+        },
+        { new: true },
+      );
+      if (!member) return notAuthorized();
+    }
+
+    const token = createMemberToken({
+      memberId: member._id,
+      teamId: member.teamId,
+      tokenVersion: member.tokenVersion,
+    }, jwtSecret);
+    return res.json({ token });
+  } catch (error) {
+    if (handleValidationError(res, error)) return undefined;
+    return res.status(500).json({ message: 'Server error during Google sign-in' });
   }
 });
 

@@ -16,6 +16,19 @@ const memberSchema = new mongoose.Schema({
     maxlength: 64,
     match: /^[a-z0-9][a-z0-9._-]{2,63}$/,
   },
+  // Google account email an administrator authorized for volunteer sign-in.
+  email: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    maxlength: 254,
+  },
+  // Google's stable account ID, bound on the first Google sign-in so a
+  // re-assigned email address cannot take over the account.
+  googleSubject: {
+    type: String,
+    select: false,
+  },
   passwordHash: {
     type: String,
     select: false,
@@ -43,5 +56,7 @@ const memberSchema = new mongoose.Schema({
 
 memberSchema.index({ teamId: 1 }, { unique: true });
 memberSchema.index({ username: 1 }, { unique: true });
+memberSchema.index({ email: 1 }, { unique: true, sparse: true });
+memberSchema.index({ googleSubject: 1 }, { unique: true, sparse: true });
 
 module.exports = mongoose.model('Member', memberSchema);

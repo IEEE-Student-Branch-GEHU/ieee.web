@@ -7,6 +7,7 @@ import MemberProfileActions from '../../components/admin/MemberProfileActions';
 import MemberProfileFields from '../../components/admin/MemberProfileFields';
 import { buildMemberPayload, createMemberForm } from '../../components/admin/memberProfile';
 import MemberAccountProvisioning from '../../components/admin/MemberAccountProvisioning';
+import VolunteerGoogleAccess from '../../components/admin/VolunteerGoogleAccess';
 import { getStableMemberId } from '../../lib/public-site';
 
 const TeamManage = () => {
@@ -165,6 +166,7 @@ const TeamManage = () => {
              </div>
 
              <MemberAccountProvisioning members={team} />
+             <VolunteerGoogleAccess members={team} />
 
              {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4 backdrop-blur-sm">
