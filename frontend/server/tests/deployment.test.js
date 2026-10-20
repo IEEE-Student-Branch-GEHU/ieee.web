@@ -188,6 +188,39 @@ describe('deployment CORS policy', () => {
     expect(protectedResponse.status).toBe(401);
     expect(protectedResponse.headers['access-control-allow-origin']).toBeUndefined();
   });
+
+  it('allows same-origin browser requests from a Vercel preview deployment', async () => {
+    const app = loadApp();
+    const previewHost = 'ieee-web-git-feature-team.vercel.app';
+    const response = await request(app).get('/api/events')
+      .set('Host', previewHost)
+      .set('Origin', `https://${previewHost}`);
+    expect(response.status).toBe(200);
+  });
+
+  it('still rejects a cross-origin request sent to a preview host', async () => {
+    const app = loadApp();
+    const response = await request(app).get('/api/events')
+      .set('Host', 'ieee-web-git-feature-team.vercel.app')
+      .set('Origin', 'https://ieee-web-git-feature-team.vercel.app.evil.invalid');
+    expect(response.status).toBe(403);
+  });
+
+  it('uses NEXT_PUBLIC_SITE_URL as the frontend origin when FRONTEND_URL is unset', () => {
+    const config = getEnvironmentConfig({
+      ...productionEnv,
+      FRONTEND_URL: '',
+      NEXT_PUBLIC_SITE_URL: 'https://ieee-web-seven.vercel.app',
+    });
+    expect(config.allowedOrigins).toEqual(['https://ieee-web-seven.vercel.app']);
+  });
+
+  it('serves readiness at /api/health for the Next.js rewrite', async () => {
+    const app = loadApp();
+    const response = await request(app).get('/api/health');
+    expect(response.status).toBe(503);
+    expect(response.body).toEqual({ status: 'not_ready', database: 'disconnected' });
+  });
 });
 
 describe('missing JWT secret defense', () => {

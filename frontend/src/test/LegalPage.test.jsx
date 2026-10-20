@@ -107,7 +107,7 @@ describe('LegalPage', () => {
     expect(legalCopy).toContain('grainy-gradients.vercel.app/noise.svg');
     expect(legalCopy).toContain('Unsplash');
     expect(legalCopy).toContain('Vercel');
-    expect(legalCopy).toContain('Render');
+    expect(legalCopy).not.toContain('Render');
     expect(legalCopy).toContain('Do not attempt unauthorized access');
     expect(legalCopy).toContain('Submissions should be accurate');
     expect(legalCopy).toContain('Nothing on this website grants an implied trademark license');

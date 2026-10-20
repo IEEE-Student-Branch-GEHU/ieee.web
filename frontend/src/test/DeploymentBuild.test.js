@@ -11,10 +11,10 @@ const vercelConfig = JSON.parse(readFileSync('vercel.json', 'utf8'));
 afterEach(() => vi.unstubAllEnvs());
 
 describe('hosted frontend build configuration', () => {
-  it('fails a hosted build with no backend API URL', () => {
+  it('uses the same-origin API when a hosted build has no API URL', () => {
     vi.stubEnv('VERCEL', '1');
     vi.stubEnv('VITE_API_URL', '');
-    expect(() => validateViteBuildEnvironment({ isVercel: true, apiUrl: '', publicSiteUrl: 'https://ieee.example.org' })).toThrow('VITE_API_URL');
+    expect(() => validateViteBuildEnvironment({ isVercel: true, apiUrl: '', publicSiteUrl: 'https://ieee.example.org' })).not.toThrow();
   });
 
   it.each(['http://api.example.invalid/api', '/api', 'https://api.example.invalid/api/api'])(
@@ -68,10 +68,16 @@ describe('hosted frontend build configuration', () => {
     expect(normalizeApiBaseUrl('')).toBe('/api');
   });
 
-  it('requires the Next.js public environment variables for hosted builds', () => {
+  it('requires the Next.js public site origin and an HTTPS API URL when one is set', () => {
     expect(() => validateNextBuildEnvironment({
       isVercel: true,
       apiUrl: '',
+      publicSiteUrl: 'https://ieee-gehu.example.org',
+    })).not.toThrow();
+
+    expect(() => validateNextBuildEnvironment({
+      isVercel: true,
+      apiUrl: 'http://api.example.invalid/api',
       publicSiteUrl: 'https://ieee-gehu.example.org',
     })).toThrow('NEXT_PUBLIC_API_URL');
 

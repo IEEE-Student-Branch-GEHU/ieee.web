@@ -34,13 +34,13 @@ Official web platform of the **IEEE Student Branch at Graphic Era Hill Universit
 | Layer | Technology |
 | :--- | :--- |
 | Frontend | Next.js App Router, React 19, Tailwind CSS v4, Framer Motion |
-| Backend | Node.js, Express.js, Mongoose |
+| API | Express.js served by a Next.js API route, Mongoose |
 | Database | MongoDB Atlas |
 | Storage | Cloudinary |
 | Auth | JSON Web Tokens (JWT) |
 | Testing | Vitest, React Testing Library |
 | CI/CD | GitHub Actions |
-| Deployment | Vercel (frontend) · Render (backend) |
+| Deployment | Vercel (site and API in one project) |
 
 ---
 
@@ -68,17 +68,17 @@ Official web platform of the **IEEE Student Branch at Graphic Era Hill Universit
 
 ```
 ieee.web/
-├── frontend/               # React 19 application
-│   └── src/
-│       ├── app/             # Next.js App Router pages and layouts
-│       ├── components/     # Navbar, archive, member, admin, animations
-│       ├── pages/           # Shared client page components and legacy Vite adapters
-│       └── test/            # Vitest unit tests
-│
-├── backend/                # Node.js / Express REST API
-│   ├── models/             # Admin, Event, Team, Member, Certificate schemas
-│   ├── routes/             # api.js (public), admin.js, member.js
-│   └── server.js           # Entry point
+├── frontend/                # Next.js app: site and API
+│   ├── src/
+│   │   ├── app/             # Next.js App Router pages and layouts
+│   │   ├── components/      # Navbar, archive, member, admin, animations
+│   │   ├── pages/           # Shared client page components and legacy Vite adapters
+│   │   │   └── api/         # [...path].next.js mounts the Express API at /api
+│   │   └── test/            # Vitest unit tests
+│   └── server/              # Express REST API (Jest tests in server/tests)
+│       ├── models/          # Admin, Event, Team, Member, Certificate schemas
+│       ├── routes/          # api.js (public), admin.js, member.js
+│       └── server.js        # Express app (also runnable alone: npm run start:api)
 │
 └── .github/workflows/      # CI pipeline
 ```

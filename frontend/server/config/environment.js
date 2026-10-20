@@ -50,7 +50,10 @@ const createValidationError = (errors) => {
   return error;
 };
 
-const getEnvironmentConfig = (env = process.env) => {
+const getEnvironmentConfig = (sourceEnv = process.env) => {
+  // In the combined Next.js deployment the public site origin doubles as the
+  // allowed frontend origin, so it only has to be configured once.
+  const env = { ...sourceEnv, FRONTEND_URL: sourceEnv.FRONTEND_URL || sourceEnv.NEXT_PUBLIC_SITE_URL };
   const production = isProduction(env);
   const errors = [];
   const frontendOrigin = normalizeOrigin(env.FRONTEND_URL);
