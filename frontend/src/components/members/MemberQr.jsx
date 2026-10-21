@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import QRCode from 'qrcode';
 import { Download, ExternalLink } from 'lucide-react';
+import { createMemberQrSvg } from '../../lib/member-qr';
 import { getMemberProfileUrl, getStableMemberId } from '../../lib/public-site';
 
 const MemberQr = ({ member }) => {
@@ -20,13 +20,7 @@ const MemberQr = ({ member }) => {
       return () => { active = false; };
     }
 
-    QRCode.toString(profileUrl, {
-      type: 'svg',
-      errorCorrectionLevel: 'H',
-      margin: 4,
-      width: 320,
-      color: { dark: '#111827', light: '#ffffff' },
-    }).then(result => {
+    createMemberQrSvg(profileUrl).then(result => {
       if (active) {
         setGeneratedQr({ profileUrl, svg: result });
         setGenerationError(null);
