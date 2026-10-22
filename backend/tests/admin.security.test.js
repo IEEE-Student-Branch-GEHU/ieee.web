@@ -230,7 +230,7 @@ describe('admin input security contracts', () => {
     const createResponse = await request(app)
       .post('/api/admin/team')
       .set(authHeader)
-      .send({ name: 'Member', role: 'Chair', category: 'executive', socials: { linkedin: 'https://linkedin.example' } });
+      .send({ name: 'Member', role: 'Chair', category: 'executive', year: '2025-2026', socials: { linkedin: 'https://linkedin.example' } });
 
     expect(createResponse.status).toBe(201);
     expect(mockTeamSave.mock.instances[0]).toMatchObject({ name: 'Member', category: 'executive' });
@@ -258,13 +258,13 @@ describe('admin input security contracts', () => {
 
   it('normalizes legacy Vite team form fields and preserves public profile fields', async () => {
     const response = await request(app).post('/api/admin/team').set(authHeader).send({
-      name: 'Member', role: 'Chair', category: 'executive', bio: 'Legacy biography',
+      name: 'Member', role: 'Chair', category: 'executive', year: '2025-2026', bio: 'Legacy biography',
       linkedin: 'https://linkedin.example', instagram: 'https://instagram.example',
       socials: { github: 'https://github.example', twitter: 'https://twitter.example' }, order: 2,
     });
     expect(response.status).toBe(201);
     expect(response.body).toEqual({
-      name: 'Member', role: 'Chair', category: 'executive', bio: 'Legacy biography', order: 2,
+      name: 'Member', role: 'Chair', category: 'executive', year: '2025-2026', bio: 'Legacy biography', order: 2,
       socials: {
         linkedin: 'https://linkedin.example', instagram: 'https://instagram.example',
         github: 'https://github.example', twitter: 'https://twitter.example',
@@ -272,9 +272,21 @@ describe('admin input security contracts', () => {
     });
   });
 
+  it.each([
+    { name: 'Member', role: 'Chair', category: 'executive' },
+    { name: 'Member', role: 'Chair', category: 'executive', year: '2025-26' },
+    { name: 'Member', role: 'Chair', category: 'executive', year: '2025/2026' },
+  ])('rejects a team create without a valid full academic year: %j', async (payload) => {
+    const response = await request(app).post('/api/admin/team').set(authHeader).send(payload);
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toMatch(/year/);
+    expect(mockTeamSave).not.toHaveBeenCalled();
+  });
+
   describe.each([
     { resource: 'events', id: '507f1f77bcf86cd799439011', payload: { title: 'Event', date: '2026-01-01' }, save: mockEventSave, update: mockEventFindByIdAndUpdate, remove: mockEventFindByIdAndDelete, deletedMessage: 'Event deleted' },
-    { resource: 'team', id: '507f1f77bcf86cd799439012', payload: { name: 'Member', role: 'Chair', category: 'executive' }, save: mockTeamSave, update: mockTeamFindByIdAndUpdate, remove: mockTeamFindByIdAndDelete, deletedMessage: 'Member deleted' },
+    { resource: 'team', id: '507f1f77bcf86cd799439012', payload: { name: 'Member', role: 'Chair', category: 'executive', year: '2025-2026' }, save: mockTeamSave, update: mockTeamFindByIdAndUpdate, remove: mockTeamFindByIdAndDelete, deletedMessage: 'Member deleted' },
   ])('$resource route boundaries', ({ resource, id, payload, save, update, remove, deletedMessage }) => {
     it.each(['not-an-id', '123', '123456789012', '507f1f77bcf86cd79943901!', '{"$ne":null}'])('rejects invalid update/delete IDs before database access: %s', async (invalidId) => {
       for (const method of ['put', 'delete']) {

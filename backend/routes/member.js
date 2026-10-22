@@ -4,7 +4,7 @@ const router = express.Router();
 const Member = require('../models/Member');
 const Team = require('../models/Team');
 const Certificate = require('../models/Certificate');
-const { certificateStorage, cloudinary } = require('../config/cloudinary');
+const { certificateStorage, cloudinary, storage } = require('../config/cloudinary');
 const { getEnvironmentConfig } = require('../config/environment');
 const { createLoginLimiter } = require('../config/rate-limit');
 const { memberAuth } = require('../middleware/member-auth');
@@ -13,6 +13,7 @@ const {
   createCertificateUploadMiddleware,
   sendCertificateUploadError,
 } = require('../middleware/certificate-upload');
+const { UploadStorageError, createUploadMiddleware, sendUploadError } = require('../middleware/upload');
 const {
   assertValidId,
   MemberRequestValidationError,
@@ -33,6 +34,7 @@ const { getCertificateDestroyOptions } = require('../services/certificate-storag
 
 const loginLimiter = createLoginLimiter();
 const certificateUpload = createCertificateUploadMiddleware(certificateStorage);
+const profileImageUpload = createUploadMiddleware(storage);
 
 const maybeSelect = (query, fields) => (
   query && typeof query.select === 'function' ? query.select(fields) : query
@@ -65,6 +67,19 @@ const cleanupCertificateAsset = async (file) => {
     // intentionally metadata-only so provider details and credentials never
     // reach the response or logs.
     console.error(JSON.stringify({ event: 'member_certificate_cleanup_failed', errorClass: error?.constructor?.name || typeof error }));
+  }
+};
+
+const cleanupProfileImageAsset = async (file) => {
+  const publicId = file?.public_id || file?.filename;
+  if (!publicId || !cloudinary?.uploader?.destroy) return;
+  try {
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: file.resource_type || 'image',
+      type: 'upload',
+    });
+  } catch (error) {
+    console.error(JSON.stringify({ event: 'member_profile_image_cleanup_failed', errorClass: error?.constructor?.name || typeof error }));
   }
 };
 
@@ -163,6 +178,33 @@ router.patch('/profile', async (req, res) => {
     if (handleValidationError(res, error)) return undefined;
     return res.status(400).json({ message: 'Unable to update member profile' });
   }
+});
+
+router.post('/profile/image', (req, res) => {
+  profileImageUpload.single('image')(req, res, async (uploadError) => {
+    if (uploadError) return sendUploadError(res, uploadError);
+    if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+    if (typeof req.file.path !== 'string' || !/^https?:\/\//i.test(req.file.path)) {
+      await cleanupProfileImageAsset(req.file);
+      return sendUploadError(res, new UploadStorageError('Image storage did not return a valid image URL.'));
+    }
+
+    try {
+      const team = await Team.findOneAndUpdate(
+        { _id: req.member.teamId },
+        { $set: { image: req.file.path } },
+        { new: true, runValidators: true },
+      );
+      if (!team) {
+        await cleanupProfileImageAsset(req.file);
+        return res.status(404).json({ message: 'Member profile not found' });
+      }
+      return res.json({ profile: serializePublicTeamMember(team) });
+    } catch (error) {
+      await cleanupProfileImageAsset(req.file);
+      return res.status(400).json({ message: 'Unable to update member profile image' });
+    }
+  });
 });
 
 router.get('/certificates', async (req, res) => {

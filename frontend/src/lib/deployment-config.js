@@ -23,6 +23,10 @@ export const normalizeApiBaseUrl = (value) => {
   return `${parsed.origin}/api`;
 };
 
+export const resolveApiBaseUrl = ({ nextApiUrl, viteApiUrl, isViteDev = false } = {}) => (
+  normalizeApiBaseUrl(nextApiUrl || viteApiUrl || (isViteDev ? 'http://127.0.0.1:5000/api' : '/api'))
+);
+
 const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 const LOCAL_HOSTNAME_SUFFIXES = ['.localhost', '.local', '.internal', '.lan', '.home.arpa', '.example', '.invalid', '.test'];
 
@@ -78,10 +82,11 @@ export const normalizePublicSiteOrigin = (value, variableName = 'VITE_PUBLIC_SIT
   return parsed.origin;
 };
 
-const validateHostedBuildEnvironment = ({ isVercel, apiUrl, publicSiteUrl, apiVariable, publicSiteVariable }) => {
+const validateHostedBuildEnvironment = ({ isVercel, apiUrl, publicSiteUrl, apiVariable, publicSiteVariable, allowRelativeApi = false }) => {
   if (!isVercel) return;
-  if (!apiUrl?.trim()) throw new Error(`${apiVariable} is required for Vercel production builds`);
-  if (!apiUrl.trim().startsWith('https://')) throw new Error(`${apiVariable} must use HTTPS for Vercel production builds`);
+  if (!apiUrl?.trim() && !allowRelativeApi) throw new Error(`${apiVariable} is required for Vercel production builds`);
+  if (apiUrl?.trim().startsWith('/') && !allowRelativeApi) throw new Error(`${apiVariable} must use HTTPS for Vercel production builds`);
+  if (apiUrl?.trim() && !apiUrl.trim().startsWith('/') && !apiUrl.trim().startsWith('https://')) throw new Error(`${apiVariable} must use HTTPS for Vercel production builds`);
   normalizeApiBaseUrl(apiUrl);
   if (!publicSiteUrl?.trim()) throw new Error(`${publicSiteVariable} is required for Vercel production builds`);
   normalizePublicSiteOrigin(publicSiteUrl, publicSiteVariable);
@@ -104,5 +109,6 @@ export const validateNextBuildEnvironment = ({ isVercel, apiUrl, publicSiteUrl }
     publicSiteUrl,
     apiVariable: 'NEXT_PUBLIC_API_URL',
     publicSiteVariable: 'NEXT_PUBLIC_SITE_URL',
+    allowRelativeApi: true,
   })
 );

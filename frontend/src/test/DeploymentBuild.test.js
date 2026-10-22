@@ -68,12 +68,18 @@ describe('hosted frontend build configuration', () => {
     expect(normalizeApiBaseUrl('')).toBe('/api');
   });
 
-  it('requires the Next.js public environment variables for hosted builds', () => {
+  it('supports same-origin Next.js API routes in hosted builds', () => {
     expect(() => validateNextBuildEnvironment({
       isVercel: true,
       apiUrl: '',
       publicSiteUrl: 'https://ieee-gehu.example.org',
-    })).toThrow('NEXT_PUBLIC_API_URL');
+    })).not.toThrow();
+
+    expect(() => validateNextBuildEnvironment({
+      isVercel: true,
+      apiUrl: '/api',
+      publicSiteUrl: 'https://ieee-gehu.example.org',
+    })).not.toThrow();
 
     expect(() => validateNextBuildEnvironment({
       isVercel: true,

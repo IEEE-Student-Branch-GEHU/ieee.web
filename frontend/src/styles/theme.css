@@ -368,6 +368,48 @@ html.dark .archive-page .archive-empty-illustration {
     color: var(--site-text);
 }
 
+/* Team management is intentionally kept as a table on desktop. On narrow
+   screens the table gets its own scroll region instead of clipping actions. */
+.admin-shell .overflow-hidden:has(> table) {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.admin-shell table {
+    min-width: 42rem;
+}
+
+.admin-shell main > div > .space-y-6 > div:first-child {
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.admin-shell .fixed.inset-0 > div {
+    min-height: 0;
+}
+
+.admin-shell .fixed.inset-0 form {
+    min-height: 0;
+    flex: 1 1 auto;
+}
+
+.admin-shell .fixed.inset-0 form > .grid {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 640px) {
+    .admin-shell .fixed.inset-0 form > .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 639px) {
+    .admin-shell .fixed.inset-0 form {
+        overflow-y: auto;
+        padding: 1rem;
+    }
+}
+
 .admin-heading {
     color: var(--site-heading);
 }

@@ -48,9 +48,15 @@ const teamSchema = new mongoose.Schema({
     skills: boundedStringArray(),
     interests: boundedStringArray(),
     achievements: boundedStringArray(),
-    year: { type: String, match: YEAR_PATTERN },
-    isLead: { type: Boolean },
-    rank: { type: Number },
+    // New records require a full academic year. Existing records without a
+    // year remain loadable, and partial updates may omit the legacy field.
+    year: {
+        type: String,
+        required: function requiredForNewRecord() { return this.isNew; },
+        match: YEAR_PATTERN,
+    },
+    isLead: { type: Boolean, default: false },
+    rank: { type: Number, default: 0 },
     order: { type: Number, default: 0 },
     // Used only to select profiles shown on the landing page; public profile
     // serialization remains limited to the approved member fields.

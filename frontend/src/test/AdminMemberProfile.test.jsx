@@ -87,6 +87,7 @@ describe('member profile payloads', () => {
     expect(payload).not.toHaveProperty('email');
     expect(payload).not.toHaveProperty('phone');
   });
+
 });
 
 describe('member profile actions', () => {
@@ -136,6 +137,15 @@ describe('Vite admin member management', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Add Member' }));
     expect(screen.getByLabelText('Name')).toHaveValue('');
+  });
+
+  it('requires a full academic year in the admin team form', async () => {
+    render(<TeamManage />);
+    await screen.findByText('Ada Lovelace');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add Member' }));
+
+    expect(screen.getByLabelText('Year (YYYY-YYYY)')).toBeRequired();
   });
 
   it('deletes a member using its stable Mongo ID', async () => {

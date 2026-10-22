@@ -49,6 +49,7 @@ const MemberProfileFields = ({ formData, onChange, idPrefix = 'member' }) => {
                         onChange={event => updateField('year', event.target.value)}
                         pattern="[0-9]{4}-[0-9]{4}"
                         placeholder="2025-2026"
+                        required
                         className={inputClass}
                     />
                 </div>

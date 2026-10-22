@@ -34,9 +34,11 @@ const listValue = value => (Array.isArray(value) ? value.join('\n') : '');
 const MemberDashboard = () => {
   const [account, setAccount] = useState(null);
   const [profile, setProfile] = useState(EMPTY_PROFILE);
+  const [profileImageFile, setProfileImageFile] = useState(null);
   const [certificates, setCertificates] = useState([]);
   const [pageState, setPageState] = useState('loading');
   const [profileSaving, setProfileSaving] = useState(false);
+  const [profileImageSaving, setProfileImageSaving] = useState(false);
   const [certificateSaving, setCertificateSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -61,6 +63,8 @@ const MemberDashboard = () => {
   };
 
   useEffect(() => {
+    // Dashboard loading synchronizes the client with the authenticated API after hydration.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadDashboard();
   }, []);
 
@@ -101,6 +105,32 @@ const MemberDashboard = () => {
       setError(requestError.message || 'Unable to save profile changes.');
     } finally {
       setProfileSaving(false);
+    }
+  };
+
+  const uploadProfileImage = async (event) => {
+    event.preventDefault();
+    if (!profileImageFile) {
+      setError('Choose a JPG, PNG, or WebP profile image before uploading.');
+      return;
+    }
+    setProfileImageSaving(true);
+    setMessage('');
+    setError('');
+    try {
+      const body = new FormData();
+      body.append('image', profileImageFile);
+      const data = await memberFetchJson('/member/profile/image', { method: 'POST', body });
+      const nextProfile = profileForForm(data.profile);
+      setProfile(nextProfile);
+      setAccount(current => ({ ...current, profile: data.profile }));
+      setProfileImageFile(null);
+      event.target.reset();
+      setMessage('Profile image updated.');
+    } catch (requestError) {
+      setError(requestError.message || 'Unable to upload your profile image.');
+    } finally {
+      setProfileImageSaving(false);
     }
   };
 
@@ -190,7 +220,7 @@ const MemberDashboard = () => {
 
           <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)]">
             <section className="site-panel site-border rounded-2xl border p-6 shadow-sm sm:p-8" aria-labelledby="profile-edit-title">
-              <div className="flex items-start gap-3"><div className="rounded-xl bg-primary/10 p-3 text-primary"><UserRound size={20} aria-hidden="true" /></div><div><h2 id="profile-edit-title" className="site-text text-2xl font-bold">Edit public profile</h2><p className="site-muted mt-2 text-sm leading-6">Name, role, category, year, rank, and image remain administrator-managed.</p></div></div>
+              <div className="flex items-start gap-3"><div className="rounded-xl bg-primary/10 p-3 text-primary"><UserRound size={20} aria-hidden="true" /></div><div><h2 id="profile-edit-title" className="site-text text-2xl font-bold">Edit public profile</h2><p className="site-muted mt-2 text-sm leading-6">Name, role, category, year, and rank remain administrator-managed. You can update the approved biography, links, lists, and profile photo.</p></div></div>
               <form onSubmit={saveProfile} className="mt-8 space-y-5">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div><span className="site-muted block text-xs font-bold uppercase tracking-wider">Name</span><p className="site-text mt-2 font-semibold">{account?.profile?.name || 'Not assigned'}</p></div>
@@ -215,6 +245,7 @@ const MemberDashboard = () => {
             </section>
 
             <aside className="space-y-8">
+              <section className="site-panel site-border rounded-2xl border p-6 shadow-sm" aria-labelledby="profile-photo-title"><h2 id="profile-photo-title" className="site-text text-xl font-bold">Profile photo</h2><p className="site-muted mt-2 text-sm leading-6">Upload a JPG, PNG, or WebP image up to 10 MB. The server validates the file and stores it in Cloudinary.</p><div className="mt-5 flex items-center gap-4">{profile?.image ? <img src={profile.image} alt={`${profile.name || 'Your'} profile`} className="h-20 w-20 rounded-2xl object-cover" /> : <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 text-primary"><UserRound size={28} aria-hidden="true" /></div>}<span className="site-muted text-sm">{profileImageFile ? profileImageFile.name : profile?.image ? 'Current photo' : 'No photo uploaded'}</span></div><form onSubmit={uploadProfileImage} className="mt-5 space-y-3"><label htmlFor="member-profile-image" className="site-text block text-sm font-semibold">Choose new photo</label><input id="member-profile-image" type="file" accept="image/jpeg,image/png,image/webp" onChange={event => setProfileImageFile(event.target.files?.[0] || null)} className="site-panel site-border site-text block min-h-11 w-full rounded-xl border px-3 py-2 text-sm" /><button type="submit" disabled={profileImageSaving || !profileImageFile} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white hover:bg-primaryDark disabled:opacity-70"><Upload size={16} aria-hidden="true" />{profileImageSaving ? 'Uploading...' : 'Upload photo'}</button></form></section>
               <section className="site-panel site-border rounded-2xl border p-6 shadow-sm" aria-labelledby="account-details-title"><h2 id="account-details-title" className="site-text text-xl font-bold">Account details</h2><dl className="mt-5 space-y-4"><div><dt className="site-muted text-xs font-bold uppercase tracking-wider">Username</dt><dd className="site-text mt-1 font-semibold">{account?.username}</dd></div><div><dt className="site-muted text-xs font-bold uppercase tracking-wider">Status</dt><dd className="site-accent mt-1 font-semibold">{account?.status}</dd></div></dl></section>
               <section className="site-panel site-border rounded-2xl border p-6 shadow-sm"><h2 className="site-text text-xl font-bold">Public profile</h2><p className="site-muted mt-2 text-sm leading-6">Visitors can see only approved public fields. QR codes point to the read-only profile and never authenticate this account.</p>{getStableMemberId(account?.profile) && <a href={`/members/${getStableMemberId(account.profile)}`} className="site-accent mt-5 inline-flex min-h-11 items-center font-semibold hover:underline">View public profile <span aria-hidden="true">→</span></a>}</section>
             </aside>

@@ -29,7 +29,10 @@ const AdminTeamNext = ({ facultyOnly = false }) => {
     }
   }, [facultyOnly]);
 
-  useEffect(() => { fetchTeam(); }, [fetchTeam]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void fetchTeam(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [fetchTeam]);
 
   const handleUpload = async (event) => {
     const file = event.target.files?.[0];

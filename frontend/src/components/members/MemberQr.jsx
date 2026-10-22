@@ -66,7 +66,7 @@ const MemberQr = ({ member }) => {
       {error && <p role="alert" className="site-muted max-w-sm text-sm leading-6">{error}</p>}
       {svg && (
         <div data-qr-surface className="rounded-xl bg-white p-4" aria-label={`QR code for ${member?.name || 'member'} profile`}>
-          <img src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`} alt={`QR code linking to ${member?.name || 'member'} profile`} className="h-64 w-64" />
+          <img src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`} alt={`QR code linking to ${member?.name || 'member'} profile`} className="h-auto w-[min(16rem,100%)] max-w-full aspect-square object-contain" />
         </div>
       )}
       {profileUrl && <a href={profileUrl} target="_blank" rel="noopener noreferrer" className="site-link inline-flex min-h-11 items-center gap-2 text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"><ExternalLink size={16} aria-hidden="true" />Open public profile</a>}

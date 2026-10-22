@@ -6,6 +6,12 @@ The production frontend uses the Next.js App Router. Route files live under
 `src/app/members/[memberId]/page.next.jsx`, so stable QR destinations resolve
 through Next without a client-side router or login.
 
+The production backend is also inside Next. All API methods are dispatched by
+the server-only catch-all handler at `src/app/api/[...path]/route.js`, while
+MongoDB, authentication, validation, Cloudinary storage, and ownership checks
+live under `src/server/`. The handler uses the Node.js runtime and a cached
+Mongoose connection suitable for warm Vercel functions.
+
 ## Commands
 
 ```bash
@@ -21,6 +27,8 @@ explicitly named `dev:vite`, `build:vite`, and `preview:vite`; Vite is not the
 production deployment target. Vitest still uses Vite's React plugin for its
 test transform.
 
-Set `NEXT_PUBLIC_API_URL` and the verified HTTPS `NEXT_PUBLIC_SITE_URL` for a
-hosted build. The latter is the origin used when generating printable member
-QR codes.
+Leave `NEXT_PUBLIC_API_URL` unset or set it to `/api` for the single-app
+deployment. Set the verified HTTPS `NEXT_PUBLIC_SITE_URL` for a hosted build;
+it is the origin used when generating printable member QR codes. Configure
+`MONGODB_URI`, `JWT_SECRET`, and the Cloudinary credentials as server-only
+Vercel variables. They must never use the `NEXT_PUBLIC_` prefix.

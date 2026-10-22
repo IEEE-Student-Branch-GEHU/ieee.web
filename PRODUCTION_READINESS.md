@@ -4,18 +4,19 @@
 
 **Production launch readiness: BLOCKED**
 
-The repository contains the Next.js App Router production frontend and Render
-backend configuration, but the canonical public domain is not verified. The
-README and Render configuration currently name different Vercel hostnames. Do
-not generate production member QR codes or publish canonical URLs until the
-organizer confirms one HTTPS origin and it has been verified in Vercel.
+The repository contains a single Next.js App Router application with same-origin
+API route handlers. The legacy Express/Render backend remains available for
+rollback, but is not the Vercel production target. The canonical public domain
+is not verified. Do not generate production member QR codes or publish
+canonical URLs until the organizer confirms one HTTPS origin and verifies it in
+Vercel.
 
 ## Checklist
 
 - [ ] Confirm the canonical custom domain and whether the apex or `www` host is primary.
 - [ ] Connect the confirmed domain in Vercel and verify DNS and TLS.
-- [ ] Set Render `FRONTEND_URL` to the exact confirmed HTTPS origin.
-- [ ] Set Vercel `NEXT_PUBLIC_API_URL` to the deployed Render API origin, then rebuild.
+- [ ] Set Vercel server-only `MONGODB_URI`, `JWT_SECRET`, and Cloudinary credentials.
+- [ ] Leave Vercel `NEXT_PUBLIC_API_URL` unset or set it to `/api` for same-origin routing.
 - [ ] Set Vercel `NEXT_PUBLIC_SITE_URL` to the same confirmed public origin.
 - [ ] Rebuild after setting `NEXT_PUBLIC_SITE_URL`; hosted Next.js builds reject
       an unset or non-public origin before printable QR codes can be generated.
@@ -34,18 +35,20 @@ organizer confirms one HTTPS origin and it has been verified in Vercel.
 - [ ] Test `/community/scan` from HTTPS or localhost: grant camera permission only after pressing Start, scan an approved QR, confirm the correct read-only profile opens, stop/deny camera access, and verify unsupported browsers show a safe fallback.
 - [ ] Test theme persistence, system preference, keyboard access, responsive layouts, and reduced motion in a real browser.
 - [ ] Run accessibility checks against homepage, events, team/profile, legal, and admin flows.
-- [x] Run the backend and frontend test suites and the Next.js production build locally; the legacy Vite adapter is not the production build target.
+- [ ] Run the migrated Next.js API route tests against a staging MongoDB/Cloudinary configuration.
+- [x] Run the preserved Express backend suite, focused migrated-route tests, frontend tests, and the Next.js production build locally; the legacy Vite adapter is not the production build target.
 
 ## Local verification notes
 
-- Backend Jest: 17 suites and 260 tests passed with `npm test -- --runInBand`; the deployment suite includes the member-profile `PATCH` CORS preflight regression.
+- Backend Jest: 17 suites and 265 tests passed with `npm test -- --runInBand`; the deployment suite includes the member-profile `PATCH` CORS preflight regression.
 - The existing frontend suite passed in bounded runs before the architecture-targeting changes: 29 files and 259 tests using `npm test -- --pool=threads --maxWorkers=1 --no-file-parallelism`.
-- After the architecture changes, focused Next.js/deployment/profile/archive checks passed, including 8 Next route-contract tests, 14 deployment tests, 27 member-profile tests, 42 public-origin/QR tests, 9 leadership-archive tests, and 12 API configuration tests.
+- After the architecture changes, focused migrated-route checks passed, including 8 Next API contract tests, 1 model-collection compatibility test, 2 security-control tests, 3 member-validation tests, 10 Next routing tests, and 14 deployment tests. Existing admin/member/homepage integration checks also passed: 21 tests.
 - Next.js production build passed after the member-flow changes. The legacy
   Vite adapter remains available for tests and optional previews but is not the
   production deployment target.
 - `npm run build` and `npm run build:next` both use and pass the Next.js App Router production build. The Vite adapter remains available only for tests and optional previews.
-- Scoped ESLint for the changed architecture/configuration files passed with no errors.
+- Scoped ESLint for the changed server, route, and migration-test files passed with no errors. The full frontend lint remains blocked by 11 pre-existing errors and 2 warnings in unrelated UI/test files.
+- The frontend lockfile is consistent with `npm ci --dry-run`; `npm audit --omit=dev` currently reports one moderate `baseline-browser-mapping` advisory.
 
 ## Member data
 

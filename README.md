@@ -34,13 +34,13 @@ Official web platform of the **IEEE Student Branch at Graphic Era Hill Universit
 | Layer | Technology |
 | :--- | :--- |
 | Frontend | Next.js App Router, React 19, Tailwind CSS v4, Framer Motion |
-| Backend | Node.js, Express.js, Mongoose |
+| Backend | Next.js App Router Route Handler, Mongoose |
 | Database | MongoDB Atlas |
 | Storage | Cloudinary |
 | Auth | JSON Web Tokens (JWT) |
 | Testing | Vitest, React Testing Library |
 | CI/CD | GitHub Actions |
-| Deployment | Vercel (frontend) · Render (backend) |
+| Deployment | Vercel (single Next.js application) |
 
 ---
 
@@ -53,7 +53,7 @@ Official web platform of the **IEEE Student Branch at Graphic Era Hill Universit
 - Responsive across all devices
 
 **Admin Dashboard**
-- Secure JWT login with auto-initialized admin account
+- Secure JWT login with administrator-provisioned accounts
 - Full CRUD for Events and Team Members with Cloudinary image uploads
 - Rate limiting via `express-rate-limit`
 
@@ -75,7 +75,10 @@ ieee.web/
 │       ├── pages/           # Shared client page components and legacy Vite adapters
 │       └── test/            # Vitest unit tests
 │
-├── backend/                # Node.js / Express REST API
+├── frontend/src/app/api/   # Next.js server-only API route handler
+├── frontend/src/server/    # MongoDB, auth, validation, storage and API logic
+│
+├── backend/                # Preserved Express rollback/reference implementation
 │   ├── models/             # Admin, Event, Team, Member, Certificate schemas
 │   ├── routes/             # api.js (public), admin.js, member.js
 │   └── server.js           # Entry point
@@ -87,12 +90,19 @@ ieee.web/
 
 ## API Reference
 
+All API routes are same-origin under `/api` in the Next.js deployment. The
+legacy Express backend remains in `backend/` for rollback and data-migration
+reference; it is not the Vercel production target.
+
 ### Public
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | GET | `/api/events` | Paginated events (`?page`, `?limit`, `?search`, `?category`) |
 | GET | `/api/team` | All team members |
+| GET | `/api/team/years` | Distinct academic years in descending order |
+| GET | `/api/team/:id` | Public member profile |
+| GET | `/api/team/:id/certificates` | Explicitly public certificate metadata |
 | POST | `/api/contact` | Contact form submission |
 
 ### Protected *(Bearer token required)*
@@ -102,6 +112,7 @@ ieee.web/
 | POST | `/api/admin/login` | Returns an administrator JWT |
 | POST/PUT/DELETE | `/api/admin/events/:id` | Events CRUD |
 | POST/PUT/DELETE | `/api/admin/team/:id` | Team CRUD |
+| GET | `/api/admin/stats` | Dashboard counts and recent activity |
 | POST | `/api/admin/upload` | Upload a member image through Cloudinary |
 | POST | `/api/admin/members/provision` | Provision a member account for an existing Team profile |
 
@@ -113,6 +124,7 @@ ieee.web/
 | POST | `/api/member/login` | Sign in as an active member |
 | GET | `/api/member/me` | Read the authenticated member's linked public profile |
 | PATCH | `/api/member/profile` | Edit only member-editable public profile fields |
+| POST | `/api/member/profile/image` | Upload or replace the authenticated member's profile photo through Cloudinary |
 | GET/POST | `/api/member/certificates` | List or upload certificates owned by the member |
 | PATCH/DELETE | `/api/member/certificates/:id` | Update visibility/metadata or delete an owned certificate |
 | GET | `/api/team/:id/certificates` | Anonymous metadata for explicitly public certificates only |

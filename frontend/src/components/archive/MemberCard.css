@@ -17,6 +17,11 @@
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
 }
 
+.prof-card:focus-within {
+  border-color: #00629b;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+}
+
 /* ── Image Container ── */
 .prof-card__img-container {
   position: relative;
@@ -124,6 +129,10 @@
   transform: translateY(0);
 }
 
+.prof-card:focus-within .prof-card__actions {
+  transform: translateY(0);
+}
+
 .prof-card__social-link {
   width: 40px;
   height: 40px;
@@ -143,6 +152,33 @@
   background: var(--color-primary);
   color: white;
   transform: scale(1.1);
+}
+
+.prof-card__social-link:focus-visible {
+  outline: 2px solid #00b5e2;
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .prof-card__actions {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prof-card,
+  .prof-card__img,
+  .prof-card__overlay,
+  .prof-card__actions,
+  .prof-card__social-link {
+    transition: none;
+  }
+
+  .prof-card:hover,
+  .prof-card:hover .prof-card__img,
+  .prof-card__social-link:hover {
+    transform: none;
+  }
 }
 
 /* ── Badge ── */

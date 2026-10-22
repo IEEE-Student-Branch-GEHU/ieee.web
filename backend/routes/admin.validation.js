@@ -246,8 +246,8 @@ const sanitizeTeam = (body, { partial = false } = {}) => {
   for (const field of ['skills', 'interests', 'achievements']) {
     if (body[field] !== undefined) result[field] = optionalStringArray(body[field], field);
   }
-  if (body.year !== undefined) {
-    const year = optionalString(body.year, 'year');
+  const year = partial ? optionalString(body.year, 'year') : requiredString(body.year, 'year');
+  if (year !== undefined) {
     if (!YEAR_PATTERN.test(year)) throw new RequestValidationError('year must use YYYY-YYYY format');
     result.year = year;
   }

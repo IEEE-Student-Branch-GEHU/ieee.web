@@ -271,9 +271,9 @@ const TeamsArchive = () => {
             </form>
           </section>
 
-          <section className="mt-12" aria-live="polite" aria-busy={yearsStatus === 'loading' || currentListing?.status === 'loading'}>
+          <section className="mt-12" aria-busy={yearsStatus === 'loading' || currentListing?.status === 'loading'}>
             {yearsStatus === 'loading' && (
-              <p role="status" className="site-muted py-16 text-center">Loading team years...</p>
+              <p role="status" aria-live="polite" className="site-muted py-16 text-center">Loading team years...</p>
             )}
 
             {yearsStatus === 'error' && (
@@ -291,7 +291,7 @@ const TeamsArchive = () => {
             )}
 
             {yearsStatus === 'ready' && currentListing?.status === 'loading' && (
-              <p role="status" className="site-muted py-16 text-center">Loading team members...</p>
+              <p role="status" aria-live="polite" className="site-muted py-16 text-center">Loading team members...</p>
             )}
 
             {yearsStatus === 'ready' && currentListing?.status === 'error' && (

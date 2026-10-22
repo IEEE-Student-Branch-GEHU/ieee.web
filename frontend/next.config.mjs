@@ -8,8 +8,9 @@ validateNextBuildEnvironment({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pageExtensions: ['next.jsx'],
+  pageExtensions: ['next.jsx', 'js'],
   reactStrictMode: true,
+  turbopack: { root: process.cwd() },
 };
 
 export default nextConfig;

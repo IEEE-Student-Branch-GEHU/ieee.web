@@ -150,6 +150,7 @@ describe('public team routes', () => {
   it('sorts ranked members by rank then name and keeps legacy order fallback', async () => {
     const query = createQuery([
       { _id: '507f1f77bcf86cd799439015', name: 'Legacy B', role: 'Member', category: 'executive', order: 2 },
+      { _id: '507f1f77bcf86cd799439020', name: 'Rank 0', role: 'Member', category: 'executive', rank: 0 },
       { _id: '507f1f77bcf86cd799439016', name: 'Rank 2', role: 'Member', category: 'executive', rank: 2 },
       { _id: '507f1f77bcf86cd799439017', name: 'Rank 1 B', role: 'Member', category: 'executive', rank: 1 },
       { _id: '507f1f77bcf86cd799439018', name: 'Rank 1 A', role: 'Member', category: 'executive', rank: 1 },
@@ -160,7 +161,7 @@ describe('public team routes', () => {
     const response = await request(createApp()).get('/api/team');
 
     expect(response.body.map((member) => member.name)).toEqual([
-      'Rank 1 A', 'Rank 1 B', 'Rank 2', 'Legacy A', 'Legacy B',
+      'Rank 0', 'Rank 1 A', 'Rank 1 B', 'Rank 2', 'Legacy A', 'Legacy B',
     ]);
   });
 
@@ -174,6 +175,7 @@ describe('public team routes', () => {
     });
 
     expect(response.status).toBe(200);
+    expect(response.body).toEqual([]);
     expect(mockTeamFind).toHaveBeenCalledWith(
       { year: '2025-2026', category: 'executive' },
       TEAM_LIST_PROJECTION,
@@ -345,6 +347,10 @@ describe('admin team validation', () => {
   });
 
   it('does not require year on legacy records', () => {
-    expect(sanitizeTeam(base)).toEqual(base);
+    expect(sanitizeTeam(base, { partial: true })).toEqual(base);
+  });
+
+  it('requires a full academic year when creating a team record', () => {
+    expect(() => sanitizeTeam(base)).toThrow('year is required');
   });
 });

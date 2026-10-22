@@ -130,6 +130,7 @@ describe('MemberQr', () => {
 
     const qrImage = await screen.findByRole('img', { name: 'QR code linking to Approved Member profile' });
     expect(qrImage).toBeInTheDocument();
+    expect(qrImage).toHaveClass('h-auto', 'max-w-full');
     expect(screen.getByRole('link', { name: /Open public profile/i })).toHaveAttribute(
       'href',
       'https://8.8.8.8/members/507f1f77bcf86cd799439011',

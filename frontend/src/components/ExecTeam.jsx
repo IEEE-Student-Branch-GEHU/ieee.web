@@ -78,23 +78,29 @@ const ExecTeam = () => {
                                     />
                                     <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                                    <div className="absolute bottom-6 left-0 right-0 flex justify-center space-x-4 translate-y-20 group-hover:translate-y-0 transition-transform duration-500 delay-100">
+                                     <div className="absolute bottom-6 left-0 right-0 flex translate-y-20 justify-center space-x-4 transition-transform duration-500 delay-100 group-hover:translate-y-0 group-focus-within:translate-y-0">
+                                         {member.socials?.linkedin && (
                                         <a
-                                            href={member.socials?.linkedin || "#"}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all shadow-lg"
-                                        >
-                                            <BsLinkedin className="text-lg" />
-                                        </a>
+                                             href={member.socials.linkedin}
+                                             target="_blank"
+                                             rel="noopener noreferrer"
+                                             aria-label={`${member.name} on LinkedIn`}
+                                             className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-primary shadow-lg backdrop-blur-md transition-all hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
+                                         >
+                                             <BsLinkedin aria-hidden="true" className="text-lg" />
+                                         </a>
+                                         )}
+                                         {member.socials?.instagram && (
                                         <a
-                                            href={member.socials?.instagram || "#"}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all shadow-lg"
-                                        >
-                                            <BsInstagram className="text-lg" />
-                                        </a>
+                                             href={member.socials.instagram}
+                                             target="_blank"
+                                             rel="noopener noreferrer"
+                                             aria-label={`${member.name} on Instagram`}
+                                             className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-primary shadow-lg backdrop-blur-md transition-all hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
+                                         >
+                                             <BsInstagram aria-hidden="true" className="text-lg" />
+                                         </a>
+                                         )}
                                     </div>
                                 </div>
 

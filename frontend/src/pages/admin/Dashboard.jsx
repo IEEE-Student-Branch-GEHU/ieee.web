@@ -27,7 +27,8 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        fetchStats();
+        const timer = window.setTimeout(() => { void fetchStats(); }, 0);
+        return () => window.clearTimeout(timer);
     }, []);
 
     const container = {

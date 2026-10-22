@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { FaInstagram, FaLinkedinIn, FaGithub } from 'react-icons/fa6';
 import { motion as Motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
@@ -13,6 +13,8 @@ const Navbar = ({ surface = false }) => {
     const logoSource = typeof ieeeLogo === 'string' ? ieeeLogo : ieeeLogo.src;
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const menuToggleRef = useRef(null);
+    const mobileMenuRef = useRef(null);
     const { scrollYProgress } = useScroll();
     const scaleX = useSpring(scrollYProgress, {
         stiffness: 100,
@@ -28,6 +30,47 @@ const Navbar = ({ surface = false }) => {
         handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    useEffect(() => {
+        if (!isOpen) return undefined;
+
+        const previousOverflow = document.body.style.overflow;
+        const toggle = menuToggleRef.current;
+        document.body.style.overflow = 'hidden';
+
+        const firstLink = mobileMenuRef.current?.querySelector('a');
+        firstLink?.focus({ preventScroll: true });
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            toggle?.focus({ preventScroll: true });
+        };
+    }, [isOpen]);
+
+    const closeMenu = () => setIsOpen(false);
+
+    const handleMenuKeyDown = (event) => {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            closeMenu();
+            return;
+        }
+
+        if (event.key !== 'Tab') return;
+
+        const focusable = mobileMenuRef.current?.querySelectorAll('a, button');
+        if (!focusable?.length) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    };
 
     const navLinks = [
         { name: 'Home', href: '/', id: '01', isRoute: true },
@@ -64,7 +107,7 @@ const Navbar = ({ surface = false }) => {
                     <div className="absolute inset-0 bg-primary/5 blur-3xl rounded-full -z-10" />
                 )}
 
-                <div className="container mx-auto px-6 flex justify-between items-center">
+                <div className="container mx-auto flex min-w-0 items-center justify-between px-4 sm:px-6">
                     {/* Premium Branding Badge */}
                      <Motion.div
                         initial={{ opacity: 0, x: -20 }}
@@ -75,7 +118,7 @@ const Navbar = ({ surface = false }) => {
                             <img
                                 src={logoSource}
                                 alt="IEEE Logo"
-                                className="h-14 md:h-24 w-auto group-hover:scale-105 transition-transform duration-500 py-1"
+                                className="h-12 w-auto shrink-0 py-1 transition-transform duration-500 group-hover:scale-105 sm:h-14 md:h-24"
                             />
                         </a>
                     </Motion.div>
@@ -135,13 +178,14 @@ const Navbar = ({ surface = false }) => {
                     {/* Mobile Toggle */}
                     <div className="lg:hidden z-50 flex items-center gap-2">
                          <Motion.button
+                             ref={menuToggleRef}
                              type="button"
                              whileTap={{ scale: 0.9 }}
                              className="site-nav-toggle w-12 h-12 flex items-center justify-center rounded-2xl border"
                              aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
                              aria-expanded={isOpen}
                              aria-controls="mobile-navigation"
-                             onClick={() => setIsOpen(!isOpen)}
+                              onClick={() => setIsOpen(previous => !previous)}
                          >
                              {isOpen ? <X aria-hidden="true" size={20} /> : <Menu aria-hidden="true" size={20} />}
                         </Motion.button>
@@ -151,17 +195,21 @@ const Navbar = ({ surface = false }) => {
                 {/* Full Screen Mobile Overlay */}
                 <AnimatePresence>
                     {isOpen && (
-                         <Motion.div
+                          <Motion.div
                             initial={{ opacity: 0, y: '-100%' }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: '-100%' }}
                             transition={{ type: 'spring', damping: 30, stiffness: 200 }}
                              id="mobile-navigation"
-                             role="dialog"
-                             aria-label="Mobile navigation"
-                             className="site-mobile-menu fixed inset-0 w-full h-screen bg-primaryDark/95 backdrop-blur-3xl flex flex-col pt-32 px-10 lg:hidden z-40"
-                        >
-                            <div className="space-y-8">
+                              ref={mobileMenuRef}
+                              role="dialog"
+                              aria-label="Mobile navigation"
+                              aria-modal="true"
+                              tabIndex={-1}
+                              onKeyDown={handleMenuKeyDown}
+                              className="site-mobile-menu fixed inset-0 z-40 flex max-h-dvh min-h-dvh w-full flex-col overflow-y-auto bg-primaryDark/95 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-28 backdrop-blur-3xl sm:px-10 sm:pt-32 lg:hidden"
+                         >
+                             <div className="space-y-5 sm:space-y-8">
                                 {navLinks.map((link, i) => (
                                      <Motion.div
                                         initial={{ opacity: 0, x: -30 }}
@@ -172,20 +220,20 @@ const Navbar = ({ surface = false }) => {
                                         {link.isRoute ? (
                                              <a
                                                  href={link.href}
-                                                onClick={() => setIsOpen(false)}
+                                                 onClick={closeMenu}
                                                 className="flex items-center gap-6 group"
                                             >
-                                                <span className="text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors">
+                                                 <span className="text-[clamp(2rem,10vw,4rem)] font-black uppercase tracking-tighter text-white transition-colors group-hover:text-primary">
                                                     {link.name}
                                                 </span>
                                              </a>
                                         ) : (
                                             <a
                                                 href={link.href}
-                                                onClick={() => setIsOpen(false)}
+                                                 onClick={closeMenu}
                                                 className="flex items-center gap-6 group"
                                             >
-                                                <span className="text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors">
+                                                 <span className="text-[clamp(2rem,10vw,4rem)] font-black uppercase tracking-tighter text-white transition-colors group-hover:text-primary">
                                                     {link.name}
                                                 </span>
                                             </a>
@@ -194,14 +242,14 @@ const Navbar = ({ surface = false }) => {
                                 ))}
                             </div>
 
-                            <div className="mt-auto pb-12 space-y-10">
+                             <div className="mt-12 space-y-8 sm:mt-auto sm:space-y-10 sm:pt-10">
                                  <Motion.div
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ delay: 0.8 }}
                                     className="h-px bg-white/10 w-full"
                                 />
-                                <div className="flex justify-between items-end">
+                                 <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
                                     <div className="space-y-4">
                                          <h4 className="site-mobile-muted text-[10px] font-black uppercase tracking-[0.3em]">Social Networks</h4>
                                         <div className="flex gap-6">

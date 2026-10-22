@@ -5,8 +5,15 @@ import { ArrowLeft, KeyRound, Loader2 } from 'lucide-react';
 import { ThemeToggle } from '../theme/ThemeToggle';
 import { activateMember } from '../../lib/member-api';
 
+const getInitialActivationToken = () => {
+  if (typeof window === 'undefined') return '';
+  const url = new URL(window.location.href);
+  const fragmentParams = new URLSearchParams(url.hash.startsWith('#') ? url.hash.slice(1) : url.hash);
+  return fragmentParams.get('token') || '';
+};
+
 const MemberActivation = () => {
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState(getInitialActivationToken);
   const [password, setPassword] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [error, setError] = useState('');
@@ -17,7 +24,6 @@ const MemberActivation = () => {
     const url = new URL(window.location.href);
     const fragmentParams = new URLSearchParams(url.hash.startsWith('#') ? url.hash.slice(1) : url.hash);
     const fragmentToken = fragmentParams.get('token');
-    if (fragmentToken) setToken(fragmentToken);
 
     // Activation secrets are accepted only in a URL fragment (#token=...),
     // which is never sent to the server. Remove the fragment and any

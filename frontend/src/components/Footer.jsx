@@ -29,9 +29,9 @@ function Footer({ sectionLinkPrefix = '' }) {
 
     return (
         <footer className="w-full bg-primaryDark text-white text-center mt-20 font-sans">
-            <div className="w-full lg:flex">
-                <div className="w-full lg:w-1/4 flex justify-center">
-                    <div className="bg-primaryLight min-w-[300px] w-full max-w-[350px] py-8 rounded-b-3xl mb-8 flex flex-col gap-4 items-center px-6">
+            <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-4">
+                <div className="flex w-full justify-center">
+                    <div className="w-full max-w-[350px] rounded-b-3xl bg-primaryLight px-6 py-8 mb-8 flex flex-col items-center gap-4">
                         {/* <img src={ieeeFooterLogo} width={250} alt="logo" className="px-4" /> */}
 
                         <div className="flex flex-col items-center text-center">
@@ -57,7 +57,7 @@ function Footer({ sectionLinkPrefix = '' }) {
                 </div>
 
                 {/* Column 2: Quick Links */}
-                <div className="w-full lg:w-3/12 p-6 lg:text-left">
+                <div className="w-full p-6 text-center lg:text-left">
                     <div className="flex flex-col gap-4">
                         <h3 className="font-bold text-lg mb-2 uppercase tracking-wide">Quick Links</h3>
                         <div className="flex flex-col gap-3 text-sm font-light">
@@ -71,7 +71,7 @@ function Footer({ sectionLinkPrefix = '' }) {
                 </div>
 
                 {/* Column 3: IEEE Links */}
-                <div className="w-full lg:w-3/12 p-6 lg:text-left">
+                <div className="w-full p-6 text-center lg:text-left">
                     <div className="flex flex-col gap-4">
                         <h3 className="font-bold text-lg mb-2 uppercase tracking-wide">IEEE Portals</h3>
                         <div className="flex flex-col gap-3 text-sm font-light">
@@ -83,18 +83,18 @@ function Footer({ sectionLinkPrefix = '' }) {
                 </div>
 
                 {/* Column 4: Contact Information */}
-                <div className="w-full lg:w-3/12 p-6 lg:text-left">
+                <div className="w-full p-6 text-center lg:text-left">
                     <div className="flex flex-col gap-4">
                         <h3 className="font-bold text-lg mb-2 uppercase tracking-wide">Contact Us</h3>
                         <div className="flex flex-col gap-4 text-sm font-light">
                             <a
                                 href="mailto:ieee@gehu.ac.in"
-                                className="flex gap-4 items-center hover:text-gray-300 transition-colors"
+                                className="flex items-center justify-center gap-4 break-words text-center transition-colors hover:text-gray-300 lg:justify-start lg:text-left"
                             >
                                 <MdEmail className="text-2xl" />
                                 <span>ieee@gehu.ac.in</span>
                             </a>
-                            <div className="flex gap-4 items-start text-left">
+                            <div className="flex items-start justify-center gap-4 text-left lg:justify-start">
                                 <MdOutlineLocationOn className="text-3xl shrink-0" />
                                 <address className="not-italic leading-relaxed">
                                     Graphic Era Hill University<br />
@@ -111,13 +111,13 @@ function Footer({ sectionLinkPrefix = '' }) {
                 </div>
             </div>
 
-            <div className="md:flex justify-end items-end">
-                <div className="w-full lg:w-1/3 max-md:mb-2 max-md:mt-4 text-sm text-gray-400 pb-2">
+            <div className="flex flex-col items-stretch justify-end lg:flex-row lg:items-end">
+                <div className="w-full pb-2 text-center text-sm text-gray-400 lg:w-1/3 lg:text-left">
                     {`© Copyright ${currentYear} | All rights reserved`}
                 </div>
-                <div className="w-full lg:w-1/3 flex justify-end">
+                <div className="flex w-full justify-end lg:w-1/3">
                     <div
-                        className="w-full md:w-[90%] bg-primaryLight md:rounded-tl-3xl p-4 flex justify-center items-center font-medium text-sm leading-snug"
+                        className="w-full bg-primaryLight p-4 text-center font-medium text-sm leading-snug lg:w-[90%] lg:rounded-tl-3xl"
                     >
                         Developed by IEEE Student Branch — GEHU
                     </div>

@@ -12,6 +12,7 @@ vi.mock('framer-motion', () => ({
     p: ({ children, className }) => <p className={className}>{children}</p>,
   },
   AnimatePresence: ({ children }) => <>{children}</>,
+  useReducedMotion: () => false,
 }));
 
 // Mock embla-carousel-autoplay — returns a plugin factory

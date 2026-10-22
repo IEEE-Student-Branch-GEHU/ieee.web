@@ -7,7 +7,6 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow-x: hidden;
 }
 
 /* ── Mesh Background (Matching Landing Page) ── */
@@ -43,6 +42,7 @@
   margin: 0 auto;
   padding: 2rem;
   gap: 3rem;
+  min-width: 0;
   position: relative;
   z-index: 1;
 }
@@ -84,11 +84,13 @@
   background: rgba(248, 250, 252, 0.8);
   backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  gap: 0.75rem;
+  min-width: 0;
 }
 
-.la-nav__logo-img { height: 48px; }
+.la-nav__logo-img { height: 48px; max-width: min(45vw, 220px); width: auto; object-fit: contain; }
 
-.la-nav__links { display: flex; gap: 2rem; align-items: center; }
+.la-nav__links { display: flex; gap: 1rem; align-items: center; min-width: 0; flex-wrap: wrap; justify-content: flex-end; }
 
 .la-nav__link {
   font-size: 0.9rem;
@@ -206,7 +208,7 @@
 /* ── Grid ── */
 .la-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 2rem;
 }
 
@@ -245,6 +247,64 @@
 @media (max-width: 1024px) {
   .la-layout { flex-direction: column; padding: 1.5rem; }
   .la-sidebar { width: 100%; position: static; margin-bottom: 2rem; }
-  .la-nav { padding: 1rem; }
+  .la-nav { padding: 1rem clamp(1rem, 4vw, 3rem); }
   .la-header__title { font-size: 2.5rem; }
+}
+
+@media (max-width: 640px) {
+  .la-nav {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+  }
+
+  .la-nav__logo-img { height: 40px; max-width: 52vw; }
+
+  .la-nav__links {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .la-nav__link { font-size: 0.75rem; }
+
+  .la-nav__back {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .la-layout { padding: 1rem; gap: 1.5rem; }
+
+  .la-header { margin-bottom: 2rem; }
+
+  .la-header__title {
+    font-size: clamp(2rem, 10vw, 2.5rem);
+    letter-spacing: -1px;
+    overflow-wrap: anywhere;
+  }
+
+  .la-header__sub { font-size: 1rem; }
+
+  .la-cat-bar { margin-bottom: 2rem; }
+
+  .la-section { margin-bottom: 3rem; }
+
+  .la-section__header { align-items: flex-start; }
+
+  .la-section__line { min-width: 1rem; margin-top: 0.55rem; }
+
+  .la-grid { gap: 1rem; }
+
+  .la-empty { padding: 2rem 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .la-root *,
+  .la-root *::before,
+  .la-root *::after {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

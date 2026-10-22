@@ -21,6 +21,7 @@ describe('Next.js production architecture', () => {
     'src/app/community/scan/page.next.jsx',
     'src/app/leadership/page.next.jsx',
     'src/app/members/[memberId]/page.next.jsx',
+    'src/app/api/[...path]/route.js',
   ])('keeps the App Router route %s', route => {
     expect(existsSync(resolve(projectRoot, route))).toBe(true);
   });
@@ -33,5 +34,16 @@ describe('Next.js production architecture', () => {
 
     expect(routeSource).toContain("import MemberProfile from '../../../components/members/MemberProfile';");
     expect(routeSource).toContain('<MemberProfile memberId={memberId} />');
+  });
+
+  it('keeps all API methods on the server-only catch-all route', () => {
+    const routeSource = readFileSync(resolve(projectRoot, 'src/app/api/[...path]/route.js'), 'utf8');
+
+    expect(routeSource).toContain("export const runtime = 'nodejs';");
+    expect(routeSource).toContain('export const GET = handler;');
+    expect(routeSource).toContain('export const POST = handler;');
+    expect(routeSource).toContain('export const PUT = handler;');
+    expect(routeSource).toContain('export const PATCH = handler;');
+    expect(routeSource).toContain('export const DELETE = handler;');
   });
 });

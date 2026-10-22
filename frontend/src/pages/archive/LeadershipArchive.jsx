@@ -95,6 +95,8 @@ const LeadershipArchive = () => {
               {categories.map(cat => (
                 <button
                   key={cat}
+                  type="button"
+                  aria-pressed={activeCategory === cat}
                   className={`la-cat-btn ${activeCategory === cat ? 'active' : ''}`}
                   onClick={() => setActiveCategory(cat)}
                 >

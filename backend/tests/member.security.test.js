@@ -61,6 +61,17 @@ jest.mock('../models/Certificate', () => ({
   deleteOne: (...args) => mockCertificateDeleteOne(...args),
 }));
 jest.mock('../config/cloudinary', () => ({
+  storage: {
+    _handleFile(req, file, callback) {
+      file.stream.on('end', () => callback(null, {
+        path: 'https://res.cloudinary.com/test/image/upload/member-a.png',
+        public_id: 'ieee-website/member-a',
+        resource_type: 'image',
+      }));
+      file.stream.resume();
+    },
+    _removeFile(req, file, callback) { callback(null); },
+  },
   certificateStorage: {
     _handleFile(req, file, callback) {
       file.stream.on('end', () => callback(null, {
@@ -165,7 +176,7 @@ beforeEach(() => {
   mockTeamFindOneAndUpdate.mockImplementation((filter, update) => {
     const team = findById(teamRecords, filter._id);
     if (!team) return Promise.resolve(null);
-    Object.assign(team, update);
+    Object.assign(team, update.$set || update);
     return Promise.resolve(team);
   });
   mockCertificateFind.mockImplementation((filter) => createQuery([...certificateRecords.values()].filter(certificate => (
@@ -310,6 +321,30 @@ describe('member authentication and ownership boundaries', () => {
       .set('Authorization', `Bearer ${authTokenFor()}`)
       .send({ bio: 'Should not apply' });
     expect(legacyIdAttempt.status).toBe(404);
+  });
+
+  it('allows the authenticated member to upload a profile image without accepting an owner override', async () => {
+    const response = await request(createMemberApp()).post('/api/member/profile/image')
+      .set('Authorization', `Bearer ${authTokenFor()}`)
+      .attach('image', Buffer.from('safe test image'), 'profile.png');
+
+    expect(response.status).toBe(200);
+    expect(response.body.profile.image).toBe('https://res.cloudinary.com/test/image/upload/member-a.png');
+    expect(mockTeamFindOneAndUpdate).toHaveBeenCalledWith(
+      { _id: TEAM_A_ID },
+      { $set: { image: 'https://res.cloudinary.com/test/image/upload/member-a.png' } },
+      { new: true, runValidators: true },
+    );
+    expect(teamRecords.get(TEAM_B_ID).image).toBeUndefined();
+  });
+
+  it('rejects unsafe profile image uploads before storage handling', async () => {
+    const response = await request(createMemberApp()).post('/api/member/profile/image')
+      .set('Authorization', `Bearer ${authTokenFor()}`)
+      .attach('image', Buffer.from('not an image'), 'profile.txt');
+
+    expect(response.status).toBe(400);
+    expect(mockTeamFindOneAndUpdate).not.toHaveBeenCalled();
   });
 
   it('lists only certificates owned by the authenticated member', async () => {

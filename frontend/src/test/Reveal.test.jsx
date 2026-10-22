@@ -11,6 +11,7 @@ vi.mock('framer-motion', () => ({
   useAnimation: () => ({
     start: vi.fn(),
   }),
+  useReducedMotion: () => false,
 }));
 
 describe('Reveal Component', () => {
