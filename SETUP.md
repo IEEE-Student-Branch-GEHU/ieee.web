@@ -24,18 +24,19 @@ cd ieee.web
 **2. Install dependencies**
 
 ```bash
-cd backend && npm ci
-cd ../frontend && npm ci
+cd frontend && npm ci
+cd ../backend && npm ci
 ```
 
 ---
 
 ## Environment Variables
 
-For the production-target Next.js application, create `frontend/.env.local`:
+For the production-target Next.js application and its mounted Express API,
+create `frontend/.env.local`:
 
 ```env
-# Same-origin Next.js API and canonical public origin
+# Same-origin API and canonical public origin
 NEXT_PUBLIC_API_URL=/api
 NEXT_PUBLIC_SITE_URL=https://your-verified-domain.example
 
@@ -49,13 +50,20 @@ CLOUDINARY_API_SECRET=your_api_secret
 
 # JWT
 JWT_SECRET=replace_with_a_random_secret_at_least_32_characters_long
+
+# Optional administrator-authorized volunteer Google sign-in
+# NEXT_PUBLIC_GOOGLE_CLIENT_ID=1234567890-abc.apps.googleusercontent.com
+
+# Optional reverse-proxy setting; use 0 locally
+TRUST_PROXY_HOPS=0
 ```
 
-The active member API runs inside Next.js under `/api`; variables in the legacy
-`backend/.env` file are not automatically loaded by `cd frontend && npm run dev`.
-For the preserved Express rollback/reference server, create a separate
-`backend/.env` with `FRONTEND_URL`, `TRUST_PROXY_HOPS`, and the same database,
-Cloudinary, and JWT values. Never commit either environment file.
+The active member API runs in `frontend/server/` and is mounted by Next.js under
+`/api`; variables in the legacy `backend/.env` file are not automatically loaded
+by `cd frontend && npm run dev`. For the preserved Express rollback/reference
+server, create a separate `backend/.env` with `FRONTEND_URL`,
+`TRUST_PROXY_HOPS`, and the same database, Cloudinary, and JWT values. Never
+commit either environment file.
 
 > **Never commit `.env` files.** The files are already in `.gitignore`.
 
@@ -69,7 +77,7 @@ through the shell environment or a temporary secret manager entry, never in
 `render.yaml` or source control:
 
 ```bash
-cd backend
+cd frontend
 read -r -p "Admin username: " ADMIN_USERNAME
 read -r -s -p "Admin password: " ADMIN_PASSWORD; printf '\n'
 export ADMIN_USERNAME ADMIN_PASSWORD
@@ -103,6 +111,17 @@ purpose, issuer, audience, subject, expiry, and token-version check. Signing
 out increments the account token version so the current token is rejected on
 subsequent protected requests.
 
+### Volunteer Google sign-in
+
+Google sign-in is optional and disabled when `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is
+unset. An administrator must authorize an email for an existing Team profile
+from the admin Team page. The API exposes `PUT /api/admin/members/:teamId/google`
+and `DELETE /api/admin/members/:teamId/google`; volunteers then use the Google
+button at `/member/login` or in the footer. The server verifies the Google ID
+token, binds Google's stable subject on first sign-in, and rejects disabled,
+reassigned, or unauthorized accounts. Removing or changing an authorization
+increments the member token version and signs the account out everywhere.
+
 To safely verify the dedicated test account without printing its password or
 stored hash:
 
@@ -132,26 +151,31 @@ does not operate against production databases.
 ## Running Locally
 
 ```bash
-# Terminal 1 — Backend (http://localhost:5000)
-cd backend && npm start
-
-# Terminal 2 — Frontend (http://localhost:5173)
+# Terminal 1 — Next.js pages and mounted API (http://localhost:3000)
 cd frontend && npm run dev
 ```
+
+The Next.js development server serves the pages and the mounted `/api` routes.
+To run the migrated Express API without Next.js, use `cd frontend && npm run
+start:api`. The preserved rollback server remains available with `cd backend &&
+npm start`.
 
 ---
 
 ## Running Tests
 
 ```bash
-# Backend tests
-cd backend
-npm test
+# Mounted API tests
+cd frontend
+npm run test:server
 
 # Frontend tests. The constrained worker flags are intentional for this
 # repository's CI/container environments.
-cd ../frontend
 npm test -- --pool=threads --maxWorkers=1 --no-file-parallelism
+
+# Preserved rollback backend tests
+cd ../backend
+npm test
 ```
 
 The frontend test command may be run with an individual file path appended
@@ -169,12 +193,10 @@ when working on a focused flow.
 
 The production application is the Next.js App Router application. Its page files
 use the `.next.jsx` extension configured in `next.config.mjs`, and Vercel is
-configured with `framework: "nextjs"` and `npm run build:next`. The legacy Vite
-adapter remains available only for compatibility tests and optional local
-previews; its commands are `dev:vite`, `build:vite`, and `preview:vite`. API
-handlers are under `frontend/src/app/api/[...path]/route.js` and use the
-Node.js runtime. The old Express backend is retained as a rollback/reference
-implementation and is not required by the Vercel deployment.
+configured with `framework: "nextjs"` and `npm run build:next`. The Express API
+under `frontend/server/` is mounted by `frontend/src/pages/api/[...path].next.js`
+and uses the same origin. The legacy `backend/` implementation remains a
+rollback/reference deployment for Render and is not the Vercel production API.
 
 Leave `NEXT_PUBLIC_API_URL` unset or set it to `/api` for same-origin routing;
 frontend normalizes it exactly once. Set `NEXT_PUBLIC_SITE_URL` only after the
@@ -190,7 +212,7 @@ editable name, role, photo, or academic field, so profile edits do not change
 an already printed destination. Deleted or invalid IDs resolve to the public
 not-found/error states instead of exposing protected data.
 
-The Next.js `/api/health` route returns `503` when MongoDB is unavailable and
+The Next.js-mounted `/api/health` route returns `503` when MongoDB is unavailable and
 `200` with `{ "status": "ready", "database": "connected" }` when MongoDB is
 ready. Uploaded images and certificates use Cloudinary, so they do not rely on
 local filesystem persistence. Rate-limit counters use the MongoDB-backed

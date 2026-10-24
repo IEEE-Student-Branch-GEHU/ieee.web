@@ -8,6 +8,8 @@ import { MdEmail, MdOutlineLocationOn } from "react-icons/md";
 
 // MD Icons
 import IeeeLogoWhite from "../assets/ieee-logo-white.png";
+import GoogleSignInButton from "./members/GoogleSignInButton";
+import { GOOGLE_CLIENT_ID } from "../lib/google-identity";
 
 function Footer({ sectionLinkPrefix = '' }) {
     const footerLinks = [
@@ -67,6 +69,17 @@ function Footer({ sectionLinkPrefix = '' }) {
                              <a href="/member/login" className="hover:text-gray-300 transition-colors">Member sign in</a>
                              <a href={`${sectionLinkPrefix}#contact`} className="hover:text-gray-300 transition-colors">Join Us</a>
                         </div>
+                        {GOOGLE_CLIENT_ID && (
+                            <section aria-labelledby="footer-volunteer-login" className="mt-4 border-t border-white/10 pt-4">
+                                <h3 id="footer-volunteer-login" className="font-bold text-sm uppercase tracking-wide">Volunteer login</h3>
+                                <p className="mt-1 mb-3 text-xs font-light text-white/70">For volunteers authorized by the branch only.</p>
+                                <GoogleSignInButton
+                                    width={220}
+                                    className="flex flex-col items-center lg:items-start"
+                                    messageClassName="text-white/90"
+                                />
+                            </section>
+                        )}
                     </div>
                 </div>
 

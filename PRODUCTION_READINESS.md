@@ -4,9 +4,10 @@
 
 **Production launch readiness: BLOCKED**
 
-The repository contains a single Next.js App Router application with same-origin
-API route handlers. The legacy Express/Render backend remains available for
-rollback, but is not the Vercel production target. The canonical public domain
+The repository contains a single Next.js App Router application with the
+Express API mounted at the same origin through `src/pages/api/[...path].next.js`.
+The legacy `backend/` Express/Render backend remains available for rollback,
+but is not the Vercel production target. The canonical public domain
 is not verified. Do not generate production member QR codes or publish
 canonical URLs until the organizer confirms one HTTPS origin and verifies it in
 Vercel.
@@ -29,26 +30,19 @@ Vercel.
 - [ ] Confirm legal entity/controller, rights request process, contact ownership, retention, backups, and applicable terms.
 - [ ] Test member profile URLs with real approved Team records.
 - [ ] Provision an approved member account through the administrator flow and verify activation, login, logout, and profile ownership checks.
+- [ ] Configure and verify administrator-authorized volunteer Google sign-in, including authorization, first-login subject binding, revocation, reassignment rejection, and disabled-account rejection.
 - [ ] Verify certificate uploads with configured authenticated Cloudinary storage, private-by-default behavior, explicit public visibility, and deletion.
 - [ ] Set the verified public origin and test QR scanning from a production-like preview.
 - [ ] Test QR SVG downloads and readability in both themes.
 - [ ] Test `/community/scan` from HTTPS or localhost: grant camera permission only after pressing Start, scan an approved QR, confirm the correct read-only profile opens, stop/deny camera access, and verify unsupported browsers show a safe fallback.
 - [ ] Test theme persistence, system preference, keyboard access, responsive layouts, and reduced motion in a real browser.
 - [ ] Run accessibility checks against homepage, events, team/profile, legal, and admin flows.
-- [ ] Run the migrated Next.js API route tests against a staging MongoDB/Cloudinary configuration.
-- [x] Run the preserved Express backend suite, focused migrated-route tests, frontend tests, and the Next.js production build locally; the legacy Vite adapter is not the production build target.
+- [ ] Run the mounted `frontend/server` API route tests against a staging MongoDB/Cloudinary configuration.
+- [ ] Run the preserved `backend/` rollback suite, frontend tests, lint, and the Next.js production build after the integration merge.
 
 ## Local verification notes
 
-- Backend Jest: 17 suites and 265 tests passed with `npm test -- --runInBand`; the deployment suite includes the member-profile `PATCH` CORS preflight regression.
-- The existing frontend suite passed in bounded runs before the architecture-targeting changes: 29 files and 259 tests using `npm test -- --pool=threads --maxWorkers=1 --no-file-parallelism`.
-- After the architecture changes, focused migrated-route checks passed, including 8 Next API contract tests, 1 model-collection compatibility test, 2 security-control tests, 3 member-validation tests, 10 Next routing tests, and 14 deployment tests. Existing admin/member/homepage integration checks also passed: 21 tests.
-- Next.js production build passed after the member-flow changes. The legacy
-  Vite adapter remains available for tests and optional previews but is not the
-  production deployment target.
-- `npm run build` and `npm run build:next` both use and pass the Next.js App Router production build. The Vite adapter remains available only for tests and optional previews.
-- Scoped ESLint for the changed server, route, and migration-test files passed with no errors. The full frontend lint remains blocked by 11 pre-existing errors and 2 warnings in unrelated UI/test files.
-- The frontend lockfile is consistent with `npm ci --dry-run`; `npm audit --omit=dev` currently reports one moderate `baseline-browser-mapping` advisory.
+- Local verification results for this integration are recorded after the merge is resolved; do not treat historical pre-merge counts as current evidence.
 
 ## Member data
 

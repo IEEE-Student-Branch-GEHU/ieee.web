@@ -21,7 +21,7 @@ describe('Next.js production architecture', () => {
     'src/app/community/scan/page.next.jsx',
     'src/app/leadership/page.next.jsx',
     'src/app/members/[memberId]/page.next.jsx',
-    'src/app/api/[...path]/route.js',
+    'src/pages/api/[...path].next.js',
   ])('keeps the App Router route %s', route => {
     expect(existsSync(resolve(projectRoot, route))).toBe(true);
   });
@@ -36,14 +36,12 @@ describe('Next.js production architecture', () => {
     expect(routeSource).toContain('<MemberProfile memberId={memberId} />');
   });
 
-  it('keeps all API methods on the server-only catch-all route', () => {
-    const routeSource = readFileSync(resolve(projectRoot, 'src/app/api/[...path]/route.js'), 'utf8');
+  it('mounts the canonical Express API through the Next.js deployment', () => {
+    const routeSource = readFileSync(resolve(projectRoot, 'src/pages/api/[...path].next.js'), 'utf8');
 
-    expect(routeSource).toContain("export const runtime = 'nodejs';");
-    expect(routeSource).toContain('export const GET = handler;');
-    expect(routeSource).toContain('export const POST = handler;');
-    expect(routeSource).toContain('export const PUT = handler;');
-    expect(routeSource).toContain('export const PATCH = handler;');
-    expect(routeSource).toContain('export const DELETE = handler;');
+    expect(routeSource).toContain("import('../../../server/server.js')");
+    expect(routeSource).toContain('bodyParser: false');
+    expect(routeSource).toContain('await app.ensureDatabase()');
+    expect(routeSource).toContain('app(req, res)');
   });
 });

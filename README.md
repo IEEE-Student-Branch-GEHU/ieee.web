@@ -34,13 +34,13 @@ Official web platform of the **IEEE Student Branch at Graphic Era Hill Universit
 | Layer | Technology |
 | :--- | :--- |
 | Frontend | Next.js App Router, React 19, Tailwind CSS v4, Framer Motion |
-| Backend | Next.js App Router Route Handler, Mongoose |
+| Backend | Express API mounted through Next.js, Mongoose |
 | Database | MongoDB Atlas |
 | Storage | Cloudinary |
 | Auth | JSON Web Tokens (JWT) |
 | Testing | Vitest, React Testing Library |
 | CI/CD | GitHub Actions |
-| Deployment | Vercel (single Next.js application) |
+| Deployment | Vercel (single Next.js application) with an Express rollback on Render |
 
 ---
 
@@ -55,11 +55,14 @@ Official web platform of the **IEEE Student Branch at Graphic Era Hill Universit
 **Admin Dashboard**
 - Secure JWT login with administrator-provisioned accounts
 - Full CRUD for Events and Team Members with Cloudinary image uploads
+- Administrator-authorized volunteer Google Sign-In with revoke/reassignment controls
 - Rate limiting via `express-rate-limit`
 
 **Member Portal**
 - Administrator-provisioned member accounts with one-time activation
 - Server-enforced ownership for profile edits and certificate records
+- Profile-image uploads with extension/MIME/size validation and Cloudinary cleanup on persistence failure
+- Optional Google Sign-In for volunteers explicitly authorized by an administrator
 - Certificates are private by default and can be made public explicitly by their owner
 
 ---
@@ -75,8 +78,8 @@ ieee.web/
 │       ├── pages/           # Shared client page components and legacy Vite adapters
 │       └── test/            # Vitest unit tests
 │
-├── frontend/src/app/api/   # Next.js server-only API route handler
-├── frontend/src/server/    # MongoDB, auth, validation, storage and API logic
+├── frontend/server/        # Canonical Express API, mounted by Next.js and runnable standalone
+├── frontend/src/pages/api/ # Next.js adapter that mounts frontend/server/
 │
 ├── backend/                # Preserved Express rollback/reference implementation
 │   ├── models/             # Admin, Event, Team, Member, Certificate schemas
@@ -115,6 +118,9 @@ reference; it is not the Vercel production target.
 | GET | `/api/admin/stats` | Dashboard counts and recent activity |
 | POST | `/api/admin/upload` | Upload a member image through Cloudinary |
 | POST | `/api/admin/members/provision` | Provision a member account for an existing Team profile |
+| GET | `/api/admin/members/google` | List administrator-authorized volunteer Google accounts |
+| PUT | `/api/admin/members/:teamId/google` | Authorize a Google email for an existing Team profile |
+| DELETE | `/api/admin/members/:teamId/google` | Revoke a volunteer Google authorization |
 
 ### Member access *(member Bearer token required unless noted)*
 
@@ -122,6 +128,7 @@ reference; it is not the Vercel production target.
 | :--- | :--- | :--- |
 | POST | `/api/member/activate` | Activate an administrator-provisioned account once |
 | POST | `/api/member/login` | Sign in as an active member |
+| POST | `/api/member/google` | Sign in with an administrator-authorized Google account |
 | GET | `/api/member/me` | Read the authenticated member's linked public profile |
 | PATCH | `/api/member/profile` | Edit only member-editable public profile fields |
 | POST | `/api/member/profile/image` | Upload or replace the authenticated member's profile photo through Cloudinary |

@@ -23,13 +23,26 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]', caughtErrors: 'none' }],
     },
   },
   {
-    files: ['src/server/**/*.js', 'src/test/**/*.js', 'src/test/**/*.jsx'],
+    // The Express API in server/ is CommonJS running on Node.
+    files: ['server/**/*.js'],
     languageOptions: {
-      globals: { ...globals.browser, ...globals.node },
+      globals: globals.node,
+      sourceType: 'commonjs',
     },
+    rules: {
+      'preserve-caught-error': 'off',
+    },
+  },
+  {
+    files: ['server/tests/**/*.js'],
+    languageOptions: { globals: { ...globals.node, ...globals.jest } },
+  },
+  {
+    files: ['src/test/**/*.{js,jsx}'],
+    languageOptions: { globals: { ...globals.browser, ...globals.node } },
   },
 ])

@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { ArrowLeft, KeyRound, Loader2, ShieldCheck, UserRound } from 'lucide-react';
 import { ThemeToggle } from '../theme/ThemeToggle';
 import { loginMember } from '../../lib/member-api';
+import { GOOGLE_CLIENT_ID } from '../../lib/google-identity';
+import GoogleSignInButton from './GoogleSignInButton';
 
 const MemberLogin = () => {
   const [username, setUsername] = useState('');
@@ -44,6 +46,17 @@ const MemberLogin = () => {
               <p className="site-muted mt-3 text-sm leading-7">Use the account provided by the IEEE administrator. Public profiles do not require sign-in.</p>
             </div>
           </div>
+          {GOOGLE_CLIENT_ID && (
+            <div className="mb-6">
+              <p className="site-text mb-3 text-sm font-semibold">Volunteers</p>
+              <GoogleSignInButton width={320} messageClassName="site-muted" />
+              <div className="site-muted mt-6 flex items-center gap-3 text-xs uppercase tracking-wider">
+                <span className="site-border h-px flex-1 border-t" aria-hidden="true" />
+                or sign in with a username
+                <span className="site-border h-px flex-1 border-t" aria-hidden="true" />
+              </div>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-200">{error}</p>}
             <div>
