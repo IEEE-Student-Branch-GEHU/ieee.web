@@ -118,7 +118,7 @@ const Navbar = ({ surface = false }) => {
                             <img
                                 src={logoSource}
                                 alt="IEEE Logo"
-                                className="h-12 w-auto shrink-0 py-1 transition-transform duration-500 group-hover:scale-105 sm:h-14 md:h-24"
+                                className="site-navbar-logo h-14 md:h-24 w-auto group-hover:scale-105 transition-transform duration-500 py-1"
                             />
                         </a>
                     </Motion.div>

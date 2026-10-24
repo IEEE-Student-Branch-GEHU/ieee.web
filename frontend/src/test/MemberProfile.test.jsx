@@ -4,9 +4,9 @@ import MemberProfile from '../components/members/MemberProfile';
 import MemberQr from '../components/members/MemberQr';
 import { getMemberProfilePath, getMemberProfileUrl } from '../lib/public-site';
 
-const { fetchJson, qrToString } = vi.hoisted(() => ({ fetchJson: vi.fn(), qrToString: vi.fn() }));
+const { fetchJson, createMemberQrSvg } = vi.hoisted(() => ({ fetchJson: vi.fn(), createMemberQrSvg: vi.fn() }));
 vi.mock('../lib/http', () => ({ fetchJson }));
-vi.mock('qrcode', () => ({ default: { toString: qrToString } }));
+vi.mock('../lib/member-qr', () => ({ createMemberQrSvg }));
 vi.mock('../components/Navbar', () => ({ default: () => <nav aria-label="Primary navigation" /> }));
 vi.mock('../components/Footer', () => ({ default: () => <footer /> }));
 
@@ -21,7 +21,7 @@ const member = {
 
 beforeEach(() => {
   fetchJson.mockReset();
-  qrToString.mockReset();
+  createMemberQrSvg.mockReset();
 });
 
 afterEach(() => {
@@ -103,8 +103,8 @@ describe('MemberProfile', () => {
 
 describe('MemberQr', () => {
   beforeEach(() => {
-    qrToString.mockReset();
-    qrToString.mockResolvedValue('<svg data-target="member"></svg>');
+    createMemberQrSvg.mockReset();
+    createMemberQrSvg.mockResolvedValue('<svg data-target="member"></svg>');
   });
 
   it('shows a safe unavailable state when no public HTTPS origin is configured', () => {
@@ -121,7 +121,7 @@ describe('MemberQr', () => {
 
     expect(screen.getByRole('alert')).toHaveTextContent(message);
     expect(screen.getByRole('button', { name: /Download SVG/i })).toBeDisabled();
-    expect(qrToString).not.toHaveBeenCalled();
+    expect(createMemberQrSvg).not.toHaveBeenCalled();
   });
 
   it('generates an accessible high-contrast QR for the stable public profile URL', async () => {
@@ -136,17 +136,9 @@ describe('MemberQr', () => {
       'https://8.8.8.8/members/507f1f77bcf86cd799439011',
     );
     expect(screen.getByRole('button', { name: /Download SVG/i })).not.toBeDisabled();
-    expect(qrToString).toHaveBeenCalledWith(
-      'https://8.8.8.8/members/507f1f77bcf86cd799439011',
-      expect.objectContaining({
-        type: 'svg',
-        errorCorrectionLevel: 'H',
-        margin: 4,
-        color: { dark: '#111827', light: '#ffffff' },
-      }),
-    );
-    expect(qrToString.mock.calls[0][0]).not.toContain(member.bio);
-    expect(qrToString.mock.calls[0][0]).not.toContain(member.socials.github);
+    expect(createMemberQrSvg).toHaveBeenCalledWith('https://8.8.8.8/members/507f1f77bcf86cd799439011');
+    expect(createMemberQrSvg.mock.calls[0][0]).not.toContain(member.bio);
+    expect(createMemberQrSvg.mock.calls[0][0]).not.toContain(member.socials.github);
   });
 
   it('keeps the QR destination unchanged when editable profile fields change', async () => {
@@ -154,7 +146,7 @@ describe('MemberQr', () => {
     const { rerender } = render(<MemberQr member={member} />);
 
     await screen.findByRole('img', { name: 'QR code linking to Approved Member profile' });
-    const originalDestination = qrToString.mock.calls[0][0];
+    const originalDestination = createMemberQrSvg.mock.calls[0][0];
     const editedMember = {
       ...member,
       name: 'Renamed Member',
@@ -166,8 +158,8 @@ describe('MemberQr', () => {
 
     rerender(<MemberQr member={editedMember} />);
 
-    expect(qrToString).toHaveBeenCalledTimes(1);
-    expect(qrToString).toHaveBeenCalledWith(originalDestination, expect.any(Object));
+    expect(createMemberQrSvg).toHaveBeenCalledTimes(1);
+    expect(createMemberQrSvg).toHaveBeenCalledWith(originalDestination);
     expect(screen.getByRole('link', { name: /Open public profile/i })).toHaveAttribute('href', originalDestination);
     expect(getMemberProfileUrl(editedMember._id, { allowLocalPreview: false })).toBe(originalDestination);
   });
@@ -175,7 +167,7 @@ describe('MemberQr', () => {
   it('does not display or download a previous member QR while a new one is generating', async () => {
     vi.stubEnv('VITE_PUBLIC_SITE_URL', 'https://8.8.8.8');
     let resolveNextQr;
-    qrToString.mockImplementationOnce(() => Promise.resolve('<svg data-target="first"></svg>'))
+    createMemberQrSvg.mockImplementationOnce(() => Promise.resolve('<svg data-target="first"></svg>'))
       .mockImplementationOnce(() => new Promise(resolve => { resolveNextQr = resolve; }));
 
     const { rerender } = render(<MemberQr member={member} />);
@@ -194,7 +186,7 @@ describe('MemberQr', () => {
 
   it('reports QR generation failures without enabling a download', async () => {
     vi.stubEnv('VITE_PUBLIC_SITE_URL', 'https://8.8.8.8');
-    qrToString.mockRejectedValueOnce(new Error('QR failure'));
+    createMemberQrSvg.mockRejectedValueOnce(new Error('QR failure'));
     render(<MemberQr member={member} />);
 
     expect(await screen.findByRole('alert')).toHaveTextContent('QR code could not be generated');
@@ -226,12 +218,12 @@ describe('MemberQr', () => {
   it('does not show a late QR result under a changed origin', async () => {
     vi.stubEnv('VITE_PUBLIC_SITE_URL', 'https://8.8.8.8');
     let resolveFirstQr;
-    qrToString
+    createMemberQrSvg
       .mockImplementationOnce(() => new Promise(resolve => { resolveFirstQr = resolve; }))
       .mockResolvedValueOnce('<svg data-target="new-origin"></svg>');
 
     const { rerender } = render(<MemberQr member={member} />);
-    await waitFor(() => expect(qrToString).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(createMemberQrSvg).toHaveBeenCalledTimes(1));
 
     vi.stubEnv('VITE_PUBLIC_SITE_URL', 'https://1.1.1.1');
     rerender(<MemberQr member={member} />);
@@ -248,12 +240,12 @@ describe('MemberQr', () => {
   it('does not show a late failure for a previous member', async () => {
     vi.stubEnv('VITE_PUBLIC_SITE_URL', 'https://8.8.8.8');
     let rejectFirstQr;
-    qrToString
+    createMemberQrSvg
       .mockImplementationOnce(() => new Promise((resolve, reject) => { rejectFirstQr = reject; }))
       .mockResolvedValueOnce('<svg data-target="new-member"></svg>');
 
     const { rerender } = render(<MemberQr member={member} />);
-    await waitFor(() => expect(qrToString).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(createMemberQrSvg).toHaveBeenCalledTimes(1));
 
     const nextMember = { ...member, _id: '507f1f77bcf86cd799439012', name: 'New Member' };
     rerender(<MemberQr member={nextMember} />);

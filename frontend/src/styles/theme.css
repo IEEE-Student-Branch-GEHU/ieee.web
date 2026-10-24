@@ -560,6 +560,17 @@ html.dark .admin-login-card {
     -webkit-backdrop-filter: blur(20px) saturate(160%);
 }
 
+/* The logo is dark blue on a transparent background, which disappears on the
+   dark header. In dark mode it sits on a light badge so the official colors
+   stay legible. */
+html.dark .site-navbar-logo,
+[data-theme='dark'] .site-navbar-logo {
+    background-color: #ffffff;
+    border-radius: 0.875rem;
+    padding-inline: 0.75rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
 .site-nav-link {
     color: rgba(255, 255, 255, 0.82);
 }
