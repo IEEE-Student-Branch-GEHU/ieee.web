@@ -45,7 +45,11 @@ describe('theme coverage boundaries', () => {
     await user.click(menu);
 
     expect(screen.getByRole('button', { name: 'Close navigation menu' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('dialog', { name: 'Mobile navigation' })).toHaveAttribute('aria-modal', 'true');
     expect(screen.getByRole('dialog', { name: 'Mobile navigation' })).toHaveClass('site-mobile-menu');
+
+    await user.keyboard('{Escape}');
+    expect(screen.getByRole('button', { name: 'Open navigation menu' })).toHaveAttribute('aria-expanded', 'false');
 
     window.scrollY = 100;
     fireEvent.scroll(window);

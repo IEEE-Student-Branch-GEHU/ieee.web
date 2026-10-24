@@ -85,7 +85,7 @@ const Contact = () => {
                     className="flex flex-col lg:flex-row gap-16 max-w-6xl mx-auto"
                 >
                     {/* Contact Info */}
-                    <Motion.div variants={itemVariants} className="lg:w-1/3 space-y-10">
+                    <Motion.div variants={itemVariants} className="min-w-0 space-y-10 lg:w-1/3">
                         <div className="public-panel bg-primary/5 p-10 rounded-[3rem] border border-primary/10 shadow-sm relative overflow-hidden group">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700" />
 
@@ -98,7 +98,7 @@ const Contact = () => {
                                     </div>
                                     <div>
                                         <h4 className="public-subtle font-black text-[10px] uppercase tracking-widest mb-1">Location</h4>
-                                        <p className="public-heading font-bold text-sm leading-relaxed">
+                                         <p className="public-heading break-words font-bold text-sm leading-relaxed">
                                             Graphic Era Hill University,<br />
                                             Dehradun, UK 248002
                                         </p>
@@ -111,7 +111,7 @@ const Contact = () => {
                                     </div>
                                     <div>
                                         <h4 className="public-subtle font-black text-[10px] uppercase tracking-widest mb-1">Email Support</h4>
-                                        <p className="public-heading font-bold text-sm">ieee@gehu.ac.in</p>
+                                         <p className="public-heading break-words font-bold text-sm">ieee@gehu.ac.in</p>
                                     </div>
                                 </div>
 
@@ -129,8 +129,8 @@ const Contact = () => {
                     </Motion.div>
 
                     {/* Contact Form */}
-                    <Motion.div variants={itemVariants} className="lg:w-2/3">
-                        <form onSubmit={handleSubmit} className="public-card p-10 md:p-12 rounded-[3.5rem] shadow-2xl shadow-primary/5 border relative overflow-hidden">
+                    <Motion.div variants={itemVariants} className="min-w-0 lg:w-2/3">
+                        <form onSubmit={handleSubmit} aria-busy={status === 'submitting'} className="public-card relative overflow-hidden rounded-[3.5rem] border p-6 shadow-2xl shadow-primary/5 sm:p-10 md:p-12">
                             {status === 'error' && (
                                 <p role="alert" className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm font-bold text-red-600">
                                     {errorMessage}
@@ -139,20 +139,23 @@ const Contact = () => {
 
                             {status === 'success' && (
                                 <Motion.div
+                                    role="status"
+                                    aria-live="polite"
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                        className="public-success-overlay absolute inset-0 backdrop-blur-md z-10 flex flex-col items-center justify-center text-green-600"
+                                    className="public-success-overlay absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center text-green-600 backdrop-blur-md"
                                 >
-                                    <CheckCircle size={80} strokeWidth={1.5} className="mb-6 animate-bounce" />
+                                    <CheckCircle aria-hidden="true" size={80} strokeWidth={1.5} className="mb-6 animate-bounce motion-reduce:animate-none" />
                                     <h3 className="text-3xl font-black tracking-tight">Message Received.</h3>
                                      <p className="public-body font-medium mt-2">{successMessage}</p>
                                 </Motion.div>
                             )}
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                            <div className="mb-8 grid grid-cols-1 gap-5 sm:gap-8 md:grid-cols-2">
                                 <div className="space-y-2">
-                                     <label className="public-subtle text-[10px] font-black uppercase tracking-widest ml-1">First Name</label>
-                                    <input
+                                     <label htmlFor="contact-first-name" className="public-subtle ml-1 text-[10px] font-black uppercase tracking-widest">First Name</label>
+                                     <input
+                                        id="contact-first-name"
                                         type="text"
                                         name="firstName"
                                         value={formData.firstName}
@@ -163,8 +166,9 @@ const Contact = () => {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                     <label className="public-subtle text-[10px] font-black uppercase tracking-widest ml-1">Last Name</label>
-                                    <input
+                                     <label htmlFor="contact-last-name" className="public-subtle ml-1 text-[10px] font-black uppercase tracking-widest">Last Name</label>
+                                     <input
+                                        id="contact-last-name"
                                         type="text"
                                         name="lastName"
                                         value={formData.lastName}
@@ -177,8 +181,9 @@ const Contact = () => {
                             </div>
 
                             <div className="mb-8 space-y-2">
-                                 <label className="public-subtle text-[10px] font-black uppercase tracking-widest ml-1">Email Address</label>
-                                <input
+                                 <label htmlFor="contact-email" className="public-subtle ml-1 text-[10px] font-black uppercase tracking-widest">Email Address</label>
+                                 <input
+                                    id="contact-email"
                                     type="email"
                                     name="email"
                                     value={formData.email}
@@ -190,8 +195,9 @@ const Contact = () => {
                             </div>
 
                             <div className="mb-10 space-y-2">
-                                 <label className="public-subtle text-[10px] font-black uppercase tracking-widest ml-1">Inquiry Details</label>
-                                <textarea
+                                 <label htmlFor="contact-message" className="public-subtle ml-1 text-[10px] font-black uppercase tracking-widest">Inquiry Details</label>
+                                 <textarea
+                                    id="contact-message"
                                     rows={5}
                                     name="message"
                                     value={formData.message}

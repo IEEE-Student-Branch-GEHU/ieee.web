@@ -11,7 +11,10 @@ const YearSelector = ({ selectedYear, onYearChange }) => {
     fetch(`${API_BASE_URL}/team/years`)
       .then(res => res.json())
       .then(data => {
-        setYears(data);
+        const nextYears = Array.isArray(data)
+          ? data
+          : Array.isArray(data?.years) ? data.years : [];
+        setYears(nextYears);
         setLoading(false);
       })
       .catch(err => {
@@ -39,6 +42,8 @@ const YearSelector = ({ selectedYear, onYearChange }) => {
         {years.map((year, index) => (
           <button
             key={year}
+            type="button"
+            aria-pressed={selectedYear === year}
             onClick={() => onYearChange(year)}
             className={`year-item ${selectedYear === year ? 'year-item--active' : ''}`}
           >

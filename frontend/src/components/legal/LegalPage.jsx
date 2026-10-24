@@ -75,7 +75,7 @@ const LegalPage = ({ kind = 'privacy' }) => {
                 </h2>
                 <div className="mt-5 space-y-4">
                   {section.paragraphs.map((paragraph, index) => (
-                    <p key={typeof paragraph === 'string' ? paragraph : `${section.id}-${index}`} className="site-muted max-w-4xl font-body text-base leading-8">
+                    <p key={typeof paragraph === 'string' ? paragraph : `${section.id}-${index}`} className="site-muted max-w-4xl break-words font-body text-base leading-8 [overflow-wrap:anywhere]">
                       {renderParagraph(paragraph)}
                     </p>
                   ))}

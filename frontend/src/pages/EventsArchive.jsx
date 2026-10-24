@@ -80,16 +80,16 @@ const EventsArchive = () => {
         <div className="archive-page site-surface min-h-screen selection:bg-primary/30">
             <ArchiveNavbar />
             
-            <main className="relative pt-48 pb-24 px-6 overflow-hidden">
+            <main className="relative overflow-hidden px-4 pb-24 pt-36 sm:px-6 sm:pt-48">
                 {/* Background Decoration */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
 
                 <div className="container mx-auto max-w-7xl relative z-10">
                     {/* Hero Section */}
-                    <header className="flex flex-col items-center text-center space-y-6 mb-20">
+                    <header className="mb-14 flex flex-col items-center space-y-6 text-center sm:mb-20">
                         
                         <Reveal>
-                            <h1 className="archive-heading text-5xl md:text-7xl font-bold tracking-tight">
+                            <h1 className="archive-heading text-[clamp(2.5rem,10vw,4.5rem)] font-bold tracking-tight">
                                 Explore <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Innovation</span>
                             </h1>
                         </Reveal>
@@ -100,7 +100,7 @@ const EventsArchive = () => {
                     </header>
 
                     {/* Filter Bar */}
-                    <section className="archive-filter-panel rounded-3xl p-4 mb-16 max-w-5xl mx-auto border shadow-2xl">
+                    <section className="archive-filter-panel mx-auto mb-12 max-w-5xl rounded-3xl border p-3 shadow-2xl sm:mb-16 sm:p-4">
                         <div className="flex flex-col lg:flex-row gap-6">
                             {/* Search */}
                             <div className="flex-grow group">
@@ -190,7 +190,7 @@ const EventsArchive = () => {
                                                 </div>
 
                                                 {/* Body */}
-                                                <div className="p-8 space-y-4 flex-grow">
+                                                 <div className="flex-grow space-y-4 p-6 sm:p-8">
                                                     <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest">
                                                         <Calendar size={14} />
                                                         {new Date(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
@@ -204,7 +204,7 @@ const EventsArchive = () => {
                                                 </div>
 
                                                 {/* Action */}
-                                                <div className="px-8 pb-8 mt-auto">
+                                                 <div className="mt-auto px-6 pb-6 sm:px-8 sm:pb-8">
                                                      <Button type="button" aria-label={`View highlights for ${event.title}`} aria-haspopup="dialog" onClick={() => setSelectedEvent(event)} className="archive-modal-trigger w-full border rounded-2xl py-6 transition-all duration-300 font-bold tracking-tight">
                                                         View Highlights
                                                     </Button>
@@ -230,7 +230,7 @@ const EventsArchive = () => {
 
                     {/* Pagination */}
                     {!loading && events.length > 0 && totalPages > 1 && (
-                        <nav aria-label="Event pagination" className="flex justify-center items-center gap-4 mt-20">
+                        <nav aria-label="Event pagination" className="mt-16 flex flex-wrap items-center justify-center gap-3 sm:mt-20 sm:gap-4">
                             <button
                                 aria-label="Previous page"
                                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
@@ -240,7 +240,7 @@ const EventsArchive = () => {
                                 <ArrowLeft size={20} />
                             </button>
                             
-                            <div className="flex gap-2">
+                             <div className="flex max-w-full flex-wrap justify-center gap-2">
                                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                                     <button
                                         key={page}

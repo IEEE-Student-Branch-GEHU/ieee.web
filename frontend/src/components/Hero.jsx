@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from "react";
+import React, { useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import {
     Carousel,
@@ -13,11 +13,13 @@ import { Button } from "./ui/button";
 // Assets (Using placeholders for now)
 // import allExcom from "../assets/hero-images/full-excom.jpg"; // Removed as it does not exist
 
-import { motion as Motion } from "framer-motion";
+import { motion as Motion, useReducedMotion } from "framer-motion";
 
 const Hero = () => {
-    const plugin = useRef(
-        Autoplay({ delay: 6000, stopOnInteraction: false })
+    const prefersReducedMotion = useReducedMotion();
+    const autoplay = useMemo(
+        () => (prefersReducedMotion ? null : Autoplay({ delay: 6000, stopOnInteraction: false })),
+        [prefersReducedMotion]
     );
 
     const cimages = [
@@ -61,12 +63,12 @@ const Hero = () => {
     };
 
     return (
-        <Carousel plugins={[plugin.current]} className="w-full">
+        <Carousel aria-label="IEEE GEHU highlights" plugins={autoplay ? [autoplay] : undefined} className="w-full">
             <CarouselContent className="h-full">
                 {cimages.map((item, index) => (
                     <CarouselItem
                         key={index}
-                        className="relative h-[65vh] md:h-screen w-full overflow-hidden"
+                        className="relative min-h-[65dvh] w-full overflow-hidden md:min-h-[100dvh]"
                     >
                         <div className="w-full h-full relative">
                             <Motion.img
@@ -88,25 +90,25 @@ const Hero = () => {
                                     initial="hidden"
                                     whileInView="visible"
                                     viewport={{ once: false }}
-                                    className="container mx-auto px-6 text-center"
+                                    className="container mx-auto max-w-5xl px-4 text-center sm:px-6"
                                 >
                                     <Motion.h1
                                         variants={itemVariants}
-                                        className="font-bold text-white text-4xl md:text-6xl lg:text-7xl mb-4 drop-shadow-2xl font-sans tracking-tight"
+                                         className="mb-4 font-bold tracking-tight text-white drop-shadow-2xl font-sans text-[clamp(2rem,8vw,4.5rem)]"
                                     >
                                         {item.subheading}
                                     </Motion.h1>
 
                                     <Motion.p
                                         variants={itemVariants}
-                                        className="text-white/90 text-sm md:text-xl max-w-2xl mx-auto font-medium tracking-wide mb-10 leading-relaxed italic"
+                                         className="mx-auto mb-10 max-w-2xl text-sm font-medium italic leading-relaxed tracking-wide text-white/90 sm:text-lg"
                                     >
                                         {tagline}
                                     </Motion.p>
 
                                     <Motion.div
                                         variants={itemVariants}
-                                        className="flex flex-col sm:flex-row justify-center gap-6 mt-6 pointer-events-auto"
+                                         className="pointer-events-auto mt-6 flex flex-col justify-center gap-4 sm:flex-row sm:gap-6"
                                     >
                                         <Button asChild size="lg" className="bg-primary hover:bg-primaryDark text-white font-bold px-10 py-7 rounded-full shadow-2xl w-full sm:w-auto transition-transform hover:scale-105 active:scale-95">
                                             <a href="#contact">

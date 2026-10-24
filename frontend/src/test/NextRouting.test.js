@@ -21,6 +21,7 @@ describe('Next.js production architecture', () => {
     'src/app/community/scan/page.next.jsx',
     'src/app/leadership/page.next.jsx',
     'src/app/members/[memberId]/page.next.jsx',
+    'src/pages/api/[...path].next.js',
   ])('keeps the App Router route %s', route => {
     expect(existsSync(resolve(projectRoot, route))).toBe(true);
   });
@@ -33,5 +34,14 @@ describe('Next.js production architecture', () => {
 
     expect(routeSource).toContain("import MemberProfile from '../../../components/members/MemberProfile';");
     expect(routeSource).toContain('<MemberProfile memberId={memberId} />');
+  });
+
+  it('mounts the canonical Express API through the Next.js deployment', () => {
+    const routeSource = readFileSync(resolve(projectRoot, 'src/pages/api/[...path].next.js'), 'utf8');
+
+    expect(routeSource).toContain("import('../../../server/server.js')");
+    expect(routeSource).toContain('bodyParser: false');
+    expect(routeSource).toContain('await app.ensureDatabase()');
+    expect(routeSource).toContain('app(req, res)');
   });
 });

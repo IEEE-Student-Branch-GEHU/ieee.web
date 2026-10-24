@@ -23,7 +23,7 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]', caughtErrors: 'none' }],
     },
   },
   {
@@ -33,9 +33,16 @@ export default defineConfig([
       globals: globals.node,
       sourceType: 'commonjs',
     },
+    rules: {
+      'preserve-caught-error': 'off',
+    },
   },
   {
     files: ['server/tests/**/*.js'],
     languageOptions: { globals: { ...globals.node, ...globals.jest } },
+  },
+  {
+    files: ['src/test/**/*.{js,jsx}'],
+    languageOptions: { globals: { ...globals.browser, ...globals.node } },
   },
 ])

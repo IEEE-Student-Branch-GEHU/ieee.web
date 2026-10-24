@@ -66,9 +66,9 @@ router.get('/stats', auth, async (req, res) => {
     try {
         const eventsCount = await Event.countDocuments();
         const teamCount = await Team.countDocuments();
-        
+
         // In a real scenario, you might want a Message model too. For now, zero:
-        const messagesCount = 0; 
+        const messagesCount = 0;
 
         const recentEvents = await Event.find().sort({ createdAt: -1 }).limit(2);
         const recentTeam = await Team.find().sort({ createdAt: -1 }).limit(2);

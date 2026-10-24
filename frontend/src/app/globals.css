@@ -26,6 +26,12 @@
 }
 
 @layer base {
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
     html {
         scroll-behavior: smooth;
     }
@@ -37,6 +43,19 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         position: relative;
+    }
+
+    img,
+    svg,
+    video {
+        max-width: 100%;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+        font: inherit;
     }
 
     /* Grain Overlay */

@@ -27,6 +27,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: '**/package-lock.json'
+    - name: Install Rollback Backend
+      working-directory: ./backend
+      run: npm ci || npm install --legacy-peer-deps
 
     - name: Install Frontend
       working-directory: ./frontend

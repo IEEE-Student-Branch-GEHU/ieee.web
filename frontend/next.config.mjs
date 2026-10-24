@@ -11,6 +11,7 @@ const nextConfig = {
   // next.jsx: App Router pages. next.js: the API route that mounts server/.
   pageExtensions: ['next.jsx', 'next.js'],
   reactStrictMode: true,
+  turbopack: { root: process.cwd() },
   // Node-only server dependencies are required at runtime instead of bundled.
   serverExternalPackages: [
     'bcryptjs',

@@ -85,7 +85,7 @@ const Events = () => {
                     ) : eventsData.length === 0 ? (
                         <p className="public-body py-12 text-center">No events available yet.</p>
                     ) : (
-                        <Carousel className="w-full">
+                        <Carousel aria-label="Latest IEEE GEHU events" className="w-full">
                             <CarouselContent className="-ml-6">
                                 {eventsData.map((event, index) => (
                                 <CarouselItem
@@ -93,7 +93,7 @@ const Events = () => {
                                     className="pl-6 md:basis-1/2 lg:basis-1/3"
                                 >
                                     <Motion.div variants={itemVariants}>
-                                        <Card className="public-card h-[34rem] shadow-xl rounded-2xl overflow-hidden border flex flex-col group hover:shadow-2xl transition-all duration-500">
+                                         <Card className="public-card flex h-full min-h-[34rem] flex-col overflow-hidden rounded-2xl border shadow-xl transition-all duration-500 group hover:shadow-2xl">
                                             <CardContent className="flex flex-col p-0 gap-6 h-full relative">
                                                 <div className="w-full space-y-5 flex-grow">
                                                     <div className="aspect-[4/3] relative w-full overflow-hidden">
@@ -138,9 +138,9 @@ const Events = () => {
                                 ))}
                             </CarouselContent>
 
-                            <div className="hidden xl:block">
-                                 <CarouselPrevious className="public-control left-[-60px] border-2 border-primary/20 text-primary hover:bg-primary hover:text-white h-12 w-12" />
-                                 <CarouselNext className="public-control right-[-60px] border-2 border-primary/20 text-primary hover:bg-primary hover:text-white h-12 w-12" />
+                            <div className="mt-6 flex justify-center gap-3">
+                                 <CarouselPrevious className="public-control static h-11 w-11 translate-y-0 border-2 border-primary/20 text-primary hover:bg-primary hover:text-white xl:absolute xl:left-[-60px] xl:top-1/2 xl:h-12 xl:w-12 xl:-translate-y-1/2" />
+                                  <CarouselNext className="public-control static h-11 w-11 translate-y-0 border-2 border-primary/20 text-primary hover:bg-primary hover:text-white xl:absolute xl:right-[-60px] xl:top-1/2 xl:h-12 xl:w-12 xl:-translate-y-1/2" />
                             </div>
                         </Carousel>
                     )}

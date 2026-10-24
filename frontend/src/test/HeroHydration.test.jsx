@@ -12,7 +12,7 @@ vi.mock('framer-motion', () => {
   const element = ({ children, src, alt, className }) => (
     src ? <img src={src} alt={alt} className={className} /> : <div className={className}>{children}</div>
   );
-  return { motion: { div: element, h1: element, p: element, img: element } };
+  return { motion: { div: element, h1: element, p: element, img: element }, useReducedMotion: () => false };
 });
 
 describe('Hero interactive markup', () => {

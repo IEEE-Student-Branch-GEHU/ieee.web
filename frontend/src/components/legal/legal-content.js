@@ -50,7 +50,7 @@ export const legalContent = {
         paragraphs: [
           'The frontend imports Space Grotesk and Inter from Google Fonts at fonts.googleapis.com. It also requests a decorative noise asset from grainy-gradients.vercel.app/noise.svg and uses image URLs from Unsplash in the page source and event fallbacks.',
           'The backend is configured to send uploaded event and team images to Cloudinary. The URL returned by Cloudinary can then be stored with the corresponding content record.',
-          'The backend is built to use MongoDB through Mongoose for event, team, and admin records. The deployment configuration names Vercel for hosting both the website and its API. The reviewed deployment files do not establish provider log retention, backup periods, processing locations, or contractual terms.',
+          'The backend is built to use MongoDB through Mongoose for event, team, and admin records. The active deployment names Vercel for hosting both the website and its API, while the preserved Express rollback can run on Render. The reviewed deployment files do not establish provider log retention, backup periods, processing locations, or contractual terms.',
           'No cookie banner or browser cookie implementation was identified in the reviewed frontend source. Hosting, browser, and service-provider logs still require confirmation.',
         ],
       },
@@ -169,7 +169,7 @@ export const legalContent = {
         id: 'terms-external-links',
         title: 'External links and services',
         paragraphs: [
-          'The website links to external IEEE sites and references Google Fonts, a decorative noise asset hosted at grainy-gradients.vercel.app, image URLs from Unsplash, Cloudinary image storage, MongoDB through Mongoose, and Vercel hosting. External destinations and providers may have their own content, privacy, security, and use policies.',
+          'The website links to external IEEE sites and references Google Fonts, a decorative noise asset hosted at grainy-gradients.vercel.app, image URLs from Unsplash, Cloudinary image storage, MongoDB through Mongoose, Vercel hosting, and the preserved Render rollback service. External destinations and providers may have their own content, privacy, security, and use policies.',
           'The branch does not set the policies of external destinations. External content, links, availability, provider terms, asset licenses, logs, backups, regions, and account ownership have not been fully reviewed for this website.',
         ],
       },

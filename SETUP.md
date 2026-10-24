@@ -23,28 +23,25 @@ cd ieee.web
 
 **2. Install dependencies**
 
-The site and its API are one Next.js app in `frontend/`. The Express API lives
-in `frontend/server/` and is served at `/api` by `src/pages/api/[...path].next.js`.
-
 ```bash
 cd frontend && npm ci
+cd ../backend && npm ci
 ```
 
 ---
 
 ## Environment Variables
 
-Copy `frontend/.env.example` to `frontend/.env.local` and fill it in:
+For the production-target Next.js application and its mounted Express API,
+create `frontend/.env.local`:
 
 ```env
-# MongoDB Atlas
-MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/ieee-gehu
-
-# Public origin for QR codes; also the allowed browser origin for the API
+# Same-origin API and canonical public origin
+NEXT_PUBLIC_API_URL=/api
 NEXT_PUBLIC_SITE_URL=https://your-verified-domain.example
 
-# Number of trusted reverse-proxy hops. Use 0 locally.
-TRUST_PROXY_HOPS=0
+# MongoDB Atlas
+MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/ieee-gehu
 
 # Cloudinary
 CLOUDINARY_CLOUD_NAME=your_cloud_name
@@ -53,18 +50,31 @@ CLOUDINARY_API_SECRET=your_api_secret
 
 # JWT
 JWT_SECRET=replace_with_a_random_secret_at_least_32_characters_long
+
+# Optional administrator-authorized volunteer Google sign-in
+# NEXT_PUBLIC_GOOGLE_CLIENT_ID=1234567890-abc.apps.googleusercontent.com
+
+# Optional reverse-proxy setting; use 0 locally
+TRUST_PROXY_HOPS=0
 ```
 
-> **Never commit `.env` files.** The file is already in `.gitignore`.
+The active member API runs in `frontend/server/` and is mounted by Next.js under
+`/api`; variables in the legacy `backend/.env` file are not automatically loaded
+by `cd frontend && npm run dev`. For the preserved Express rollback/reference
+server, create a separate `backend/.env` with `FRONTEND_URL`,
+`TRUST_PROXY_HOPS`, and the same database, Cloudinary, and JWT values. Never
+commit either environment file.
 
-In production, `NODE_ENV=production` also requires all three Cloudinary values,
-`MONGODB_URI`, `JWT_SECRET`, and `NEXT_PUBLIC_SITE_URL` (or `FRONTEND_URL`).
-The old `MONGO_URI` name is not consumed.
-Production JWT secrets must be random and at least 32 characters. The server
-does not create a default administrator or use a fallback signing key. Create
+> **Never commit `.env` files.** The files are already in `.gitignore`.
+
+For the Next.js/Vercel deployment, configure `MONGODB_URI`, `JWT_SECRET`, all
+three Cloudinary values, and the exact HTTPS `NEXT_PUBLIC_SITE_URL` in the
+Vercel project. Leave `NEXT_PUBLIC_API_URL` as `/api` for the single-app
+deployment. Production JWT secrets must be random and at least 32 characters.
+The server does not create a default administrator or use a fallback signing key. Create
 an administrator through the one-off script below; provide the credentials
 through the shell environment or a temporary secret manager entry, never in
-source control:
+`render.yaml` or source control:
 
 ```bash
 cd frontend
@@ -90,33 +100,27 @@ member sets a password at `/member/activate` and can then sign in at
 `/member/login`. Existing Team records remain public and read-only until an
 administrator explicitly links one through this flow.
 
-### Volunteer Google sign-in
-
-Volunteers can also sign in with Google, from the footer's "Volunteer login"
-button or from `/member/login`. Only emails an administrator authorized can
-sign in; there is no self-registration.
-
-1. In [Google Cloud Console](https://console.cloud.google.com/apis/credentials),
-   create an **OAuth client ID** of type **Web application**. Under
-   **Authorized JavaScript origins**, add the production origin (the value of
-   `NEXT_PUBLIC_SITE_URL`) and `http://localhost:3000` for local development.
-   No redirect URI or client secret is needed.
-2. Set `NEXT_PUBLIC_GOOGLE_CLIENT_ID` to the client ID (in Vercel for
-   Production, then redeploy). The ID is public; the server also reads it to
-   check that Google issued each token for this site.
-3. In the admin panel, open **Team** and use **Volunteer Google sign-in** to
-   authorize a volunteer's Google account email for their Team profile. A
-   profile without a member account gets one with no password, so Google is
-   its only sign-in method.
-
-On first sign-in the Google account is bound to the member account, so a
-re-assigned email address cannot take it over. Changing or removing the
-authorized email signs the volunteer out everywhere.
+After signing in, the member dashboard loads the linked profile from
+`GET /api/member/me`. Text fields are saved with `PATCH /api/member/profile`,
+and the profile photo is uploaded with `POST /api/member/profile/image` as a
+multipart `image` field. Both routes derive the Team record from the verified
+member token; browser-supplied member or Team IDs are not used for ownership.
 
 Member access tokens use the configured `JWT_SECRET` with a separate token
 purpose, issuer, audience, subject, expiry, and token-version check. Signing
 out increments the account token version so the current token is rejected on
 subsequent protected requests.
+
+### Volunteer Google sign-in
+
+Google sign-in is optional and disabled when `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is
+unset. An administrator must authorize an email for an existing Team profile
+from the admin Team page. The API exposes `PUT /api/admin/members/:teamId/google`
+and `DELETE /api/admin/members/:teamId/google`; volunteers then use the Google
+button at `/member/login` or in the footer. The server verifies the Google ID
+token, binds Google's stable subject on first sign-in, and rejects disabled,
+reassigned, or unauthorized accounts. Removing or changing an authorization
+increments the member token version and signs the account out everywhere.
 
 To safely verify the dedicated test account without printing its password or
 stored hash:
@@ -147,25 +151,31 @@ does not operate against production databases.
 ## Running Locally
 
 ```bash
-# Site and API together (http://localhost:3000, API at /api)
+# Terminal 1 — Next.js pages and mounted API (http://localhost:3000)
 cd frontend && npm run dev
 ```
 
-`npm run start:api` still runs the API on its own (port 5000) if needed.
+The Next.js development server serves the pages and the mounted `/api` routes.
+To run the migrated Express API without Next.js, use `cd frontend && npm run
+start:api`. The preserved rollback server remains available with `cd backend &&
+npm start`.
 
 ---
 
 ## Running Tests
 
 ```bash
+# Mounted API tests
 cd frontend
-
-# API tests (Jest, server/tests)
 npm run test:server
 
 # Frontend tests. The constrained worker flags are intentional for this
 # repository's CI/container environments.
 npm test -- --pool=threads --maxWorkers=1 --no-file-parallelism
+
+# Preserved rollback backend tests
+cd ../backend
+npm test
 ```
 
 The frontend test command may be run with an individual file path appended
@@ -175,49 +185,47 @@ when working on a focused flow.
 
 ## Deployment
 
-The whole site, including the API, deploys as one Vercel project:
+| Service | Platform | Config |
+| :--- | :--- | :--- |
+| Application | [Vercel](https://vercel.com) | Use the `frontend/` root, `npm run build:next`, and same-origin `/api` route handlers |
+| Database | MongoDB Atlas | Set server-only `MONGODB_URI` in Vercel project environment variables |
+| Storage | Cloudinary | Set server-only Cloudinary credentials in Vercel project environment variables |
 
-- Root Directory: `frontend`, Framework Preset: Next.js, Node.js 20.x or 22.x.
-- Environment variables (Production and Preview): `NEXT_PUBLIC_SITE_URL`,
-  `MONGODB_URI`, `JWT_SECRET`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`,
-  `CLOUDINARY_API_SECRET`, and `TRUST_PROXY_HOPS=1`. Leave
-  `NEXT_PUBLIC_API_URL` unset so the site calls its own `/api`.
-- MongoDB Atlas Network Access must allow Vercel's dynamic IPs
-  (`0.0.0.0/0` together with a strong database password).
+The production application is the Next.js App Router application. Its page files
+use the `.next.jsx` extension configured in `next.config.mjs`, and Vercel is
+configured with `framework: "nextjs"` and `npm run build:next`. The Express API
+under `frontend/server/` is mounted by `frontend/src/pages/api/[...path].next.js`
+and uses the same origin. The legacy `backend/` implementation remains a
+rollback/reference deployment for Render and is not the Vercel production API.
 
-Page files use the `.next.jsx` extension configured in `next.config.mjs`; the
-API route uses `.next.js`. The legacy Vite adapter remains available only for
-compatibility tests and optional local previews (`dev:vite`, `build:vite`,
-`preview:vite`).
+Leave `NEXT_PUBLIC_API_URL` unset or set it to `/api` for same-origin routing;
+frontend normalizes it exactly once. Set `NEXT_PUBLIC_SITE_URL` only after the
+organizer confirms the canonical HTTPS domain. Hosted Next.js builds reject a
+missing, non-HTTPS, local, placeholder, or path-bearing public origin so that
+printable QR codes cannot be generated with an unsafe destination. The legacy
+Vite adapter accepts the equivalent `VITE_*` variables only when it is run
+explicitly. Server-only variables are `MONGODB_URI`, `JWT_SECRET`, and the
+three Cloudinary credentials; never prefix those variables with `NEXT_PUBLIC_`.
+Each printable member QR encodes only the configured origin plus
+`/members/<team-object-id>`. The Team MongoDB `_id` is never replaced by an
+editable name, role, photo, or academic field, so profile edits do not change
+an already printed destination. Deleted or invalid IDs resolve to the public
+not-found/error states instead of exposing protected data.
 
-Set `NEXT_PUBLIC_SITE_URL` only after the organizer confirms the canonical
-HTTPS domain. Hosted builds reject a missing, non-HTTPS, local, placeholder, or
-path-bearing public origin so that printable QR codes cannot be generated with
-an unsafe destination. Each printable member QR encodes only the configured
-origin plus `/members/<team-object-id>`. The Team MongoDB `_id` is never
-replaced by an editable name, role, photo, or academic field, so profile edits
-do not change an already printed destination. Deleted or invalid IDs resolve to
-the public not-found/error states instead of exposing protected data.
+The Next.js-mounted `/api/health` route returns `503` when MongoDB is unavailable and
+`200` with `{ "status": "ready", "database": "connected" }` when MongoDB is
+ready. Uploaded images and certificates use Cloudinary, so they do not rely on
+local filesystem persistence. Rate-limit counters use the MongoDB-backed
+`apiRateLimits` collection so they remain shared across Vercel function
+instances.
 
-The API accepts browser requests from its own origin (so preview deployments
-work), from `NEXT_PUBLIC_SITE_URL`/`FRONTEND_URL`, and from localhost in
-development. `/health` (rewritten to `/api/health`) returns `503` when MongoDB
-is unavailable and `200` with `{ "status": "ready", "database": "connected" }`
-when it is ready.
-
-Serverless limits to keep in mind:
-
-- Vercel rejects request bodies over 4.5 MB, so image and certificate uploads
-  above that fail even though the API allows 10 MB.
-- The rate limiter is in memory, so each warm function instance counts
-  separately. Use a shared store (for example Upstash Redis) for strict limits.
-- Uploaded images use Cloudinary; nothing relies on the local filesystem.
-
-After deployment, manually verify `/health`, `/api/events`, the Events page,
-and the admin login. For the member workflow, create an approved Team profile
-in the admin panel, upload a test photo, provision and activate the account,
-open and refresh `/members/<team-object-id>`, generate and download the SVG QR,
-and scan it from a physical phone over HTTPS. Also test camera denial and
-unsupported-browser fallback. No live deployment, Cloudinary upload, MongoDB
-production write, or physical-device operation is performed by the repository
-tests.
+Before deployment, allow the Vercel project to reach MongoDB Atlas through its
+Network Access rules. After deployment, manually verify the Vercel
+`/api/health` and `/api/events` responses, the Events page, and the admin
+login using real environment values. For the member workflow, create an
+approved Team profile in the admin panel, upload a test photo, provision and
+activate the account, open and refresh `/members/<team-object-id>`, generate
+and download the SVG QR, and scan it from a physical phone over HTTPS. Also
+test camera denial and unsupported-browser fallback. No live deployment,
+Cloudinary upload, MongoDB production write, or physical-device operation is
+performed by the repository tests.

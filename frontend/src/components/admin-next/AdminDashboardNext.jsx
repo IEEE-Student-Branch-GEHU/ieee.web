@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
@@ -26,7 +24,8 @@ const AdminDashboardNext = () => {
   }, []);
 
   useEffect(() => {
-    fetchStats();
+    const timer = window.setTimeout(() => { void fetchStats(); }, 0);
+    return () => window.clearTimeout(timer);
   }, [fetchStats]);
 
   if (loading && !stats) {

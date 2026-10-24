@@ -112,3 +112,17 @@
 .year-item:hover .year-item__dot {
   border-color: #94a3b8;
 }
+
+.year-item:focus-visible {
+  outline: 2px solid #00b5e2;
+  outline-offset: 4px;
+  border-radius: 0.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .year-item,
+  .year-item__dot,
+  .year-item__label {
+    transition: none;
+  }
+}

@@ -102,9 +102,10 @@ const FacultyCoordinators = () => {
                                             href={coordinator.linkedin}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                             className="site-accent w-12 h-12 bg-primary/5 rounded-2xl flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-sm"
-                                        >
-                                            <BsLinkedin className="text-xl" />
+                                              aria-label={`${coordinator.name} on LinkedIn`}
+                                              className="site-accent flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 shadow-sm transition-all hover:bg-primary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
+                                         >
+                                             <BsLinkedin aria-hidden="true" className="text-xl" />
                                         </a>
                                     </div>
                                 )}
